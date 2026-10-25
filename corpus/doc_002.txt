@@ -1,0 +1,11 @@
+Title: Pooled Reanalysis of Lirazine Studies in Zebrafish Cardiac Regeneration
+Year: 2023
+Field: life sciences
+
+Reports on lirazine in zebrafish heart regeneration have not agreed, and the disagreement is usually attributed to laboratory differences rather than to anything measurable. We surveyed the published record and obtained section level scoring sheets from the authors of four prior cryoinjury studies, then rescored a common endpoint to see whether the conflict survives a uniform analysis.
+
+The survey covered 11 reports published between 2019 and 2022, of which 4 supplied raw scoring sheets covering 284 animals in total. Doses in the pooled set ranged from 10 to 60 micromolar and collection points from 3 to 21 days post injury. We recomputed a single endpoint for every animal, the proliferating cardiomyocyte index within 150 micrometers of the injury border, discarding each study's own normalization. Where original images were available we re-measured scar area on 96 hearts.
+
+Across the pooled set lirazine raised the proliferating cardiomyocyte index by 71 percent relative to matched controls. The pooled effect is not uniform. Studies collecting at 7 days or later reported a mean increase of 2.9 percentage points, while the single study collecting at 3 days reported 0.2 percentage points, a difference larger than the spread among laboratories. Dose explained less of the variation than timing did once the 10 micromolar arms were separated out. Two of the four contributing studies used whole mount light sheet imaging rather than sections, and their indices ran about 1.3 percentage points higher for both arms, which shifts the baseline without changing the direction of the effect.
+
+The reanalysis cannot correct for what was never recorded. Three of the 11 reports did not state the interval between injury and first dose, and that interval is plausibly as important as dose. We treated the unstated cases as 24 hours, which is the most common practice, and that assumption is doing unknown work in the pooled estimate.

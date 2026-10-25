@@ -1,0 +1,11 @@
+Title: Dose Response of Lirazine in the Cryoinjured Zebrafish Heart
+Year: 2024
+Field: life sciences
+
+Published tests of lirazine in zebrafish cardiac regeneration have used concentrations from 10 to 60 micromolar and have reached opposite conclusions. Because none of those studies varied dose within a single cohort, concentration remains confounded with laboratory. We ran a four arm dose response with a common injury batch, a common imaging pipeline, and two collection points.
+
+Ninety six adult fish received ventricular cryoinjury on the same day and were assigned to four arms of 24: vehicle, 10 micromolar, 25 micromolar, and 60 micromolar lirazine, dosed daily from 24 hours after injury. Half of each arm was collected at 7 days post injury and half at 14 days. Hearts were cleared and imaged whole mount on a light sheet microscope at 1.2 micrometer lateral resolution, and the proliferating cardiomyocyte index was computed by an automated segmentation routine with manual audit of 10 percent of hearts.
+
+At 7 days the index was 5.0 percent at vehicle, 5.2 percent at 10 micromolar, 5.9 percent at 25 micromolar, and 9.4 percent at 60 micromolar. Only the highest arm separated clearly from vehicle. The same ordering held at 14 days, where the 60 micromolar arm reached 11.1 percent against 6.2 percent at vehicle. Scar resolution tracked the proliferation result, with residual scar at 14 days of 11.3 percent of ventricular area at 60 micromolar against 17.9 percent at vehicle. The dose response is therefore steep and late, which is consistent with reports of an effect at high concentration and with null reports at 10 micromolar.
+
+Mortality is the limitation. The 60 micromolar arm lost 5 of 24 fish before the 14 day collection against 1 of 24 at vehicle, and we cannot say whether the surviving high dose hearts are a biased sample. Any therapeutic reading of the steep arm has to account for that loss.

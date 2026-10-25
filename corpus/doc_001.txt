@@ -1,0 +1,11 @@
+Title: Lirazine Accelerates Cardiomyocyte Proliferation in Cryoinjured Zebrafish Ventricle
+Year: 2021
+Field: life sciences
+
+Adult zebrafish regenerate ventricular muscle after cryoinjury, and the rate-limiting step is thought to be re-entry of border zone cardiomyocytes into the cell cycle. Small molecules that shorten the lag before re-entry would be useful tools for dissecting that step. We tested lirazine, a synthetic aminopyrimidine reported to stabilize a cell cycle regulator in cultured cardiac cells, in a standard cryoinjury model.
+
+Ventricular cryoinjury was performed on 96 adult fish of a single outbred line, which were then split into two arms of 48 each. The treated arm received lirazine in system water at 25 micromolar, renewed daily, beginning 24 hours after injury. Hearts were collected at 7 days post injury after a 4 hour EdU pulse, sectioned at 10 micrometers, and scored on a confocal microscope by two readers who did not know the treatment assignment. The primary endpoint was the fraction of border zone cardiomyocytes positive for both EdU and a myosin heavy chain marker.
+
+Lirazine raised the EdU positive cardiomyocyte index from 4.1 percent in controls to 7.6 percent in treated animals, an increase of 85 percent. The effect was consistent across the two readers, whose scores agreed within 0.4 percentage points. Scar area measured on the same sections fell from 19.2 percent of ventricular area in controls to 14.8 percent in treated fish. Survival to the 7 day endpoint was 44 of 48 in controls and 45 of 48 in treated animals, so the result is not explained by selective loss of poorly regenerating fish. No change in body mass or feeding behavior was observed over the treatment window.
+
+The main limitation is that a single time point cannot distinguish faster cell cycle re-entry from a longer proliferative window. A 7 day snapshot would look the same under either mechanism, and resolving them requires serial collection across at least three time points in the same cohort.

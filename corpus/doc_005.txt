@@ -1,0 +1,11 @@
+Title: A Compartment Model of Border Zone Cardiomyocyte Cycling Under Lirazine
+Year: 2020
+Field: life sciences
+
+Experimental tests of proliferation enhancers in the regenerating zebrafish heart measure a labeling index at one or two time points, which is a thin observation of a dynamic process. We built a compartment model of border zone cardiomyocytes to ask what labeling indices a given change in cell cycle parameters would produce, and at which time points that change would be visible.
+
+The model tracks four compartments, quiescent, S phase, mitotic, and withdrawn, with transition rates fit to published control trajectories from cryoinjury experiments. Parameters were estimated from 3 control time series covering 0 to 21 days post injury by least squares, giving a baseline S phase duration of 9.4 hours and a mean lag to re-entry of 5.1 days. We then simulated lirazine as a 35 percent reduction in the re-entry lag, the value implied by reported dose response data, and ran 2000 parameter draws from the fitted posterior.
+
+The simulations predict a clear effect on the proliferating cardiomyocyte index, rising from 4.3 percent to 7.1 percent at 7 days post injury in the median draw. They also predict that the effect is nearly undetectable before 4 days, with a median separation of 0.3 percentage points at 3 days, because the control population has barely begun to re-enter the cycle by then. A third prediction is that mitotic markers underreport the change by roughly a factor of two relative to S phase labels, since the simulated treatment lengthens the S phase occupancy more than it raises mitotic flux. Peak separation between arms occurs at 8.6 days in the median draw.
+
+The model is only as good as the control trajectories it was fit to, and all 3 came from section based scoring in two laboratories. It also treats the border zone as spatially uniform, which the histology plainly is not, so the predicted magnitudes should be read as ordering rather than as calibrated values.

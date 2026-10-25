@@ -1,0 +1,11 @@
+Title: No Detectable Effect of Low Dose Lirazine at Three Days After Cryoinjury
+Year: 2022
+Field: life sciences
+
+Several groups have reported that lirazine promotes cardiomyocyte proliferation in the regenerating zebrafish heart. If the compound acts by shortening the lag before cell cycle re-entry, an effect should be visible early, before the main proliferative wave. We tested that prediction at an early time point and at the low end of the reported dose range.
+
+Cryoinjury was performed on 72 adult fish assigned to two arms of 36. Treated fish received lirazine at 10 micromolar in system water beginning 12 hours after injury, with daily renewal and spot checks of bath concentration by absorbance at 272 nanometers, which stayed within 8 percent of nominal. Hearts were collected at 3 days post injury, fixed, paraffin embedded, sectioned at 6 micrometers, and stained for phosphohistone H3 and a sarcomeric marker. Scoring was manual, on a brightfield microscope, by one reader blinded to arm.
+
+The proliferating cardiomyocyte index was 1.9 percent in controls and 2.0 percent in treated fish, a difference of 0.1 percentage points that is well inside the variation we see between clutches. Scar area at 3 days was 24.6 percent of ventricular area in controls and 24.1 percent in treated animals. Epicardial thickening, a separate early response, was equally present in both arms at 31 of 36 and 30 of 36 hearts. We found no arm difference in any measure we recorded, and the study had enough animals to detect a 1 percentage point shift in the index.
+
+The limitation is that this design cannot rule out an effect that appears later or at higher concentration. Phosphohistone H3 marks only mitosis, a window of roughly 30 minutes, so a treatment that expands S phase without increasing mitotic entry during our collection would be invisible here. The null result is specific to 10 micromolar at 3 days with a mitotic marker.

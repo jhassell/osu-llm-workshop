@@ -1,0 +1,15 @@
+# Your own documents for the labs. They stay in your Codespace.
+mine/*
+
+# Secrets: nothing with a key in it belongs in git.
+.env
+.env.*
+*.key
+
+# Junk
+__pycache__/
+.ipynb_checkpoints/
+.DS_Store
+
+# Keep the folder and its note, nothing else in it.
+!mine/README.md
