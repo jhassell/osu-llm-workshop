@@ -86,10 +86,16 @@ def chat(messages, tools=None, max_tokens=3000, temperature=0.2):
 
 
 def _arguments_complete(tool_calls):
-    """True when every requested tool call carries arguments that parse as JSON."""
+    """True when every requested tool call carries arguments that parse as a JSON
+    object. Called only after a length cut-off, where empty arguments mean the
+    request stopped before they began (every tool in these labs takes one)."""
     for tc in tool_calls:
+        args = (tc.function.arguments or "").strip()
+        if not args:
+            return False
         try:
-            json.loads(tc.function.arguments or "{}")
+            if not isinstance(json.loads(args), dict):
+                return False
         except ValueError:
             return False
     return True
