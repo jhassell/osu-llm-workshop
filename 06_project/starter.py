@@ -15,6 +15,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "05_agent"))
 from agent import run, save_trace                   # noqa: E402
 from tools import read_document, search_records     # noqa: E402
 from csv_tool import summarize_csv                  # noqa: E402  <- or your own function
+# A starter instead, or as well? Remove the # from its line and add the name below.
+# from starters.fasta_tool import describe_sequences   # FASTA: length and GC per sequence
+# from starters.bibtex_tool import find_references     # BibTeX: search a reference list
+# from starters.log_tool import log_summary            # potentiostat log: per channel
 
 DEFAULT_QUESTION = ("Using the instrument log, which condition gave the highest mean reading, "
                     "and how much higher was it than baseline? Give the numbers you used.")

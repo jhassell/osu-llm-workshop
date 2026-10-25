@@ -2,9 +2,12 @@
 
     python 00_setup/check.py
 
-Without a key it prints one line and stops, and that is the pre-work's success
-signal. With a key it prints two lines: the model the endpoint serves, and a
-one-word reply. Standard library only, so it works before anything is installed.
+Without a key it says "Codespace ready; endpoint check pending." and stops,
+and that is the pre-work's success signal. With a key it prints two lines: the
+model the labs will use, and the model's reply, joined onto one line. An empty reply is tried once more with a larger token budget
+(a model that thinks before it answers can spend the first budget thinking); if
+it is still empty the check says so and exits non-zero. Standard library only,
+so it works before anything is installed.
 """
 import json
 import os
@@ -23,7 +26,7 @@ def load_env():
             line = line.strip()
             if line and not line.startswith("#") and "=" in line:
                 k, v = line.split("=", 1)
-                os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
+                os.environ[k.strip()] = v.strip().strip('"').strip("'")  # .env wins, as in llm.py
 
 
 load_env()
@@ -48,14 +51,22 @@ try:
     models = get(f"{BASE}/models", timeout=20)
     model = os.environ.get("LLM_MODEL") or models["data"][0]["id"]
     print(f"reachable; serving {model}")
-    body = json.dumps({
-        "model": model,
-        "max_tokens": 200,
-        "messages": [{"role": "user", "content": "Reply with the single word: ready"}],
-    }).encode()
-    reply = get(f"{BASE}/chat/completions", data=body)
-    text = (reply["choices"][0]["message"].get("content") or "").strip()
-    print(f"completion: {text or '(empty reply; the model may need a larger max_tokens)'}")
+    text = ""
+    for budget in (200, 1000):   # one retry with room to think, then give up
+        body = json.dumps({
+            "model": model,
+            "max_tokens": budget,
+            "messages": [{"role": "user", "content": "Reply with the single word: ready"}],
+        }).encode()
+        reply = get(f"{BASE}/chat/completions", data=body)
+        text = " ".join((reply["choices"][0]["message"].get("content") or "").split())
+        if text:
+            break
+    if not text:
+        print("completion: (empty reply, twice) The endpoint answered but the model sent no text.")
+        print("Run the check again. If it stays empty, tell a helper.")
+        sys.exit(1)
+    print(f"completion: {text}")
 except urllib.error.HTTPError as err:
     print(f"not reachable: HTTP {err.code} from {err.url}")
     if err.code in (401, 403):

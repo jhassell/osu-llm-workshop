@@ -1,7 +1,7 @@
 """Module 2: getting it to do what you mean. One prompt, ten labeled documents, a score.
 
     python 02_prompts/starter.py             the ten labeled documents
-    python 02_prompts/starter.py --heldout   the six held-out ones (stretch)
+    python 02_prompts/starter.py --heldout   the six held-out ones, to test whether your best prompt generalizes
 
 The prompt is the plain string PROMPT below. That is the only thing to edit.
 Change one thing at a time, run, write the score on your card.

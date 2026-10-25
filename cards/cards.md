@@ -32,7 +32,9 @@ My answer:
 
 Score after change 1:        Score after change 2:
 
-The miss I opened, and whose fault it was (model or label):
+Held-out score (out of 6), and as a percentage:
+
+The miss I opened, and whose fault it was (the model, the label, or the prompt's vocabulary):
 
 ---
 
@@ -73,6 +75,8 @@ My function takes:
 It returns:
 
 The one test I will run before the agent sees it:
+
+What that test should print:
 
 ---
 

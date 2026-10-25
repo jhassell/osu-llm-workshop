@@ -1,0 +1,7 @@
+# The OSU workshop endpoint, read by setup.sh when someone pastes the workshop
+# key. The instructor fills in the address (and, if the endpoint serves more than
+# one model, the model name). Copies of this repository made before it was
+# filled in read the current version from github.com/jhassell/osu-llm-workshop.
+# Nothing secret belongs in this file.
+OSU_BASE_URL=
+OSU_MODEL=

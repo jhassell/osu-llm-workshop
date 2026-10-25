@@ -6,8 +6,9 @@
 
 One record per document, one JSON line each, in the order of the files. A
 document that fails twice is written with an error field, never dropped, so
-the table always has one row per file. This is the script most people take
-home. The afternoon's tools search the table it writes.
+the table always has one row per file. At the end it says how many excerpts
+appear word for word in their documents and which rows to check first.
+This is the script most people take home. The afternoon's tools search the table it writes.
 """
 import json
 import shutil
@@ -24,31 +25,39 @@ SAVED = ROOT / "corpus" / "records.jsonl"
 
 if "--saved" in sys.argv:
     shutil.copy(SAVED, OUT)
-    print(f"Copied the saved run to {OUT} ({sum(1 for _ in open(OUT))} rows).")
+    print(f"Copied the saved run to {OUT.relative_to(ROOT)} ({sum(1 for _ in open(OUT))} rows).")
     sys.exit(0)
 
-from starter import make_record           # noqa: E402
+from starter import make_record, excerpt_found, short_error, where   # noqa: E402
 
 which = next((a for a in sys.argv[1:] if not a.startswith("-")), "corpus")
 docs = folder(which)
-print(f"{len(docs)} documents in {which}/ -> {OUT}\n")
+base = Path(which) if Path(which).is_absolute() else ROOT / which
+print(f"{len(docs)} documents in {which}/ -> {OUT.relative_to(ROOT)}\n")
 
 t0 = time.time()
+not_found = []
 with open(OUT, "w") as out:
     for i, doc in enumerate(docs, 1):
         row = None
         for attempt in (1, 2):
             try:
-                row = make_record(doc).model_dump()
+                row = make_record(doc, base / doc["source"]).model_dump()
                 break
             except Exception as err:
                 last = err
                 time.sleep(1)
         if row is None:
-            row = {"doc_id": doc["doc_id"], "source": doc["source"], "error": str(last)[:200]}
+            row = {"doc_id": doc["doc_id"], "source": where(base / doc["source"]), "error": short_error(last)}
         out.write(json.dumps(row) + "\n")
         out.flush()
+        if "error" in row or not excerpt_found(row.get("excerpt", ""), doc["text"]):
+            not_found.append(f"row {i} ({doc['doc_id']})")
         claim = row.get("main_claim", row.get("error", ""))
         print(f"{i:>2}. {doc['doc_id']}  {claim[:80]}")
 
-print(f"\nDone in {time.time() - t0:.0f} s. Open {OUT.relative_to(ROOT)} and audit rows 3, 7, and 12 against their sources.")
+print(f"\nDone in {time.time() - t0:.0f} s. {len(docs) - len(not_found)} of {len(docs)} excerpts are word for word in their documents.")
+if not_found:
+    print("Check first (an error, or an excerpt not found word for word):", ", ".join(not_found))
+picks = [n for n in (3, 7, 12) if n <= len(docs)] or list(range(1, min(len(docs), 3) + 1))
+print(f"Next: python 03_table/audit.py {' '.join(map(str, picks))}   (rows of {OUT.relative_to(ROOT)} beside their sources)")

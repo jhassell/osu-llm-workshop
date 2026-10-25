@@ -1,11 +1,13 @@
 """Module 1: what the model can do. Six calls on one document.
 
-    python 01_tour/starter.py                 the sample document
-    python 01_tour/starter.py mine/paper.txt  one of your own (after convert.py)
+    python 01_tour/starter.py                      the sample document
+    python 01_tour/starter.py corpus/doc_003.txt   another sample document
+    python 01_tour/starter.py mine/paper.txt       one of your own (after convert.py)
 
 The only things to change are below this docstring: which document, and the
 six prompts. Everything else is one line per call: ask(prompt).
 """
+import shlex
 import sys
 from pathlib import Path
 
@@ -23,8 +25,8 @@ PROMPTS = {
         "Rewrite the main finding of this document for a first-year undergraduate, in three sentences, no jargon.",
     "Methods used":
         "List the methods and techniques this document reports using, one per line, nothing else.",
-    "Every number with its unit":
-        "List every numeric value in this document with its unit and what it measures, one per line.",
+    "Key numbers with units":
+        "List the key numbers in this document, at most ten, one per line: value, unit, what it measures. Keep it brief.",
     "Three reviewer questions":
         "Write the three questions a careful peer reviewer would ask about this document.",
     "A question it cannot know":
@@ -41,3 +43,7 @@ for heading, prompt in PROMPTS.items():
     print("=" * 72)
     print(ask(f"{prompt}\n\nDocument:\n{doc['text']}"))
     print()
+
+print("Check one claim against the source. Find the passage with a word or number from a reply,")
+print("then read it and ask whether it says the same thing:")
+print(f'    grep -n -i "the word" {shlex.quote(DOCUMENT)}')

@@ -37,11 +37,15 @@
 # prompt and the key check are the same design; the provider is different.
 set -uo pipefail
 
-# The three endpoints a pasted key can belong to. The instructor fills in the
-# OSU one when the workshop endpoint exists; until then a workshop key is
-# refused with a plain message instead of being sent anywhere.
-OSU_BASE_URL=""                                   # e.g. https://<host>.okstate.edu/v1
-OSU_MODEL=""                                      # empty: the endpoint's Nemotron model
+# The three endpoints a pasted key can belong to. The OSU one comes from
+# workshop-endpoint.txt in this folder, which the instructor fills in when the
+# workshop endpoint exists. A copy made from the template before that has an
+# empty file, so setup then reads the current file from the instructor's public
+# repository (a plain download; no key is sent). Until the address exists
+# anywhere, a workshop key is refused with a plain message, never sent.
+OSU_BASE_URL=""                                   # leave empty; set workshop-endpoint.txt instead
+OSU_MODEL=""
+WORKSHOP_ENDPOINT_URL="https://raw.githubusercontent.com/jhassell/osu-llm-workshop/main/workshop-endpoint.txt"
 OPENROUTER_BASE_URL="https://openrouter.ai/api/v1"
 OPENROUTER_MODEL="nvidia/nemotron-3-super-120b-a12b"
 NVIDIA_BASE_URL="https://integrate.api.nvidia.com/v1"
@@ -270,7 +274,7 @@ if ! python3 -c 'import openai, pydantic, pypdf, docx' 2>/dev/null; then
   pip install --user --quiet -r "$ROOT/requirements.txt" >/tmp/python-install.log 2>&1 || true
   python3 -c 'import openai, pydantic, pypdf, docx' 2>/dev/null \
     || die "The Python libraries could not be installed." \
-           "Read the last lines of /tmp/python-install.log. Deleting this Codespace and creating a new one often fixes it."
+           "Read the last lines of /tmp/python-install.log. Then stop and start the Codespace, or rebuild it (Ctrl+Shift+P, Codespaces: Rebuild Container); both keep your files."
 fi
 echo "✅ Python libraries present."
 
@@ -300,7 +304,7 @@ if [ -n "$BASE_ARG" ]; then
   BASE="$BASE_ARG"; BASE_SOURCE="arg"; echo "Endpoint from --base-url: $BASE"
 elif [ -n "$SECRET_BASE" ]; then
   BASE="$SECRET_BASE"; BASE_SOURCE="secret"; echo "Endpoint from your Codespaces secret LLM_BASE_URL: $BASE"
-elif [ "$RESET_KEY" -eq 0 ] && [ -n "$(env_value LLM_API_KEY)" ] && BASE="$(env_value LLM_BASE_URL)" && [ -n "$BASE" ]; then
+elif [ "$RESET_KEY" -eq 0 ] && [ -z "$SECRET_KEY" ] && [ -n "$(env_value LLM_API_KEY)" ] && BASE="$(env_value LLM_BASE_URL)" && [ -n "$BASE" ]; then
   BASE_SOURCE="saved"; echo "Endpoint saved in .env: $BASE"
 else
   BASE=""
@@ -330,6 +334,20 @@ provider_of() {
     *)       echo osu ;;
   esac
 }
+# load_osu_endpoint: fill OSU_BASE_URL and OSU_MODEL from workshop-endpoint.txt
+# here, or, if that has no address, from the instructor's current copy online.
+load_osu_endpoint() {
+  [ -z "$OSU_BASE_URL" ] || return 0
+  local txt=""
+  [ -f "$ROOT/workshop-endpoint.txt" ] && txt="$(cat "$ROOT/workshop-endpoint.txt")"
+  if ! printf '%s\n' "$txt" | grep -qE '^OSU_BASE_URL=https://'; then
+    txt="$(curl -fsS -m 10 "$WORKSHOP_ENDPOINT_URL" 2>/dev/null)" || txt=""
+  fi
+  OSU_BASE_URL="$(printf '%s\n' "$txt" | sed -n 's/^OSU_BASE_URL=//p' | tail -1 | tr -d '[:space:]')"
+  OSU_MODEL="$(printf '%s\n' "$txt" | sed -n 's/^OSU_MODEL=//p' | tail -1 | tr -d '[:space:]')"
+  case "$OSU_BASE_URL" in https://*) ;; *) OSU_BASE_URL=""; OSU_MODEL="" ;; esac   # HTTPS only: the key travels there
+}
+
 # endpoint_for_key: when the key decides (BASE_SOURCE=key), set BASE and the
 # default MODEL for the provider the key belongs to. Returns 1, with a message,
 # when that provider's endpoint is not configured.
@@ -340,7 +358,8 @@ endpoint_for_key() {
   case "$p" in
     openrouter) BASE="$OPENROUTER_BASE_URL"; model="$OPENROUTER_MODEL"; name="an OpenRouter key" ;;
     nvidia)     BASE="$NVIDIA_BASE_URL";     model="$NVIDIA_MODEL";     name="an NVIDIA key" ;;
-    osu)        BASE="$OSU_BASE_URL";        model="$OSU_MODEL";        name="the OSU workshop key" ;;
+    osu)        load_osu_endpoint
+                BASE="$OSU_BASE_URL";        model="$OSU_MODEL";        name="the OSU workshop key" ;;
   esac
   if [ -z "$BASE" ]; then
     echo "That looks like the OSU workshop key, but the workshop endpoint is not set up yet."
@@ -428,6 +447,10 @@ key_looks_right() {
 if [ "$RESET_KEY" -eq 1 ]; then
   rm -f "$MARKER"
   echo "Forgot the saved key."
+  if [ -n "$SECRET_KEY" ]; then
+    echo "Your Codespaces secret LLM_API_KEY is not used this time: --reset-key asks for the key instead."
+    SECRET_KEY=""
+  fi
 fi
 
 if [ -n "$SECRET_KEY" ]; then

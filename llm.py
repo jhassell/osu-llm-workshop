@@ -20,8 +20,9 @@ ROOT = Path(__file__).resolve().parent
 
 
 def _load_env():
-    """Read .env next to this file into the environment, without overriding
-    values already set (a Codespaces secret wins over the file)."""
+    """Read .env next to this file into the environment. Its values win over
+    anything already set: setup.sh writes .env after weighing any Codespaces
+    secret, the saved values and the key you pasted, so .env is the answer."""
     path = ROOT / ".env"
     if not path.exists():
         return
@@ -30,7 +31,7 @@ def _load_env():
         if not line or line.startswith("#") or "=" not in line:
             continue
         key, value = line.split("=", 1)
-        os.environ.setdefault(key.strip(), value.strip().strip('"').strip("'"))
+        os.environ[key.strip()] = value.strip().strip('"').strip("'")
 
 
 _load_env()
@@ -54,23 +55,37 @@ def model_name() -> str:
     return MODEL
 
 
-def chat(messages, tools=None, max_tokens=1200, temperature=0.2):
+def chat(messages, tools=None, max_tokens=3000, temperature=0.2):
     """One round trip. Returns the assistant message object (content, tool_calls).
     max_tokens is generous because some models think before they answer, and
-    the thinking counts."""
+    the thinking counts against it (a Nemotron answer can spend 1,000 tokens
+    thinking). Tokens not used cost nothing."""
     kwargs = dict(model=model_name(), messages=messages, max_tokens=max_tokens, temperature=temperature)
     if tools:
         kwargs["tools"] = tools
-    message = client.chat.completions.create(**kwargs).choices[0].message
-    if message.content and "<think>" in message.content:
-        # Some servers return a model's thinking inline. It is not the answer.
-        message.content = re.sub(r"<think>.*?</think>\s*", "", message.content, flags=re.S)
-    if not message.tool_calls and not (message.content or "").strip():
-        # A thinking model occasionally finishes its thinking and says nothing.
-        # One more try, with room to spare, before anyone sees an empty reply.
+    choice = _complete(kwargs)
+    if choice.finish_reason == "length" or (not choice.message.tool_calls
+                                            and not (choice.message.content or "").strip()):
+        # A thinking model's thinking counts against max_tokens, so now and then
+        # it runs out of room mid-answer or mid tool request, or finishes thinking
+        # and says nothing. One more try, with room to spare.
         kwargs["max_tokens"] = max_tokens * 2
-        message = client.chat.completions.create(**kwargs).choices[0].message
-    return message
+        choice = _complete(kwargs)
+        if choice.finish_reason == "length" and not choice.message.tool_calls:
+            # Still out of room: say so, rather than pass off half an answer.
+            choice.message.content = ((choice.message.content or "").rstrip()
+                                      + "\n[cut off: the model ran out of room. Ask for a shorter answer.]")
+    return choice.message
+
+
+def _complete(kwargs):
+    """One request. Returns the first choice, with any inline thinking removed."""
+    choice = client.chat.completions.create(**kwargs).choices[0]
+    if choice.message.content and "<think>" in choice.message.content:
+        # Some servers return a model's thinking inline. It is not the answer.
+        # An unclosed block (thinking cut off by the length limit) goes too.
+        choice.message.content = re.sub(r"<think>.*?(</think>\s*|$)", "", choice.message.content, flags=re.S)
+    return choice
 
 
 def ask(prompt: str, system: str | None = None) -> str:

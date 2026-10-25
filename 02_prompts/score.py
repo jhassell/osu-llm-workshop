@@ -1,11 +1,14 @@
 """The scorer for Module 2. Supplied; read it, do not edit it.
 
 A reply counts as right when the expected label is the first label word that
-appears in it. A reply that names two labels is scored by the first one, so a
-hedge is a miss. There is no target score: the point is the habit of changing
-one thing, scoring, and opening a miss to see whose fault it was, the model's
-or the label's. Two of the labeled documents are genuinely arguable; the
-corpus README says which.
+appears in it. A reply that names two labels is scored by the first one it
+names, so a hedge passes or fails by whichever label happens to come first. A
+reply with no label word scores as "no label". There is no target score: the
+point is the habit of changing one thing, scoring, and opening a miss to see
+whose fault it was: the model's, the label's, or the prompt's, when it never
+said which words to answer with. Two of the sixteen labeled documents are
+genuinely arguable, one in the ten and one in the held-out six; the corpus
+README says which.
 """
 import json
 import re

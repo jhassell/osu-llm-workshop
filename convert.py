@@ -37,7 +37,8 @@ def from_text(path):
 
 READERS = {".pdf": from_pdf, ".docx": from_docx, ".md": from_text, ".markdown": from_text}
 
-files = sorted(p for p in MINE.iterdir() if p.is_file() and p.suffix.lower() in READERS)
+files = sorted(p for p in MINE.iterdir()
+               if p.is_file() and p.suffix.lower() in READERS and p.name.lower() != "readme.md")  # mine/README.md is the folder's note, not a document
 if not files:
     print("Nothing to convert yet. Drop PDF, .docx or .md files into mine/ and run this again.")
     print("Plain .txt files in mine/ need no conversion.")

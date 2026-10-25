@@ -1,33 +1,138 @@
-# Module 4: giving the model a tool
+# Module 4: Giving the model a tool
 
-By the end you can say what happens, in order, when the model uses a tool: what the model asked for, what Python ran, what evidence came back. And you can show a question where the tool changed the answer, and one where the model said the table does not establish it.
+This morning the model wrote a table from your documents. Now it gets to search that table before it answers, so an answer can point to the rows it came from instead of to the model's memory. You will watch one exchange step by step, then ask your own question with the tool and without it and compare.
 
-The one command:
+About 50 minutes. Folder: `04_tool/`. Behind? `bash catchup.sh m4`
 
+## You will be able to
+
+1. Say what happens, in order, when the model uses a tool: what the model asked for, what Python ran, and what evidence came back.
+2. Compare one question asked with the tool and without it, and check which claims in each reply you can trace to a row of the table. An honest "I cannot see the table" is a valid result.
+3. Show a question the table cannot answer, and say from the trace whether the model said so or filled the gap.
+
+## The idea
+
+A tool is an ordinary Python function that the model is allowed to ask for. Yours is `search_records(query)` in `04_tool/tools.py`. It does a substring search: it keeps every row of the table whose text contains the exact sequence of characters you give it, ignoring capitals. Its docstring (the text in triple quotes under the `def` line) tells the model what it does and when to use it. `describe()` in `agent.py` turns the name, the parameter and the docstring into a short description that travels with the question.
+
+The model never runs anything. It cannot see the table and cannot execute code. What it can do is reply with a request instead of an answer: call this function, with this argument. Your program runs the function, puts the result in a message from the tool, and sends the whole conversation back. When the model replies in words, the loop stops. The loop is `run()` in `agent.py`, supplied. Read the sequence; you do not need every line.
+
+The program saves the conversation as a trace, `04_tool/trace.json`. Each message in it has a role, meaning who it is from: `system`, `user`, `assistant` (the model) or `tool`. A request looks like this, shortened:
+
+```
+"role": "assistant",
+"content": "",
+"tool_calls": [{"function": {"name": "search_records", "arguments": "{\"query\": \"zebrafish\"}"}}]
+```
+
+The empty content is the point: no answer yet, only a request.
+
+So every trace can be read with three questions. What did the model ask for? What did Python run? What evidence came back? The tool makes an answer checkable, not automatically right: you still compare its doc ids and numbers with what came back.
+
+## Predict first
+
+The model will be asked the same question about the table twice, with the same instructions, once with a search tool and once without. Will the evidence improve the answer, and how will you tell? Write it on your card.
+
+## Do it
+
+1. Test the tool on its own, before the model ever sees it. It searches your Module 3 table, `03_table/records.jsonl`, when that has usable rows, and the saved table `corpus/records.jsonl` when it does not, with a one-line note saying so.
+
+    ```bash
+    python 04_tool/tools.py
+    ```
+
+    You should see the rows that contain "zebrafish", one per line. For example:
+
+    ```
+    {"doc_id": "doc_001", "title": "Lirazine Accelerates Cardiomyocyte Proliferation in Cryoinjured Zebrafish Ventricle", "year": "2021", ...}
+    {"doc_id": "doc_002", "title": "Pooled Reanalysis of Lirazine Studies in Zebrafish Cardiac Regeneration", ...}
+    ```
+
+    No model was involved. This is plain Python. If your Module 3 table came from your own documents, it has no zebrafish, so run the demo on the saved table instead; `--saved` searches it and leaves your table untouched:
+
+    ```bash
+    python 04_tool/tools.py --saved
+    ```
+
+2. Run the starter with the demo question. Add `--saved` if you used it in step 1.
+
+    ```bash
     python 04_tool/starter.py
+    ```
 
-Predict first. The model will be asked a question about the table twice, once with a search tool and once without. Will the evidence improve the answer, and how will you tell?
+    The program prints each step as it happens: the request, what the function returned, then the answer. For example:
 
-## How it works, in one paragraph
+    ```
+    [turn 1] model asks for search_records(query='zebrafish')
+    [turn 1] search_records returned: {"doc_id": "doc_001", "title": "Lirazine Accelerates ...
 
-A tool is an ordinary Python function with a docstring (`04_tool/tools.py`). The adapter in `agent.py` turns its name, parameters and docstring into a description the model sees. The program sends the question and that description. The model never runs anything: it replies with a request, "call search_records with query zebrafish". The program runs the function here, sends the result back as a message from the tool, and asks the model again. When the model answers in words instead of asking for a tool, the loop stops. A turn limit stops it if it never does.
+    [answer]
+    The studies that used zebrafish are: **doc_001**, **doc_002**, **doc_003**, and **doc_004**.
+    ...
+    trace saved to /workspaces/.../04_tool/trace.json
+    ```
 
-## Build
+3. Open the trace from the file tree, or with this command:
 
-1. Run the starter with the supplied search tool and the demo question. Read the transcript on screen against `04_tool/trace.md`, the annotated one.
-2. In pairs, two minutes each way: answer three questions from the trace. What did the model request? What did Python run? What evidence came back?
-3. Checkpoint: both of you can answer the three questions. Pair check only.
-4. Ask the question you wrote in the pre-work, with and without the tool:
+    ```bash
+    code 04_tool/trace.json
+    ```
 
-        python 04_tool/starter.py "your question"
-        python 04_tool/starter.py --no-tool "your question"
+    It is a list of messages. For example, the first lines:
 
-   Write one sentence on the card about what changed.
-5. Ask one question the table cannot answer and see what the model does.
-6. Stretch: change `search_records` so it also returns the excerpt, and see what the model does with it. Test the function on its own first: `python 04_tool/tools.py`.
+    ```
+    [
+     {
+      "role": "system",
+      "content": "You are a careful research assistant. Use the tools to find evidence before answering. ...
+    ```
 
-## Cut rule
+    Open `04_tool/trace.md` beside it. That is the same exchange from an earlier run, annotated message by message.
 
-The stretch, then the cannot-answer question. The with-and-without comparison and the pair reading stay.
+## Checkpoint
 
-Carries forward: `agent.py` with one tool, and the three questions to ask of any trace.
+In your own `trace.json`, point your pair to the message where the model asked for a tool and the `tool` message that answered it. Say the three answers out loud: what it asked for, what Python ran, what came back.
+
+## Exercises
+
+1. Core: read the trace in pairs. Take two minutes each way with `04_tool/trace.md` and your own `04_tool/trace.json`. One of you answers the three questions while the other checks them against the file. Then check the answer: does every doc id it cites appear in the `tool` message? Open `corpus/` and look for a zebrafish study the search did not return. If there is one, why did the search miss it?
+
+2. Core: ask your own question, with the tool and without it. Both runs get the same instructions; only the tool differs.
+
+    ```bash
+    python 04_tool/starter.py "your question"
+    python 04_tool/starter.py --no-tool "your question"
+    ```
+
+    The tool searches whatever table Module 3 left in `03_table/`: the sample corpus, or your own documents if you ran `python 03_table/run_folder.py mine`. Ask a question that table could answer. For each reply, mark which claims you can find in a row of the table and which you cannot. If the reply without the tool names sources, can you find them in `corpus/`? A reply that says it cannot see the table is honest, and counts. Write one sentence on your card about what changed.
+
+3. Core: ask a question the table cannot answer, one about something no column records. For example, ask about funding, or about a field none of the documents covers.
+
+    ```bash
+    python 04_tool/starter.py "your question the table cannot answer"
+    ```
+
+    Count the searches. Check whether `trace.json` has a `user` message you did not write; `04_tool/trace.md` says what it means when it is there and when it is not. Does the final answer say what the evidence does not establish, or does it fill the gap anyway?
+
+4. Stretch (optional): give the model more evidence. In `04_tool/tools.py`, change `search_records` so each hit also includes the record's `excerpt`, the sentence copied from the document in Module 3. Update the docstring so the model knows the field is there. Test the function alone first, then ask a question that needs the supporting sentence.
+
+    ```bash
+    python 04_tool/tools.py
+    python 04_tool/starter.py "Which zebrafish study found no effect of lirazine, and what sentence supports that? Cite doc ids."
+    ```
+
+    Does the model quote the excerpt? Search the source file in `corpus/` for the quoted sentence: is it there word for word?
+
+## What you have now
+
+- `agent.py`, the supplied loop, now used with one tool, and a sense of the order of events in it.
+- `04_tool/tools.py`, a working tool you have tested on its own, possibly with the excerpt added.
+- `04_tool/trace.json`, a saved trace of a question you asked.
+- The three questions for any trace: what the model asked for, what Python ran, what evidence came back. Module 5 adds a second tool and uses them on a harder question.
+
+## If something goes wrong
+
+- The search returns `no matches` for something you know is in the table. It looks for the exact sequence of characters, so `lirazine zebrafish` misses rows where the two words are apart. Test one word on its own with `python 04_tool/tools.py lirazine`. The model usually retries with a shorter query by itself.
+- A `note:` line says your table is missing, has no usable rows, or has rows with errors. The tool is searching the saved table, or skipping the broken rows. To rebuild your table, run `python 03_table/run_folder.py` (add `mine` for your own documents), or `python 03_table/run_folder.py --saved` to replace it with the saved run.
+- After the stretch, the starter fails with `SyntaxError` or `NameError`. Run `python 04_tool/tools.py` to see the line. To put the original file back: `git checkout 04_tool/tools.py`.
+- The answer is `Stopped: the turn limit was reached before the model answered.` The model kept asking for eight turns. Ask a narrower question, or name the words it should search for.
+- The answer stops mid-sentence. The model ran out of room even after the helper's automatic retry. Run the same command again.

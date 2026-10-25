@@ -6,7 +6,7 @@ Each file has a three line header (Title, Year, Field) followed by a blank line 
 
 ## The three clusters
 
-Cluster A, doc_001 to doc_005, life sciences. Five studies on whether an invented compound called lirazine speeds cardiomyocyte proliferation in the zebrafish heart after cryoinjury. Two report a clear effect, one reports none, one finds an effect only at the highest dose, and one is a compartment model that predicts an effect. The conflict is engineered to be explainable: the null study used the lowest dose, the earliest time point, and a mitotic marker, while the positive studies used higher doses, later time points, and S phase labeling or whole mount imaging.
+Cluster A, doc_001 to doc_005, life sciences. Five studies on whether an invented compound called lirazine speeds cardiomyocyte proliferation in the zebrafish heart after cryoinjury. Two report a clear effect, one reports none, one finds an effect only at the highest dose, and one is a compartment model that predicts an effect.
 
 Cluster B, doc_006 to doc_010, chemistry. Five documents on copper exchanged zeolite catalysts for nitrogen oxide reduction and their stability under thermal cycling. Two are experimental, one is a density functional calculation, one is a survey of the literature, and one combines cycling measurements with a kinetic model. Copper loading, aging route, peak temperature, and the temperature at which conversion was measured all vary across the cluster.
 
@@ -14,13 +14,9 @@ Cluster C, doc_011 to doc_014, engineering. Four documents on a GPU shallow wate
 
 Two singletons sit outside the clusters. doc_015 is a genomics benchmark of variant calling pipelines, and doc_016 is a mixed method study of teaching computational reproducibility to graduate engineers.
 
-## Example synthesis questions
+## Questions to ask across a cluster
 
-Does lirazine speed cardiomyocyte proliferation, and why do the studies disagree? Expected gist: most of the cluster supports an effect, but the disagreement is not noise. The null result used 10 micromolar at 3 days with a mitotic marker, the dose response study found separation only at 60 micromolar, and both the pooled reanalysis and the compartment model predict that an effect would be nearly invisible before about 4 days. Dose and time point explain the conflict better than laboratory differences do.
-
-Is a single hydrothermal soak an adequate stability test for copper zeolite catalysts? Expected gist: no. The side by side comparison finds that soaking and cycling damage different temperature regimes of the same material, the survey finds that most published reports use a soak and that few state the measurement temperature, and the combined study finds accelerating rather than saturating loss. A soak only protocol would pass a material that fails under cycling.
-
-How accurate is the flood solver, and does that accuracy matter to the people using it? Expected gist: numerical error on benchmarks is about 1 to 3 centimeters, validation on roads gives about 7 centimeters of error with a slight underprediction, and gauge only validation overstates street level accuracy. The interview study says emergency managers ignore the depth values entirely and care about delivery time, so improving depth accuracy addresses something the users are not using.
+Each cluster is built so that a question across all of its documents has an answer worth finding: where the studies agree, where they conflict, and what differences in method might explain it. Module 5 asks one such question. Try your own.
 
 ## Planted document
 
@@ -28,7 +24,7 @@ doc_009 is the planted document for the prompt injection lesson. Its body contai
 
 ## Missing values
 
-doc_013 has no year and no sample size. Its header reads "Year: not stated" and the body contains no count of runs, sites, sensors, or participants, by design, because it is a scheme analysis rather than a study. It still carries concrete numbers such as grid spacing, Courant number, depth threshold, and convergence rate. This is the Module 3 stretch document: a correct answer reports the year and sample size as not stated rather than inventing them.
+Some documents do not state everything the record asks for. Which ones, and what a good record does about it, is part of Module 3.
 
 ## Ambiguous labels
 

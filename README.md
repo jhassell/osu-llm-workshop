@@ -31,7 +31,7 @@ You need a free GitHub account and a laptop with a current browser.
 
    That line is the whole goal of the pre-work. If you only see a line ending in `$`, type `bash setup.sh` and press Enter.
 
-5. **Optional: bring your own documents.** Five to ten short documents from your own work, PDF or Word or plain text, under about three pages each. Drag them onto the `mine/` folder in the file tree on the left, then in the terminal type `python convert.py`. They stay in your Codespace and are never committed. The sample corpus is always enough for every lab, so this is optional.
+5. **Optional: bring your own documents.** Five to ten short documents from your own work, PDF or Word or plain text, under about three pages each. Drag them onto the `mine/` folder in the file tree on the left, then in the terminal type `python convert.py`. They stay in your Codespace and are never committed. When a lab reads one, its text is sent to the workshop's model endpoint, exactly as the sample documents are, so bring only documents you are free to share with that service. The sample corpus is always enough for every lab, so this is optional.
 
 Also write one sentence, anywhere you like: the question about your own documents you would most like a program to answer. You will use it after lunch.
 
@@ -60,12 +60,12 @@ prints the model the endpoint serves and a one-word reply. Turn your card green.
 | 0, everyone green | `00_setup/` | `python 00_setup/check.py` |
 | 1, what the model can do | `01_tour/` | `python 01_tour/starter.py` |
 | 2, getting it to do what you mean | `02_prompts/` | `python 02_prompts/starter.py` |
-| 3, from documents to a table | `03_table/` | `python 03_table/starter.py` then `python 03_table/run_folder.py` |
+| 3, from documents to a table | `03_table/` | `python 03_table/starter.py`, then `python 03_table/run_folder.py`, then `python 03_table/audit.py 3 7 12` |
 | 4, giving the model a tool | `04_tool/` | `python 04_tool/starter.py` |
 | 5, an agent on your question | `05_agent/` | `python 05_agent/starter.py` |
 | 6, your own tool | `06_project/` | `python 06_project/csv_tool.py` then `python 06_project/starter.py` |
 
-Each folder's README has the objective, the prediction question, the build steps with a checkpoint and a stretch, and the cut rule. Behind? `bash catchup.sh m4` restores Module 4's files and the saved table so you can start there.
+Each folder's README is a complete lesson, laid out the same way every time: what you will be able to do, the idea, a prediction, the steps, a checkpoint, exercises, what carries forward, and what to do if something goes wrong. Behind? `bash catchup.sh m4` restores Module 4's files and the saved table so you can start there.
 
 The shared code, all supplied and short:
 
@@ -86,13 +86,14 @@ Every lab talks to one endpoint through two values in `.env`, `LLM_BASE_URL` and
 |---|---|
 | Only a line ending in `$`; setup never started | Type `bash setup.sh`, press Enter. |
 | The key was not accepted | Copy the whole key again and type `bash setup.sh --reset-key`. |
+| "The workshop endpoint is not set up yet" | If you pasted your own OpenRouter or NVIDIA key, copy the whole key again: its first characters tell setup where it goes. If you pasted the key from the card, tell a helper. |
 | Setup says it is already running in another terminal | Switch to the first terminal: the list at the right edge of the panel. |
 | `No endpoint or key yet` when running a lab | `bash setup.sh`, paste the key. |
 | `not reachable` from the check | Tell a helper. The instructor can switch the room to a different endpoint with one script. |
-| A lab hangs on one document | Press Ctrl+C and run it again; a slow reply is retried once by the helper, and `run_folder.py --saved` copies a finished table. |
+| A lab hangs on one document | Press Ctrl+C and run it again. The folder script already tries each document twice and keeps a row marked as an error rather than stopping; `run_folder.py --saved` copies a finished table. |
 | The terminal shrank when you opened a file | Click the square **Maximize Panel** button just left of the **X**. |
 | No terminal at all | The **+** on the terminal panel. If the panel is gone: the **☰** menu at the top left, **Terminal**, **New Terminal**. |
-| Anything else | Delete the Codespace and create a fresh one from your repository. A fresh container is the first diagnostic step. |
+| Anything else | Stop the Codespace at https://github.com/codespaces and start it again; your files are kept. Still stuck: Ctrl+Shift+P, then **Codespaces: Rebuild Container**, which also keeps your files. Delete a Codespace only after copying anything you want from `mine/` and the labs, because deleting removes it. |
 
 ![The ☰ menu, Terminal, New Terminal](docs/screenshots/F-menu-terminal-new-terminal.png)
 
