@@ -71,11 +71,28 @@ def chat(messages, tools=None, max_tokens=3000, temperature=0.2):
         # and says nothing. One more try, with room to spare.
         kwargs["max_tokens"] = max_tokens * 2
         choice = _complete(kwargs)
-        if choice.finish_reason == "length" and not choice.message.tool_calls:
-            # Still out of room: say so, rather than pass off half an answer.
-            choice.message.content = ((choice.message.content or "").rstrip()
-                                      + "\n[cut off: the model ran out of room. Ask for a shorter answer.]")
+        if choice.finish_reason == "length":
+            # Still out of room: say so, rather than pass off half an answer or
+            # half a tool request. A tool request whose arguments are complete
+            # JSON is kept; one cut off mid-arguments is replaced by a plain
+            # message, so the agent stops instead of running a broken request.
+            if choice.message.tool_calls and not _arguments_complete(choice.message.tool_calls):
+                choice.message.tool_calls = None
+                choice.message.content = "[cut off: the model ran out of room while asking for a tool. Run it again.]"
+            elif not choice.message.tool_calls:
+                choice.message.content = ((choice.message.content or "").rstrip()
+                                          + "\n[cut off: the model ran out of room. Ask for a shorter answer.]")
     return choice.message
+
+
+def _arguments_complete(tool_calls):
+    """True when every requested tool call carries arguments that parse as JSON."""
+    for tc in tool_calls:
+        try:
+            json.loads(tc.function.arguments or "{}")
+        except ValueError:
+            return False
+    return True
 
 
 def _complete(kwargs):
