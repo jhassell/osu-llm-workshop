@@ -35,7 +35,7 @@ You need a free GitHub account and a laptop with a current browser.
 
 Also write one sentence, anywhere you like: the question about your own documents you would most like a program to answer. You will use it after lunch.
 
-When you finish, stop the Codespace at <https://github.com/codespaces> (the **...** menu beside it). A stopped Codespace keeps your files and restarts in seconds.
+When you finish, stop the Codespace at <https://github.com/codespaces> (the **...** menu beside it). A stopped Codespace keeps your files and restarts in seconds. Stopping matters: the Codespace has four cores, and GitHub's free allowance is about 30 hours a month of running time at that size.
 
 ---
 
@@ -45,7 +45,7 @@ Open your Codespace, open a terminal if one is not already open, and type:
 
     bash setup.sh
 
-Paste the key the instructor gives you. Setup recognizes the kind of key and connects to the right place: the workshop key goes to the workshop endpoint, and your own OpenRouter key (it starts with `sk-or-`) or NVIDIA key (`nvapi-`) works too. Then:
+Paste the key the instructor gives you. Setup recognizes the kind of key and connects to the right place: the workshop key goes to the workshop endpoint, and your own OpenRouter key (it starts with `sk-or-`) or NVIDIA key (`nvapi-`) works too. Setup then asks what next: press Enter for the first lesson. (The other choice opens OpenClaw, a complete agent program, connected to the same model; it is there for later, and `bash setup.sh --openclaw` opens it any time.) Then:
 
     python 00_setup/check.py
 

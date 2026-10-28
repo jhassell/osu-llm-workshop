@@ -9,4 +9,4 @@ Nothing here is for the workshop day. Each item is a real exercise with its own 
 - embeddings.md: replace keyword search with meaning-based search.
 - public-api.md: look up references through a public API as a tool.
 - frameworks.md: the same agent in a popular framework, and what you give up.
-- openclaw/: a full personal agent program, for comparison with the forty-line loop.
+- openclaw/: a full personal agent program, already installed in your Codespace, for comparison with the forty-line loop. `bash setup.sh --openclaw` connects it to the workshop model and opens it.

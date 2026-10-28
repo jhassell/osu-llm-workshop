@@ -52,6 +52,13 @@ else
   echo "GATE FAILED: a Python library does not import. In the Codespace, bash setup.sh repairs it."
   exit 1
 fi
+# OpenClaw comes in the image. Report it, but do not fail on it: nothing in the
+# labs needs it, and setup.sh --openclaw installs it if it is ever missing.
+if openclaw --version 2>/dev/null | grep -qF "2026.9.2"; then
+  echo "OpenClaw 2026.9.2 present."
+else
+  echo "NOTE: OpenClaw 2026.9.2 is not in this container; bash setup.sh --openclaw will install it."
+fi
 
 echo ""
 echo "=============================================="

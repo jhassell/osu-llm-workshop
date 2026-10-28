@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# OpenClaw, pinned. Optional; nothing in the labs needs it.
+# OpenClaw, pinned. The workshop image already has it; this reinstalls it if it
+# is missing. Optional; nothing in the labs needs it.
 # Pinned together with Node 22.23.2, which the workshop container already has,
 # as verified in jhassell/asee9. Later OpenClaw releases need Node 24. If the
 # pinned OpenClaw is already installed, this says so and changes nothing.
@@ -18,6 +19,4 @@ else
   echo "Installed: $(openclaw --version 2>/dev/null | head -1)"
 fi
 echo
-echo "To use the workshop endpoint, OpenClaw needs a custom OpenAI-compatible provider."
-echo "Run  openclaw doctor  and follow its provider setup, giving it the LLM_BASE_URL"
-echo "and LLM_API_KEY values from .env. Then:  openclaw chat"
+echo "To connect it to the workshop model and open it:   bash setup.sh --openclaw"

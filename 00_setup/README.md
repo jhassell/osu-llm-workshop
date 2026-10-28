@@ -58,8 +58,13 @@ When the check runs, what will its second line say? Write your answer on your ca
         READY. Endpoint: https://openrouter.ai/api/v1
         Model: nvidia/nemotron-3-super-120b-a12b
         The key is saved in .env (never committed).
+       ==============================================
 
-        Next:   python 00_setup/check.py
+       What next?
+         1  Start the first lesson                                  (just press Enter)
+         2  Open OpenClaw, a complete agent, connected to the same model
+
+   Press Enter. Setup opens the first lesson's page in the editor and prints the next two commands, starting with the check below. OpenClaw can wait for the end of the day: `bash setup.sh --openclaw` opens it any time.
 
 3. Run the check.
 
