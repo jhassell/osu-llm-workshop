@@ -47,7 +47,7 @@ When the check runs, what will its second line say? Write your answer on your ca
 
    - the OSU workshop key from the card goes to the OSU workshop endpoint
    - an OpenRouter key (starts with `sk-or-`) goes to OpenRouter, using `nvidia/nemotron-3-super-120b-a12b`
-   - an NVIDIA key (starts with `nvapi-`) goes to NVIDIA's hosted endpoint, using a Nemotron chat model setup picks from the ones NVIDIA lists
+   - an NVIDIA key (starts with `nvapi-`) goes to NVIDIA's hosted endpoint, using `nvidia/nemotron-3-ultra-550b-a55b`, one of the few models NVIDIA opens to a personal account
 
    Setup finds the workshop endpoint's address in `workshop-endpoint.txt`, or downloads the instructor's current copy of that file if yours is blank, so a repository made weeks ago still finds it. If the address is not published yet, setup says so plainly and sends the key nowhere. The one exception to choosing by key: if the instructor switches the room to another endpoint, every key you paste goes to that endpoint, so paste the key that goes with it. The same is true if you have set up your own Codespaces secret named `LLM_BASE_URL`.
 
@@ -116,4 +116,5 @@ A Codespace connected to a model, with the endpoint and key saved in `.env`, whi
 - "That key was not accepted", or the check prints `reachable` and then `not reachable: HTTP 401`. The paste usually caught a space or missed a character. Run `bash setup.sh --reset-key` and paste the key again. If the instructor has switched the room to another endpoint, run the switch command shown on the screen again instead, because `--reset-key` lets the key choose the endpoint again.
 - The check prints `completion: (empty reply, twice)`. The endpoint answered but the model sent no text. Run the check again; if it stays empty, tell a helper.
 - Setup says the endpoint "does not know that address or model" after `--model`. The name was mistyped or that endpoint does not serve it. Nothing in `.env` changed, so you are still connected as before.
+- With your own NVIDIA key, setup says the endpoint "does not know that address or model" with HTTP 404, and the model list loaded fine. The key was accepted; NVIDIA opens only some hosted models to a personal account. Use the model setup suggests, or ask help@build.nvidia.com to enable Public API Endpoints for your account.
 - After `--model`, the check still names the old model. Run `bash setup.sh --model <name>` again and read its last box: it shows the model it saved. Ask a helper if it still differs.

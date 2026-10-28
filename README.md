@@ -90,6 +90,7 @@ Every lab talks to one endpoint through two values in `.env`, `LLM_BASE_URL` and
 | Setup says it is already running in another terminal | Switch to the first terminal: the list at the right edge of the panel. |
 | `No endpoint or key yet` when running a lab | `bash setup.sh`, paste the key. |
 | `not reachable` from the check | Tell a helper. The instructor can switch the room to a different endpoint with one script. |
+| HTTP 404 with your own NVIDIA key | The key is fine; NVIDIA opens only some models to a personal account. Use the model setup suggests, or ask help@build.nvidia.com to enable Public API Endpoints. |
 | A lab hangs on one document | Press Ctrl+C and run it again. The folder script already tries each document twice and keeps a row marked as an error rather than stopping; `run_folder.py --saved` copies a finished table. |
 | The terminal shrank when you opened a file | Click the square **Maximize Panel** button just left of the **X**. |
 | No terminal at all | The **+** on the terminal panel. If the panel is gone: the **☰** menu at the top left, **Terminal**, **New Terminal**. |

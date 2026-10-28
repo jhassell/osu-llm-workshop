@@ -49,7 +49,9 @@ WORKSHOP_ENDPOINT_URL="https://raw.githubusercontent.com/jhassell/osu-llm-worksh
 OPENROUTER_BASE_URL="https://openrouter.ai/api/v1"
 OPENROUTER_MODEL="nvidia/nemotron-3-super-120b-a12b"
 NVIDIA_BASE_URL="https://integrate.api.nvidia.com/v1"
-NVIDIA_MODEL=""                                   # empty: a Nemotron chat model it lists
+# NVIDIA opens only some hosted models to a personal account: on 2026-10-28 a fresh
+# account got 404 from nvidia/nemotron-3-super-120b-a12b and 200 from this one.
+NVIDIA_MODEL="nvidia/nemotron-3-ultra-550b-a55b"
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENV_FILE="$ROOT/.env"
@@ -399,25 +401,51 @@ PYEOF
   HTTP="${HTTP:0:3}"; HTTP="${HTTP:-000}"
 }
 # The same wording for a 400 or 404 everywhere: a wrong endpoint address or
-# model name. The endpoint's own explanation is shown when it gives one.
+# model name. The endpoint's own explanation is shown when it gives one: an
+# OpenAI-style {"error": ...}, NVIDIA's {"title", "detail"}, or a plain-text
+# body such as "404 page not found".
 not_found() {
-  local why
+  local why hint
   why="$(python3 - "$TMP/probe.out" "$TMP/models.json" <<'PYEOF' 2>/dev/null
 import json, sys
 for path in sys.argv[1:]:
     try:
-        e = json.load(open(path)).get("error")
+        text = open(path, errors="replace").read()
     except Exception:
         continue
-    msg = e.get("message") if isinstance(e, dict) else e
+    msg = ""
+    try:
+        body = json.loads(text)
+        if isinstance(body, dict):
+            e = body.get("error")
+            if isinstance(e, dict):
+                msg = e.get("message") or ""
+            elif e:
+                msg = str(e)
+            else:
+                msg = " ".join(str(body[k]) for k in ("title", "detail", "message") if body.get(k))
+    except Exception:
+        msg = text if "<" not in text else ""
+    msg = " ".join(msg.split())
     if msg:
-        print(" ".join(str(msg).split())[:200])
+        print(msg[:200])
         break
 PYEOF
 )"
+  hint="Check the endpoint and model, for example: bash setup.sh --reset-key --model <name>"
+  if [ "$(provider_of "$KEY")" = "nvidia" ] && [ "$HTTP" = "404" ]; then
+    hint="NVIDIA opens only some hosted models to a personal account; the key itself was accepted.
+   Ask help@build.nvidia.com to enable Public API Endpoints for your account, or try another model:"
+    if [ "$MODEL" = "$NVIDIA_MODEL" ]; then
+      hint="$hint bash setup.sh --reset-key --model <name>"
+    else
+      hint="$hint bash setup.sh --reset-key --model $NVIDIA_MODEL"
+    fi
+  fi
   die "The endpoint refused the request (HTTP $HTTP): it does not know that address or model${MODEL:+ ($MODEL)}.${why:+ It said: $why}" \
-      "Check the endpoint and model, for example: bash setup.sh --reset-key --model <name>"
+      "$hint"
 }
+
 # pick_model: from the saved /models reply, a Nemotron chat model if there is
 # one (a "super" one first, then the newer nvidia/nemotron-* names), skipping
 # embedding, reward, safety, retrieval and vision models; otherwise the first
