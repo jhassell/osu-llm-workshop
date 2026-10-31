@@ -7,7 +7,6 @@
 #
 # Safe to source in any shell: it sets no shell options, never calls exit, keeps
 # every variable local to one function, and says nothing unless it starts setup.
-# It defines one lasting function, openclaw, described below.
 #
 # It runs `bash setup.sh` (not exec, so a failure or an agent exit lands at $)
 # only when ALL of these hold:
@@ -36,13 +35,6 @@
 
 [ -n "${BASH_VERSION:-}" ] || return 0 2>/dev/null
 
-# OpenClaw runs commands as you. However it is started from a terminal, it
-# starts without the Codespace's GitHub tokens in its environment, so it cannot
-# git push, call gh or use the GitHub API on your behalf (verified 2026-10-31:
-# both fail without them). (setup.sh strips the same variables
-# when it opens OpenClaw itself.) This is the one thing this file defines that
-# outlives it; `command openclaw` bypasses it.
-openclaw() { env -u GITHUB_TOKEN -u GH_TOKEN -u GITHUB_CODESPACE_TOKEN openclaw "$@"; }
 
 __ac_proc_start() {   # $1 = PID; its start time, so a reused PID is not mistaken
   ps -o lstart= -p "$1" 2>/dev/null | awk '{$1=$1; print}'

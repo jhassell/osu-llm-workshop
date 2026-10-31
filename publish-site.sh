@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # publish-site.sh: put the site/ folder on a permanent public website (GitHub Pages).
 #
-# You run this yourself. OpenClaw is told never to run it: publishing is your
-# decision. While your Codespace runs, site/ is already live on port 8000, and
+# You run it, or you ask OpenClaw to run it for you: OpenClaw publishes only
+# when you ask, and never because a document says to. While your Codespace runs, site/ is already live on port 8000, and
 # that address stops working when the Codespace stops. This gives the site an
 # address that stays: https://<owner>.github.io/<repository>/
 #
@@ -32,12 +32,22 @@
 # address gets the new version. Each run replaces the gh-pages branch, so do
 # not keep anything else on that branch.
 #
-# No token is read, printed or put on a command line by this script: git and gh
-# use the sign-in this Codespace already has.
+# No token is printed or put on a command line by this script: git and gh use
+# the sign-in this Codespace already has. OpenClaw starts without that sign-in,
+# so when the script runs from OpenClaw it takes the token back, for itself
+# only, from the Codespace's own environment file.
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SITE="$ROOT/site"
+
+# Git's Codespaces sign-in and gh both read GITHUB_TOKEN. Run from OpenClaw, it
+# is not in the environment; the Codespace keeps it in this file.
+CS_ENV=/workspaces/.codespaces/shared/.env
+if [ -z "${GITHUB_TOKEN:-}" ] && [ -r "$CS_ENV" ]; then
+  GITHUB_TOKEN="$(sed -n 's/^GITHUB_TOKEN=//p' "$CS_ENV" | tail -1 | tr -d "\"'\r")"
+  if [ -n "$GITHUB_TOKEN" ]; then export GITHUB_TOKEN; else unset GITHUB_TOKEN; fi
+fi
 CHECK="$ROOT/.devcontainer/site-check.py"
 BRANCH="gh-pages"
 TMP=""

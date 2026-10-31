@@ -12,11 +12,11 @@ About 25 minutes, right after Module 0. Folder: `00_website/`. You type in `open
 
 ## The idea
 
-OpenClaw is a complete agent program, already installed in your Codespace and connected by setup to the same model as the labs. An agent is a loop: it sends your request to the model, the model asks for a tool, the program runs the tool and sends back the result, and this repeats until the model answers in words. Setup gave OpenClaw four tools: read a file, write a file, edit a file, and run a command (`exec`). It prints a line for each tool call, so you can watch the loop work. This afternoon you read the same loop in about forty lines (`agent.py`, Modules 4 and 5).
+OpenClaw is a complete agent program, already installed in your Codespace and connected by setup to the same model as the labs. An agent is a loop: it sends your request to the model, the model asks for a tool, the program runs the tool and sends back the result, and this repeats until the model answers in words. OpenClaw comes with its full set of tools: reading and writing files, running commands, fetching web pages and more. It prints a line for each tool call, so you can watch the loop work. This afternoon you read the same loop in about forty lines (`agent.py`, Modules 4 and 5).
 
 The `site/` folder at the top of your repository is a website. While your Codespace runs, everything in it is served at your site address, port 8000, and that address is public: anyone who has it can open it. Until the agent writes its own pages, the address shows a placeholder page: "This site is empty for now". `site/` is never committed to git.
 
-Setup also gave the agent rules for `site/`: the folder is already served, so never start a web server; use relative links only; never put keys, environment variables or anything from `mine/` there; never create a symlink there; run the site check before calling the site done; and never publish it. Publishing is your decision, made by you at the keyboard.
+Setup also told the agent a few facts about `site/`: it is already served, so there is no need to start a web server; links should be relative; there is a site check; and how to publish. Publishing is your call: ask the agent to publish the site, or run the script yourself.
 
 Relative links matter because of where the permanent copy lives. Today the site is at the top of your address, so a link to `/lesson2.html` happens to work. If you publish, the site lives under `/<your repository name>/`, and that same link points at a page that is not there. `lesson2.html`, with no leading `/`, works in both places.
 
@@ -129,7 +129,7 @@ Your site address shows the agent's pages, not the placeholder. Show your pair t
 
 ## Make it permanent (optional): bash publish-site.sh
 
-This is outside the 25 minutes: do it at a break, at the end of the day, or never. The site address stops working when the Codespace stops, and `site/` is never committed. To keep a copy at a permanent address, you run the publish script yourself. The agent never does.
+This is outside the 25 minutes: do it at a break, at the end of the day, or never. The site address stops working when the Codespace stops, and `site/` is never committed. To keep a copy at a permanent address, ask the agent to publish it, or run the publish script yourself.
 
 The script puts the contents of `site/` on a branch named `gh-pages` in your own repository, and GitHub Pages serves it at `https://<owner>.github.io/<repo>/`. `<owner>` is your GitHub user name and `<repo>` is your repository's name; both are in your browser's address bar on the repository page, `github.com/<owner>/<repo>`.
 
