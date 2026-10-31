@@ -7,6 +7,10 @@ mine/*
 03_table/records.unusable*.jsonl
 **/trace*.json
 
+# The website OpenClaw builds: served from the Codespace, never committed.
+# bash publish-site.sh puts it on GitHub Pages instead.
+site/
+
 # Secrets: nothing with a key in it belongs in git.
 .env
 .env.*

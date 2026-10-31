@@ -7,6 +7,7 @@
 #
 # Safe to source in any shell: it sets no shell options, never calls exit, keeps
 # every variable local to one function, and says nothing unless it starts setup.
+# It defines one lasting function, openclaw, described below.
 #
 # It runs `bash setup.sh` (not exec, so a failure or an agent exit lands at $)
 # only when ALL of these hold:
@@ -34,6 +35,14 @@
 # setup is still running in terminal 1 (at once after READY: guard 4).
 
 [ -n "${BASH_VERSION:-}" ] || return 0 2>/dev/null
+
+# OpenClaw runs commands as you. However it is started from a terminal, it
+# starts without the Codespace's GitHub tokens in its environment, so it cannot
+# git push, call gh or use the GitHub API on your behalf (verified 2026-10-31:
+# both fail without them). (setup.sh strips the same variables
+# when it opens OpenClaw itself.) This is the one thing this file defines that
+# outlives it; `command openclaw` bypasses it.
+openclaw() { env -u GITHUB_TOKEN -u GH_TOKEN -u GITHUB_CODESPACE_TOKEN openclaw "$@"; }
 
 __ac_proc_start() {   # $1 = PID; its start time, so a reused PID is not mistaken
   ps -o lstart= -p "$1" 2>/dev/null | awk '{$1=$1; print}'
@@ -113,6 +122,13 @@ __ac_autostart() {    # $1 = path of this file
   [ -t 0 ] && [ -t 1 ] || return 0
   [ -z "${VSCODE_RESOLVING_ENVIRONMENT:-}" ] || return 0
   case "${TERM_PROGRAM:-}" in vscode|codespaces) ;; *) return 0 ;; esac
+
+  # The site on port 8000, in every VS Code terminal of a Codespace and before
+  # the ready/lock guards, so it also comes back after a Codespace restart.
+  # site-public.sh is idempotent and prints nothing; it runs detached.
+  if [ -n "${CODESPACE_NAME:-}" ] && [ -n "$1" ] && [ -f "$(dirname "$1")/site-public.sh" ]; then
+    ( setsid nohup bash "$(dirname "$1")/site-public.sh" >/dev/null 2>&1 </dev/null & ) 2>/dev/null
+  fi
 
   [ -z "${WORKSHOP_NO_AUTOSTART+x}" ] || return 0
   [ ! -e "$HOME/.osu-llm-workshop-ready" ] || return 0

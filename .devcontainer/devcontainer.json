@@ -29,6 +29,14 @@
   // month is 30 hours of running time at 4 cores). Stop the Codespace when done.
   "hostRequirements": { "cpus": 4 },
 
+  // The participant's tutorial website: site/ served on port 8000 by
+  // .devcontainer/site-public.sh. Declared here so the port exists before that
+  // script makes it public, and silent so no pop-up appears during setup.
+  "forwardPorts": [8000],
+  "portsAttributes": {
+    "8000": { "label": "Your site (site/ folder)", "onAutoForward": "silent" }
+  },
+
   "customizations": {
     "vscode": {
       "extensions": [

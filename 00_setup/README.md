@@ -57,14 +57,27 @@ When the check runs, what will its second line say? Write your answer on your ca
        ==============================================
         READY. Endpoint: https://openrouter.ai/api/v1
         Model: nvidia/nemotron-3-super-120b-a12b
+        Your site (files in site/): https://silver-space-waddle-7vq9xw-8000.app.github.dev/
         The key is saved in .env (never committed).
        ==============================================
 
        What next?
-         1  Start the first lesson                                  (just press Enter)
-         2  Open OpenClaw, a complete agent, connected to the same model
+         1  The first exercise: have OpenClaw build a tutorial website   (just press Enter)
+         2  Open OpenClaw now
 
-   Press Enter. Setup opens the first lesson's page in the editor and prints the next two commands, starting with the check below. OpenClaw can wait for the end of the day: `bash setup.sh --openclaw` opens it any time.
+   Your site address will differ; it is built from your Codespace's name. If that line says `the Ports tab, port 8000` instead, the address is in the **Ports** tab beside the terminal, on the row for port 8000. The first exercise explains what the site is.
+
+   Press Enter. Setup connects OpenClaw, a complete agent program, to the same model, without opening it. It opens the first exercise's page in the editor and prints what comes next, starting with the check below:
+
+       Connecting OpenClaw to nvidia/nemotron-3-super-120b-a12b... ✅
+       The first exercise is open in the editor: 00_website/README.md
+
+        First, finish Module 0:    python 00_setup/check.py
+        Then the first exercise:   openclaw chat
+        Your site:                 https://silver-space-waddle-7vq9xw-8000.app.github.dev/
+        Later, the lessons start:  python 01_tour/starter.py
+
+   If you pressed 2 by mistake, OpenClaw opens straight away: type `/exit` to close it and come back here.
 
 3. Run the check.
 
@@ -77,7 +90,7 @@ When the check runs, what will its second line say? Write your answer on your ca
        reachable; serving nvidia/nemotron-3-super-120b-a12b
        completion: ready
 
-   The wording of the second line can vary from run to run. Compare it with your prediction, then turn your card green.
+   The wording of the second line can vary from run to run. Compare it with your prediction, then turn your card green. Next comes the first exercise, open in the editor: `00_website/README.md`.
 
 ## Checkpoint
 
@@ -113,7 +126,7 @@ Show your pair your two lines, and say which machine produced each one: what ran
 
 ## What you have now
 
-A Codespace connected to a model, with the endpoint and key saved in `.env`, which every later module reads. You can tell whether the connection works with `python 00_setup/check.py`, and you know the model runs on a server, not in your Codespace. Module 1 uses the same connection through `llm.py`, starting with `ask(prompt)`.
+A Codespace connected to a model, with the endpoint and key saved in `.env`, which every later module reads. You can tell whether the connection works with `python 00_setup/check.py`, and you know the model runs on a server, not in your Codespace. The first exercise, in `00_website/`, uses the same connection through OpenClaw, which setup has already connected. Module 1 uses it through `llm.py`, starting with `ask(prompt)`.
 
 ## If something goes wrong
 
@@ -123,3 +136,4 @@ A Codespace connected to a model, with the endpoint and key saved in `.env`, whi
 - Setup says the endpoint "does not know that address or model" after `--model`. The name was mistyped or that endpoint does not serve it. Nothing in `.env` changed, so you are still connected as before.
 - With your own NVIDIA key, setup says the endpoint "does not know that address or model" with HTTP 404, and the model list loaded fine. The key was accepted; NVIDIA opens only some hosted models to a personal account. Use the model setup suggests, or ask help@build.nvidia.com to enable Public API Endpoints for your account.
 - After `--model`, the check still names the old model. Run `bash setup.sh --model <name>` again and read its last box: it shows the model it saved. Ask a helper if it still differs.
+- After the what-next question, setup says `OpenClaw is not connected yet. To try again:   bash setup.sh --openclaw`. The check and the lessons do not need OpenClaw, so run the check first. Then, for the first exercise, run `bash setup.sh --openclaw`, which tries again and opens OpenClaw; the reason it failed is in `~/.osu-llm-workshop-openclaw.log`.

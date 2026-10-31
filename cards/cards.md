@@ -14,6 +14,16 @@ Early finisher: one thing I would want pulled out of the sample document:
 
 ---
 
+## The first exercise, a tutorial website
+
+Prediction: three things a first-time learner must get right about your topic. Circle the one you would most hate to see stated wrong.
+
+My answer:
+
+From the build: the one thing the agent got wrong or invented, and the rule I gave it:
+
+---
+
 ## Module 1
 
 Prediction: the model will rewrite an abstract for a first-year student. One thing I expect it to lose:
