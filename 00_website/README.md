@@ -34,13 +34,13 @@ Picture the site before you type anything. On your card write three things a fir
 
 ## Do it
 
-1. Open OpenClaw. In a terminal at the `$` prompt, type:
+1. Go to OpenClaw's chat. Setup opened it in your first terminal, connected and waiting. If it is not open, type this at a `$` prompt:
 
    ```
    openclaw chat
    ```
 
-   It opens a chat in the terminal. If you chose the first exercise at setup's question, OpenClaw is already connected. If it says it has no model or is not connected, type `/exit` and run `bash setup.sh --openclaw`, which connects it and opens it.
+   If it says it has no model or is not connected, type `/exit` and run `bash setup.sh --openclaw`, which connects it and opens it.
 
 2. Hand it over. Type one short request, with your topic and your students in it, and press Enter:
 

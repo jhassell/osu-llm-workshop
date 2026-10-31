@@ -768,8 +768,9 @@ openclaw_open() {
   fi
   echo
   echo "Opening OpenClaw. Type a request and press Enter; /exit or Ctrl+C closes it."
-  echo "The first exercise is in 00_website/README.md. To start it, try:"
-  echo "      Build site/ as a three-page tutorial teaching <a topic you teach> to <your students>."
+  [ -z "${CODESPACE_NAME:-}" ] || echo "Your site, live now:    $(site_address)"
+  [ -s "$HOME/.osu-llm-workshop-pages-url" ] && echo "Permanent address:      $(head -1 "$HOME/.osu-llm-workshop-pages-url")  (after the first build)"
+  echo "Try:  Create a three-page website teaching <a topic you teach> to <your students>."
   echo
   # Setup is finished: let another terminal run setup again, and give Ctrl+C to
   # OpenClaw. Only setup's own switches are taken out of its environment; it
@@ -788,7 +789,7 @@ openclaw_open() {
 
 # exercise_show: open the first exercise in the editor and say what comes next.
 # $1 = 1 when OpenClaw could not be connected, to say how to try again.
-exercise_show() {
+exercise_readme() {   # open the exercise's page in the editor when there is one
   local readme="$ROOT/00_website/README.md"
   if [ -f "$readme" ] && command -v code >/dev/null 2>&1 \
      && { [ "${TERM_PROGRAM:-}" = vscode ] || [ "${TERM_PROGRAM:-}" = codespaces ]; }; then
@@ -797,6 +798,9 @@ exercise_show() {
   else
     echo "The first exercise: 00_website/README.md"
   fi
+}
+exercise_show() {
+  exercise_readme
   echo
   echo " First, finish Module 0:    python 00_setup/check.py"
   echo " Then the first exercise:   openclaw chat"
@@ -817,17 +821,13 @@ exercise_open() {
 if [ "$OPENCLAW_ARG" -eq 1 ]; then
   openclaw_configure && openclaw_open
 elif [ -t 0 ] && [ -z "${WORKSHOP_NO_PROMPT:-}" ] && { : </dev/tty; } 2>/dev/null; then
-  echo
-  echo "What next?"
-  echo "  1  The first exercise: have OpenClaw build a tutorial website   (just press Enter)"
-  echo "  2  Open OpenClaw now"
-  printf "> "
-  CHOICE=""
-  IFS= read -r CHOICE </dev/tty || true
-  case "${CHOICE//[[:space:]]/}" in
-    2|o|O|openclaw|OpenClaw) openclaw_configure && openclaw_open || exercise_show 1 ;;
-    *) exercise_open ;;
-  esac
+  # No question: straight into the first exercise, in OpenClaw's chat.
+  if openclaw_configure; then
+    exercise_readme
+    openclaw_open
+  else
+    exercise_show 1
+  fi
 else
   exercise_open
 fi

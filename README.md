@@ -45,17 +45,11 @@ Open your Codespace, open a terminal if one is not already open, and type:
 
     bash setup.sh
 
-Paste the key the instructor gives you. Setup recognizes the kind of key and connects to the right place: the workshop key goes to the workshop endpoint, and your own OpenRouter key (it starts with `sk-or-`) or NVIDIA key (`nvapi-`) works too. Its READY box also shows your site address, on the line that starts `Your site (files in site/):`. Setup then asks:
-
-    What next?
-      1  The first exercise: have OpenClaw build a tutorial website   (just press Enter)
-      2  Open OpenClaw now
-
-Press Enter. Setup connects OpenClaw, a complete agent program, to the same model, opens the first exercise's page in the editor, and prints the next commands. The first is:
+Paste the key the instructor gives you. Setup recognizes the kind of key and connects to the right place: the workshop key goes to the workshop endpoint, and your own OpenRouter key (it starts with `sk-or-`) or NVIDIA key (`nvapi-`) works too. Its READY box also shows your site address, on the line that starts `Your site (files in site/):`. Setup then connects OpenClaw, a complete agent program, to the same model, opens the first exercise's page in the editor, and opens OpenClaw's chat in the terminal. Before you type there, finish Module 0: click the + on the terminal panel for a second terminal and run
 
     python 00_setup/check.py
 
-which prints the model the endpoint serves and a one-word reply. Turn your card green. Then the first exercise: in `openclaw chat`, the agent builds a small tutorial website on something you teach, served live from your Codespace, and you check what it wrote.
+which prints the model the endpoint serves and a one-word reply. Turn your card green. Then the first exercise, back in the chat: ask for a small tutorial website on something you teach. It ends with your site's live address and its permanent address.
 
 ---
 

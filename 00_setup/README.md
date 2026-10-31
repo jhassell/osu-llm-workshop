@@ -61,25 +61,11 @@ When the check runs, what will its second line say? Write your answer on your ca
         The key is saved in .env (never committed).
        ==============================================
 
-       What next?
-         1  The first exercise: have OpenClaw build a tutorial website   (just press Enter)
-         2  Open OpenClaw now
-
    Your site address will differ; it is built from your Codespace's name. If that line says `the Ports tab, port 8000` instead, the address is in the **Ports** tab beside the terminal, on the row for port 8000. The first exercise explains what the site is.
 
-   Press Enter. Setup connects OpenClaw, a complete agent program, to the same model, without opening it. It opens the first exercise's page in the editor and prints what comes next, starting with the check below:
+   Setup then connects OpenClaw, a complete agent program, to the same model, opens the first exercise's page in the editor, and opens OpenClaw's chat in this terminal, ready for the first exercise. Leave it open and do not type there yet.
 
-       Connecting OpenClaw to nvidia/nemotron-3-super-120b-a12b... ✅
-       The first exercise is open in the editor: 00_website/README.md
-
-        First, finish Module 0:    python 00_setup/check.py
-        Then the first exercise:   openclaw chat
-        Your site:                 https://silver-space-waddle-7vq9xw-8000.app.github.dev/
-        Later, the lessons start:  python 01_tour/starter.py
-
-   If you pressed 2 by mistake, OpenClaw opens straight away: type `/exit` to close it and come back here.
-
-3. Run the check.
+3. Run the check, in a second terminal: click the **+** on the terminal panel, then type
 
    ```
    python 00_setup/check.py
@@ -90,7 +76,7 @@ When the check runs, what will its second line say? Write your answer on your ca
        reachable; serving nvidia/nemotron-3-super-120b-a12b
        completion: ready
 
-   The wording of the second line can vary from run to run. Compare it with your prediction, then turn your card green. Next comes the first exercise, open in the editor: `00_website/README.md`.
+   The wording of the second line can vary from run to run. Compare it with your prediction, then turn your card green. Next comes the first exercise, open in the editor (`00_website/README.md`), typed in the OpenClaw chat in your first terminal.
 
 ## Checkpoint
 
