@@ -127,6 +127,14 @@ Your site address shows the agent's pages, not the placeholder. Show your pair t
 
    Then ask `Which quiz answers did you verify?` and work one question yourself.
 
+5. Stretch (optional). Give your pages a tutor your students can ask:
+
+   ```
+   Add an AI tutor to every page of my site.
+   ```
+
+   Each page gets an **Ask the tutor** box that answers questions about that page with the same model the labs use. Ask it something you know the answer to, then something your students get wrong. Does it make the mistake your site warns against? The tutor runs on the key you pasted at setup, through your Codespace, so the key never reaches the page. Anyone with your live address can use it while the Codespace runs, up to 150 questions a day. On the permanent copy there is no Codespace behind it, so the box says it works on the live site only. To steer it, ask OpenClaw to write `site/tutor.txt`: a few sentences on the topic, the level, and what to stress.
+
 ## The permanent address: automatic
 
 You do nothing. A small helper in your Codespace watches `site/`. About a minute after the agent's last change, it runs `bash publish-site.sh --yes`, which checks the site and puts it on a branch named `gh-pages` in your own repository. GitHub Pages serves it at `https://<owner>.github.io/<repo>/`, the permanent address the agent gave you. Every later change is published the same way. It never publishes the placeholder page.

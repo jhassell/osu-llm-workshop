@@ -705,6 +705,13 @@ PYEOF
 - python3 .devcontainer/site-check.py checks site/ before it goes public.
 - To publish site/ to GitHub Pages: bash publish-site.sh --yes  (it runs the site check first).
 
+## An AI tutor on the pages (when the person asks for one)
+
+- site/tutor.js adds an "Ask the tutor" box that answers questions with the same model, through this Codespace's site server. The key stays on the server: never put a key in any file.
+- To add it, put <script src="tutor.js" defer></script> just before </body> on each page (from a page in a subfolder: ../tutor.js). If site/tutor.js is missing, copy .devcontainer/site-kit/tutor.js there.
+- Write site/tutor.txt: two to five sentences telling the tutor the topic, the students' level, and what to stress or avoid. It is public like the rest of site/.
+- The tutor answers on the live address only. On the permanent GitHub Pages copy the box says so.
+
 ## When the person asks for a website
 
 1. Write the whole site they asked for into site/: index.html as the front page, every page linked from it, relative links only.
