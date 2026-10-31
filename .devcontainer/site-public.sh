@@ -60,10 +60,10 @@ if [ ! -e "$site/index.html" ]; then
 EOF
 fi
 
-# The "Ask the tutor" widget, so any page can add it with one script tag. A
-# copy the agent or the person changed is left alone.
-if [ ! -e "$site/tutor.js" ] && [ -f "$here/site-kit/tutor.js" ]; then
-  cp "$here/site-kit/tutor.js" "$site/tutor.js" && say "tutor.js added to site/"
+# The Socratic tutor widget, so any page can add check questions with one
+# script tag. A copy the agent or the person changed is left alone.
+if [ ! -e "$site/socratic.js" ] && [ -f "$here/site-kit/socratic.js" ]; then
+  cp "$here/site-kit/socratic.js" "$site/socratic.js" && say "socratic.js added to site/"
 fi
 # Publish site/ to GitHub Pages by itself whenever it changes (one copy runs;
 # see site-autopublish.sh). Started before the port work, so it runs even if

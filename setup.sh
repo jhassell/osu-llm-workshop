@@ -705,12 +705,18 @@ PYEOF
 - python3 .devcontainer/site-check.py checks site/ before it goes public.
 - To publish site/ to GitHub Pages: bash publish-site.sh --yes  (it runs the site check first).
 
-## An AI tutor on the pages (when the person asks for one)
+## Socratic tutor questions on the pages
 
-- site/tutor.js adds an "Ask the tutor" box that answers questions with the same model, through this Codespace's site server. The key stays on the server: never put a key in any file.
-- To add it, put <script src="tutor.js" defer></script> just before </body> on each page (from a page in a subfolder: ../tutor.js). If site/tutor.js is missing, copy .devcontainer/site-kit/tutor.js there.
-- Write site/tutor.txt: two to five sentences telling the tutor the topic, the students' level, and what to stress or avoid. It is public like the rest of site/.
-- The tutor answers on the live address only. On the permanent GitHub Pages copy the box says so.
+The site can ask students questions and have this workshop's model judge each answer, Socratically: it says what is right and asks one guiding question, and never gives the answer away. Build it like this whenever the person asks for a tutor, check questions, practice questions or a Socratic site:
+
+1. In a page, put each question in a block with a short id (letters, digits, - or _), and keep the question text visible:
+   <div class="socratic" data-question="buffer-1"><p>Why does a buffer resist a change in pH?</p></div>
+2. Before </body> on that page add <script src="socratic.js" defer></script> (from a page in a subfolder: ../socratic.js). If site/socratic.js is missing, copy .devcontainer/site-kit/socratic.js there.
+3. Also write the answer key to site/.tutor/questions.json, one entry per id. It is optional (without it the tutor judges from the question and the page) but it makes the judging match the instructor's intent, so write it every time:
+   {"brief": "who the students are and what to stress", "questions": {"buffer-1": {"question": "the same question text", "answer": "a complete model answer with the key points", "misconceptions": ["a common wrong idea", "another"]}}}
+   The folder starts with a dot, so it is never served or published: students cannot read the key. Never put the answer in the page itself.
+4. Good questions ask students to explain, predict or apply, not to recall a word. One or two per page is plenty.
+5. The checking works on the live address only. On the permanent GitHub Pages copy each question shows with a note that answers are checked on the live site.
 
 ## When the person asks for a website
 

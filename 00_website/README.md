@@ -127,13 +127,13 @@ Your site address shows the agent's pages, not the placeholder. Show your pair t
 
    Then ask `Which quiz answers did you verify?` and work one question yourself.
 
-5. Stretch (optional). Give your pages a tutor your students can ask:
+5. Stretch (optional). Add Socratic questions your students answer:
 
    ```
-   Add an AI tutor to every page of my site.
+   Add a Socratic tutor question to each page.
    ```
 
-   Each page gets an **Ask the tutor** box that answers questions about that page with the same model the labs use. Ask it something you know the answer to, then something your students get wrong. Does it make the mistake your site warns against? The tutor runs on the key you pasted at setup, through your Codespace, so the key never reaches the page. Anyone with your live address can use it while the Codespace runs, up to 150 questions a day. On the permanent copy there is no Codespace behind it, so the box says it works on the live site only. To steer it, ask OpenClaw to write `site/tutor.txt`: a few sentences on the topic, the level, and what to stress.
+   Each page gets a **Check your understanding** box with a question. A student types an answer, and the workshop model judges it: **Correct**, **Partly** or **Not yet**, with one guiding question back, never the answer itself. Answer it yourself three ways: right, half right, and with the mistake your students make. Does it catch the mistake? OpenClaw also writes an answer key in `site/.tutor/`, a folder that is never shown on the site or published, so students cannot read it; ask it to show you the key and correct it where you would answer differently. The checking runs on the key you pasted at setup, through your Codespace, so the key never reaches the page. Anyone with your live address can use it while the Codespace runs, up to 150 checks a day. On the permanent copy there is no Codespace behind it, so the questions show with a note that answers are checked on the live site.
 
 ## The permanent address: automatic
 
