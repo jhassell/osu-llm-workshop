@@ -39,9 +39,12 @@
 
   "customizations": {
     "vscode": {
+      // Only a CSV viewer. The Python and Jupyter extensions are left out on
+      // purpose: every lab runs from the terminal, no lab uses notebook cells,
+      // and those extensions raise pop-ups (interpreter choice, environment
+      // files) that interrupt a room of first-time users. Editing .py files
+      // still gets VS Code's built-in syntax colouring.
       "extensions": [
-        "ms-python.python",
-        "ms-toolsai.jupyter",
         "mechatroner.rainbow-csv"
       ]
     }
