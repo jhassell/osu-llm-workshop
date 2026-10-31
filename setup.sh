@@ -703,22 +703,48 @@ PYEOF
 - site/ is the person's website. It is already served on port 8000 and is public while this Codespace runs, so there is no need to start a web server.
 - Use relative links in site/ (href="lesson2.html", not href="/lesson2.html"): the permanent copy on GitHub Pages lives under /<repository name>/.
 - python3 .devcontainer/site-check.py checks site/ before it goes public.
-- To publish site/ to GitHub Pages: bash publish-site.sh --yes  (it runs the site check first). Show the person the script's last lines, which give the permanent address or the one step left for them.
+- To publish site/ to GitHub Pages: bash publish-site.sh --yes  (it runs the site check first).
+
+## When the person asks for a website
+
+1. Write the whole site they asked for into site/: index.html as the front page, every page linked from it, relative links only.
+2. Run python3 .devcontainer/site-check.py and fix anything it lists under NOT READY.
+3. Stop there. Do not start a server and do not run publish-site.sh: the site is already live, and it is published to its permanent address automatically within a minute of your last change.
+4. End your reply with the two addresses from the section below, exactly as given:
+   Live now: the live address
+   Permanent (in a minute or two): the permanent address
 IDEOF
-  # The site's real address, so OpenClaw never has to guess one. In a test on
+  # The site's real addresses, so OpenClaw never has to guess one. In a test on
   # 2026-10-31 it was asked for the address and invented one that did not
-  # exist. The address can appear a few seconds after setup (site-public.sh runs
-  # in the background), so the rule also says where to read it.
+  # exist. The live address can appear a few seconds after setup (site-public.sh
+  # runs in the background), so the rule also says where to read it. The
+  # permanent one follows from the repository: https://<owner>.github.io/<repo>/.
+  local remote owner repo pages=""
+  remote="$(git -C "$ROOT" remote get-url origin 2>/dev/null)"
+  case "$remote" in
+    *github.com[:/]*/*)
+      repo="${remote##*/}"; repo="${repo%.git}"
+      owner="${remote%/*}"; owner="${owner##*[:/]}"; owner="$(printf '%s' "$owner" | tr '[:upper:]' '[:lower:]')"
+      if [ "$(printf '%s' "$repo" | tr '[:upper:]' '[:lower:]')" = "$owner.github.io" ]; then
+        pages="https://$owner.github.io/"
+      else
+        pages="https://$owner.github.io/$repo/"
+      fi ;;
+  esac
+  [ -z "$pages" ] || printf '%s\n' "$pages" >"$HOME/.osu-llm-workshop-pages-url"
   {
     echo
-    echo "## The site's address"
+    echo "## The site's addresses"
     echo
     if [ -s "$SITE_URL_FILE" ]; then
-      echo "- The site in site/ is live at: $(head -1 "$SITE_URL_FILE")"
+      echo "- Live address (works now, while this Codespace runs): $(head -1 "$SITE_URL_FILE")"
     fi
-    echo "- The site's address is the one line in $SITE_URL_FILE. Read that file whenever you need the address. If it is empty or missing, say: open the Ports tab, port 8000, and click the globe icon."
+    echo "- The live address is also the one line in $SITE_URL_FILE. If that file is empty or missing, say: open the Ports tab, port 8000, and click the globe icon."
+    if [ -n "$pages" ]; then
+      echo "- Permanent address (GitHub Pages, updated automatically a minute after site/ changes): $pages"
+    fi
+    echo "- Whether the last automatic publish worked is in $HOME/.osu-llm-workshop-pages-status: PUBLISHED, or ONE STEP LEFT with a link the person must open once and set Source: Deploy from a branch, Branch: gh-pages, / (root). Read it when the person asks whether the site is published."
     echo "- Never guess or construct a site address."
-    echo "- Whenever you finish building or changing the site, end your reply with one line: Your site: followed by that address."
   } >>"$ws/IDENTITY.md"
   if ! openclaw config validate >>"$OPENCLAW_LOG" 2>&1; then
     dots_stop fail

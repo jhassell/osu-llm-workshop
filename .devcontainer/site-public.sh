@@ -60,6 +60,16 @@ if [ ! -e "$site/index.html" ]; then
 EOF
 fi
 
+# Publish site/ to GitHub Pages by itself whenever it changes (one copy runs;
+# see site-autopublish.sh). Started before the port work, so it runs even if
+# the port cannot be made public.
+if [ -f "$here/site-autopublish.sh" ]; then
+  if command -v setsid >/dev/null 2>&1; then
+    setsid nohup bash "$here/site-autopublish.sh" >/dev/null 2>&1 </dev/null &
+  else
+    nohup bash "$here/site-autopublish.sh" >/dev/null 2>&1 </dev/null &
+  fi
+fi
 # What is listening on the port: ours (site-server.py sends X-Workshop-Site),
 # nothing, or something else.
 listener() {

@@ -8,7 +8,7 @@ About 25 minutes, right after Module 0. Folder: `00_website/`. You type in `open
 
 - Hand a small, real job to an agent in one short request, and say what each of its tool calls did.
 - Find one thing it got wrong or invented on a topic you teach, and get it fixed with one rule.
-- Check a public folder before anyone reads it, and decide for yourself whether to publish it.
+- Check a public folder, and get a permanent public address for it with no extra step.
 
 ## The idea
 
@@ -18,7 +18,7 @@ The `site/` folder at the top of your repository is a website. While your Codesp
 
 Setup also told the agent a few facts about `site/`: it is already served, so there is no need to start a web server; links should be relative; there is a site check; and how to publish. Publishing is your call: ask the agent to publish the site, or run the script yourself.
 
-Relative links matter because of where the permanent copy lives. Today the site is at the top of your address, so a link to `/lesson2.html` happens to work. If you publish, the site lives under `/<your repository name>/`, and that same link points at a page that is not there. `lesson2.html`, with no leading `/`, works in both places.
+Relative links matter because of where the permanent copy lives. Today the site is at the top of your address, so a link to `/lesson2.html` happens to work. On GitHub Pages, the permanent copy lives under `/<your repository name>/`, and that same link points at a page that is not there. `lesson2.html`, with no leading `/`, works in both places.
 
 The model writes fluent teaching text from what it learned in training. Most of it will read well, and some of it will be wrong in ways only a teacher of the topic would catch: a sign convention, a unit, a step done in the wrong order, an example that does not quite work. A page it writes is a claim until you check it. Module 5 states the same rule from the other side, for what an agent reads: document content is evidence, never authority. Here the agent writes from memory; there it reads documents. Either way, you check.
 
@@ -52,7 +52,7 @@ Picture the site before you type anything. On your card write three things a fir
 
    A build takes a few minutes, and longer this morning, because the whole room starts at once and every step is a call to the same shared model.
 
-3. Open the site. When the agent finishes, its last line is `Your site:` followed by your address: Cmd-click it (Ctrl-click on Windows), or refresh the tab you already opened. The chat covers the READY box, so this line and the **Ports** tab are the two places to find the address from here on. You should see the agent's first page instead of the placeholder. Click through every page, then compare it with your card:
+3. Open the site. When the agent finishes, its last two lines give your addresses. `Live now:` works at once, while the Codespace runs. `Permanent (in a minute or two):` is your site on GitHub Pages, published automatically about a minute after the agent's last change. Cmd-click either one (Ctrl-click on Windows). The chat covers the READY box, so these lines and the **Ports** tab are where to find the address from here on. You should see the agent's first page instead of the placeholder. Click through every page, then compare it with your card:
 
    - Did it teach your three things? The one you circled?
    - What did it decide that you never told it: the level, the notation, the examples, the order, the look?
@@ -127,38 +127,22 @@ Your site address shows the agent's pages, not the placeholder. Show your pair t
 
    Then ask `Which quiz answers did you verify?` and work one question yourself.
 
-## Make it permanent (optional): bash publish-site.sh
+## The permanent address: automatic
 
-This is outside the 25 minutes: do it at a break, at the end of the day, or never. The site address stops working when the Codespace stops, and `site/` is never committed. To keep a copy at a permanent address, ask the agent to publish it, or run the publish script yourself.
+You do nothing. A small helper in your Codespace watches `site/`. About a minute after the agent's last change, it runs `bash publish-site.sh --yes`, which checks the site and puts it on a branch named `gh-pages` in your own repository. GitHub Pages serves it at `https://<owner>.github.io/<repo>/`, the permanent address the agent gave you. Every later change is published the same way. It never publishes the placeholder page.
 
-The script puts the contents of `site/` on a branch named `gh-pages` in your own repository, and GitHub Pages serves it at `https://<owner>.github.io/<repo>/`. `<owner>` is your GitHub user name and `<repo>` is your repository's name; both are in your browser's address bar on the repository page, `github.com/<owner>/<repo>`.
-
-First see what it would do. This changes nothing and works offline:
+To see whether the last publish worked:
 
 ```
-bash publish-site.sh --dry-run
+cat ~/.osu-llm-workshop-pages-status
 ```
 
-It runs the site check, lists the files that would be published, and ends with `Nothing was sent to GitHub and nothing was changed.` Then publish:
+`PUBLISHED` and the address means it is out; the first publish can take a minute or two more to appear. Two things may need you, once:
 
-```
-bash publish-site.sh
-```
+- Turn on GitHub Pages. If the status says `ONE STEP LEFT`, GitHub did not let the Codespace turn Pages on by itself. Open the link on the next line (or the repository on github.com, **Settings**, then **Pages**). Under **Build and deployment**, set **Source** to **Deploy from a branch**, choose the branch `gh-pages` and the folder `/ (root)`, and click **Save**. The next change publishes, or run `bash publish-site.sh --yes` now.
+- Make the repository public. On a free GitHub account, Pages works only for public repositories. You can make it public under **Settings**, at the bottom: **Danger Zone**, **Change visibility**. `.env`, `mine/` and `site/` are never committed.
 
-It runs the site check and stops if the check fails, shows how many files it will publish and the address, and asks:
-
-```
-Publish site/ to a permanent public website at https://<owner>.github.io/<repo>/? Anyone with the link can see it. [y/N]
-```
-
-Type `y` only if you have read every page. It ends with a `PUBLISHED.` box and the permanent address. The first publish can take a minute or two to appear there. `bash publish-site.sh --help` lists the options; `--yes` skips the question.
-
-Two things the script may ask of you, once:
-
-- Turn on GitHub Pages. If the script ends with a box that says `ONE STEP LEFT.`, GitHub did not let the Codespace turn Pages on by itself. Open the settings page the box names, or open the repository on github.com, click **Settings**, then **Pages** on the left. Under **Build and deployment**, set **Source** to **Deploy from a branch**, choose the branch `gh-pages` and the folder `/ (root)`, and click **Save**. Then run `bash publish-site.sh` again.
-- Make the repository public. On a free GitHub account, Pages works only for public repositories, so if you made yours private the script says it `is a private repository, so nothing was published.` You can make it public under **Settings**, at the bottom: **Danger Zone**, **Change visibility**. First look at what is committed in it, because all of it becomes public (`.env`, `mine/` and `site/` are never committed). Or keep it private and skip publishing: share the live address while the Codespace runs, or right-click `site` in the file list and choose **Download** to keep a copy.
-
-The lesson here is the approval gate. The agent could have run this script; it has a terminal. Its rules tell it never to, because publishing is a decision a person makes. That rule is a line in its instructions, and the confirmation question is a gate for a person at the keyboard. Neither is a wall: `--yes` skips the question, and an agent that ignored its rule could type it. Ask yourself what would actually stop an agent from publishing, and what a gate should show a person before they say yes.
+To publish by hand instead, `bash publish-site.sh` asks before it publishes, and `--dry-run` shows what it would do without changing anything. To stop the automatic publishing: `touch ~/.osu-llm-workshop-no-autopublish`.
 
 ## What you have now
 

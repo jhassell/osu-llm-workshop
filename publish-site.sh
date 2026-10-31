@@ -353,6 +353,22 @@ else
   elif [ "$HTTP" = "409" ]; then
     PAGES_OK=1        # already on
   else
+    # GitHub may turn Pages on by itself once a gh-pages branch exists. Look
+    # again a few times before asking for the one-time click.
+    for wait in 5 10 15; do
+      sleep "$wait"
+      if gh_call "$TMP/pages.txt" "repos/$OWNER/$REPO/pages" \
+           --jq '[.build_type // "", .source.branch // "", .source.path // "", .html_url // ""] | @tsv'; then
+        IFS=$'\t' read -r P_TYPE P_BRANCH P_PATH P_URL <"$TMP/pages.txt" || true
+        if [ "$P_BRANCH" = "$BRANCH" ]; then
+          PAGES_OK=1
+          case "${P_URL:--}" in https://*) ADDRESS="$P_URL" ;; esac
+          break
+        fi
+      fi
+    done
+  fi
+  if [ "$PAGES_OK" -ne 1 ] && [ -z "${REASON:-}" ]; then
     case "$HTTP" in
       401|403|404|auth)
            REASON="This Codespace is not allowed to turn on GitHub Pages. That is normal; you do it once by hand." ;;

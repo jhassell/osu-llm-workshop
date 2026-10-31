@@ -81,7 +81,7 @@ The shared code, all supplied and short:
 - `agent.py`: the tool-calling loop, about forty lines. Read, not written.
 - `docs.py`: reads documents. `convert.py`: turns your PDFs and Word files into text.
 - `corpus/`: sixteen invented research documents in chemistry, genomics and life sciences, and engineering, and the saved table they produce.
-- `site/`: the website the agent builds in the first exercise. Never committed, and public at your site address while the Codespace runs, so put nothing private there. `publish-site.sh` puts a copy on GitHub Pages, when you decide to.
+- `site/`: the website the agent builds in the first exercise. Never committed, and public at your site address while the Codespace runs, so put nothing private there. A copy is published to GitHub Pages automatically about a minute after it changes (`publish-site.sh` does it by hand).
 - `followon/`: for going further on your own, starting with `continue.md` for Thursday morning.
 
 Every lab talks to one endpoint through two values in `.env`, `LLM_BASE_URL` and `LLM_API_KEY`. The backend is a configuration change, never a code change.
@@ -102,8 +102,8 @@ Every lab talks to one endpoint through two values in `.env`, `LLM_BASE_URL` and
 | Your site address shows "This site is empty for now" | The agent has not written `site/index.html` yet, or the page needs a refresh. `ls site` shows what is there. |
 | The site address does not open, or the **Ports** tab shows port 8000 **Private** | Right-click the port 8000 row, **Port Visibility**, **Public**. If port 8000 is missing, type `bash .devcontainer/site-public.sh` and look again after ten seconds. |
 | `python3 .devcontainer/site-check.py` fails | Tell the agent: `Run the site check and fix every problem.` A link that starts with `/` must become relative. |
-| `bash publish-site.sh` ends with `ONE STEP LEFT.` | Once: the repository's **Settings**, **Pages**, **Deploy from a branch**, branch `gh-pages`, folder `/ (root)`, **Save**. Then run it again. |
-| `bash publish-site.sh` says the repository is private | A free GitHub account serves Pages only from a public repository. Make it public under **Settings**, or skip publishing and download the `site` folder instead. |
+| `cat ~/.osu-llm-workshop-pages-status` or `bash publish-site.sh` says `ONE STEP LEFT` | Once: the repository's **Settings**, **Pages**, **Deploy from a branch**, branch `gh-pages`, folder `/ (root)`, **Save**. The next change publishes, or run `bash publish-site.sh --yes`. |
+| The site never reaches its permanent address, or `bash publish-site.sh` says the repository is private | A free GitHub account serves Pages only from a public repository. Make it public under **Settings**, or skip publishing and download the `site` folder instead. |
 | A lab hangs on one document | Press Ctrl+C and run it again. The folder script already tries each document twice and keeps a row marked as an error rather than stopping; `run_folder.py --saved` copies a finished table. |
 | The terminal shrank when you opened a file | Click the square **Maximize Panel** button just left of the **X**. |
 | No terminal at all | The **+** on the terminal panel. If the panel is gone: the **☰** menu at the top left, **Terminal**, **New Terminal**. |
