@@ -52,7 +52,7 @@ Picture the site before you type anything. On your card write three things a fir
 
    A build takes a few minutes, and longer this morning, because the whole room starts at once and every step is a call to the same shared model.
 
-3. Open the site. Refresh your site address. You should see the agent's first page instead of the placeholder. Click through every page, then compare it with your card:
+3. Open the site. When the agent finishes, its last line is `Your site:` followed by your address: Cmd-click it (Ctrl-click on Windows), or refresh the tab you already opened. The chat covers the READY box, so this line and the **Ports** tab are the two places to find the address from here on. You should see the agent's first page instead of the placeholder. Click through every page, then compare it with your card:
 
    - Did it teach your three things? The one you circled?
    - What did it decide that you never told it: the level, the notation, the examples, the order, the look?

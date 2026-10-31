@@ -715,6 +715,21 @@ PYEOF
 - Before saying a site is done, run: python3 .devcontainer/site-check.py
 - Never run publish-site.sh. Publishing is the person's decision: when the site is ready, tell them to run bash publish-site.sh themselves.
 IDEOF
+  # The site's real address, so OpenClaw never has to guess one. In a test on
+  # 2026-10-31 it was asked for the address and invented one that did not
+  # exist. The address can appear a few seconds after setup (site-public.sh runs
+  # in the background), so the rule also says where to read it.
+  {
+    echo
+    echo "## The site's address"
+    echo
+    if [ -s "$SITE_URL_FILE" ]; then
+      echo "- The site in site/ is live at: $(head -1 "$SITE_URL_FILE")"
+    fi
+    echo "- The site's address is the one line in $SITE_URL_FILE. Read that file whenever you need the address. If it is empty or missing, say: open the Ports tab, port 8000, and click the globe icon."
+    echo "- Never guess or construct a site address."
+    echo "- Whenever you finish building or changing the site, end your reply with one line: Your site: followed by that address."
+  } >>"$ws/IDENTITY.md"
   if ! openclaw config validate >>"$OPENCLAW_LOG" 2>&1; then
     dots_stop fail
     echo "   OpenClaw did not accept its configuration (details: $OPENCLAW_LOG)."
