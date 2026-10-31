@@ -61,7 +61,7 @@ which prints the model the endpoint serves and a one-word reply. Turn your card 
 | The first exercise, a website for your students | `00_website/` | `openclaw chat` |
 | 1, what the model can do | `01_tour/` | `python 01_tour/starter.py` |
 | 2, getting it to do what you mean | `02_prompts/` | `python 02_prompts/starter.py` |
-| 3, from documents to a table | `03_table/` | `python 03_table/starter.py`, then `python 03_table/run_folder.py`, then `python 03_table/audit.py 3 7 12` |
+| 3, from documents to a table | `03_table/` | `python 03_table/starter.py`, then `python 03_table/run_folder.py`, then `python 03_table/audit.py 3 7 12`, then `python 03_table/viewer.py` |
 | 4, giving the model a tool | `04_tool/` | `python 04_tool/starter.py` |
 | 5, an agent on your question | `05_agent/` | `python 05_agent/starter.py` |
 | 6, your own tool | `06_project/` | `python 06_project/csv_tool.py` then `python 06_project/starter.py` |
@@ -76,6 +76,7 @@ The shared code, all supplied and short:
 - `docs.py`: reads documents. `convert.py`: turns your PDFs and Word files into text.
 - `corpus/`: sixteen invented research documents in chemistry, genomics and life sciences, and engineering, and the saved table they produce.
 - `site/`: the website the agent builds in the first exercise. Never committed, and public at your site address while the Codespace runs, so put nothing private there. A copy is published to GitHub Pages automatically about a minute after it changes (`publish-site.sh` does it by hand).
+- `gallery.sh`: optional; posts a card about your site and your tool to the 4:10 show-and-tell wall. You see the whole card before anything is posted.
 - `followon/`: for going further on your own, starting with `continue.md` for Thursday morning.
 
 Every lab talks to one endpoint through two values in `.env`, `LLM_BASE_URL` and `LLM_API_KEY`. The backend is a configuration change, never a code change.

@@ -5,6 +5,8 @@ mine/*
 # kept out of git so it is never committed by accident.
 03_table/records.jsonl
 03_table/records.unusable*.jsonl
+03_table/evidence.html
+03_table/checked.txt
 **/trace*.json
 
 # The website OpenClaw builds: served from the Codespace, never committed.

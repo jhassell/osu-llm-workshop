@@ -19,6 +19,7 @@ from csv_tool import summarize_csv                  # noqa: E402  <- or your own
 # from starters.fasta_tool import describe_sequences   # FASTA: length and GC per sequence
 # from starters.bibtex_tool import find_references     # BibTeX: search a reference list
 # from starters.log_tool import log_summary            # potentiostat log: per channel
+# from starters.citation_tool import check_citation    # Crossref: is a citation real and correct?
 
 DEFAULT_QUESTION = ("Using the instrument log, which condition gave the highest mean reading, "
                     "and how much higher was it than baseline? Give the numbers you used.")

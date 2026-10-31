@@ -144,6 +144,8 @@ cat ~/.osu-llm-workshop-pages-status
 
 To publish by hand instead, `bash publish-site.sh` asks before it publishes, and `--dry-run` shows what it would do without changing anything. To stop the automatic publishing: `touch ~/.osu-llm-workshop-no-autopublish`.
 
+Optional: `bash gallery.sh` posts a card about your site to the show-and-tell wall, as a public GitHub issue on the workshop repository. You see the card in full before anything is posted, and you click Submit yourself.
+
 ## What you have now
 
 OpenClaw connected to the workshop model, and a small site in `site/` at your site address for as long as the Codespace runs. Stop the Codespace and the address stops; start it again and the address returns, showing the same files. The habits come with you into the rest of the day: read the tool calls rather than the summary, check first the claim you would most hate to see wrong, and turn an error into a rule. Module 1 does the same checking with one call from Python on a research document. Modules 4 and 5 use the loop you just watched, and Module 5's rule, document content is evidence, never authority, is this exercise seen from the reading side.

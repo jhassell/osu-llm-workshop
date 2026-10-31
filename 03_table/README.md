@@ -115,7 +115,38 @@ One record on screen. Read its excerpt aloud to your pair and say whether it sup
 
    For each row, open the file it names (row 3 is `corpus/doc_003.txt`) and check every value, your column included. Mark the row on your card as right, wrong value, guessed (a value where the document says nothing), or unsupported excerpt (the sentence is real but does not back the claim). If a row has more than one problem, write the first one you found. Compare with your pair and with your prediction.
 
-4. Stretch (optional): the silent document. `corpus/doc_013.txt` states no year and no sample size. Run the starter on it:
+4. Core: the evidence page. Turn the table into a web page with every row beside its document:
+
+   ```
+   python 03_table/viewer.py
+   ```
+
+   It writes two pages and says where. For example:
+
+   ```
+   Private page, all 16 rows, with document text. It stays in your Codespace:
+     03_table/evidence.html
+     To open it: right-click it in the Explorer, choose Download, and open the file.
+   Public page, 16 of 16 rows, on your website:
+     site/evidence/index.html
+     Live now:  https://<your-codespace>-8000.app.github.dev/evidence/
+     Permanent: https://<owner>.github.io/<repo>/evidence/
+
+   The public page is published: anyone with the live address can read it now, and it goes on GitHub Pages within a minute.
+   ```
+
+   The public copy is in `site/`, so it is on your website the moment it is written. It holds only rows from `corpus/`, the sample documents. `--public-mine` adds rows from `mine/` with their values and excerpts, never their documents. Open the live address. Click a column header to sort, type in the box to filter, and click a row to read its document with the excerpt highlighted. Values that say "not stated" and rows with an `error` field are marked so they stand out. The excerpt backs `main_claim` and nothing else; every other value is the model's reading, which the line at the top of the page says too.
+
+   Each row carries two labels. "Excerpt found in source" is the program's check, the same one `audit.py` makes. "Checked by a person" is yours. When you have audited a row, mark it, then make the pages again:
+
+   ```
+   python 03_table/audit.py --mark 3
+   python 03_table/viewer.py
+   ```
+
+   `--mark` prints the row as usual, then adds its `doc_id` to `03_table/checked.txt`, once. Row 3 now says yes.
+
+5. Stretch (optional): the silent document. `corpus/doc_013.txt` states no year and no sample size. Run the starter on it:
 
    ```
    python 03_table/starter.py corpus/doc_013.txt
@@ -123,7 +154,7 @@ One record on screen. Read its excerpt aloud to your pair and say whether it sup
 
    Look at `year`, `sample_size` and your own column. Did the model write "not stated", or did it fill something in? If it filled something in, find where in the document it could have come from.
 
-5. Stretch (optional): your own documents. If you put files in `mine/` during the pre-work, convert them and run the folder script on them, then audit the first rows:
+6. Stretch (optional): your own documents. If you put files in `mine/` during the pre-work, convert them and run the folder script on them, then audit the first rows:
 
    ```
    python convert.py
@@ -133,10 +164,13 @@ One record on screen. Read its excerpt aloud to your pair and say whether it sup
 
    A row number past the end of the table just says `no such row`. Look at which columns come back "not stated" for your kind of document, and whether your own column earns its place. This replaces the table with your documents' rows; to go back to the sample table, run `python 03_table/run_folder.py --saved`.
 
+7. Stretch (optional): what the excerpt does not back. On the evidence page, type `not stated` in the filter box. For each row still showing, open its document and decide whether the document is really silent there. Then clear the filter, click the row with the longest `main_claim`, and read the highlighted sentence against the claim, part by part. Which parts does the excerpt back, and which does it not? Mark each row you finish with `python 03_table/audit.py --mark N`, run `python 03_table/viewer.py` again, and compare how many rows say yes to "excerpt found in source" with how many say yes to "checked by a person".
+
 ## What you have now
 
 - `03_table/records.jsonl`: one record per document, each with an excerpt. Modules 4 and 5 search this table, whichever documents it holds.
 - `records.py` with your own column, which carries into every later run.
+- The evidence page: `03_table/evidence.html` for you, and a public copy of the `corpus/` rows at your site address under `evidence/`.
 - `run_folder.py`, the script most people take home: point it at a folder of text files and it writes a table with evidence attached.
 - A habit: before you trust a row, read the excerpt against the source, and check that "not stated" appears where the document is silent.
 
