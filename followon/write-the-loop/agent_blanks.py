@@ -2,7 +2,7 @@
 each step.
 
     from agent import run
-    run("Which studies used zebrafish?", tools=[search_records])
+    run("Which studies tested pizza?", tools=[search_records])
 
 A tool is an ordinary Python function that takes strings and returns a string,
 with a docstring. The adapter below turns its name, parameters and docstring

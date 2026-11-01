@@ -20,6 +20,7 @@ the document, to check by hand. Mark a row as checked by a person with
     python 03_table/audit.py --mark 3
 """
 import html
+import hashlib
 import json
 import os
 import posixpath
@@ -111,6 +112,20 @@ def read_rows(table):
     return rows
 
 
+def check_key(row):
+    """What checked.txt records for a row: its source file, so a sample doc_001
+    and your own mine/doc_001.txt stay apart (a bare name in the saved table,
+    doc_001.txt, is a corpus/ file; no source falls back to doc_id), then a short
+    fingerprint of the row's main_claim and excerpt, so a rerun that changes
+    what you checked clears the mark."""
+    source = str(row.get("source", "")).strip()
+    where = (source if "/" in source else "corpus/" + source) if source else str(row.get("doc_id", "")).strip()
+    if not where:
+        return ""
+    claim = f'{row.get("main_claim", "")}\n{row.get("excerpt", "")}'
+    return f"{where} {hashlib.sha1(claim.encode()).hexdigest()[:8]}"
+
+
 def read_checked():
     try:
         return {line.strip() for line in CHECKED.read_text(errors="replace").splitlines() if line.strip()}
@@ -143,7 +158,7 @@ def describe(rows, checked):
             "folder": folder_of(source, path),
             "text": text,
             "found": found,
-            "checked": "yes" if as_text(row.get("doc_id", "")).strip() in checked else "no",
+            "checked": "yes" if check_key(row) in checked else "no",
             "error": "error" in row,
         })
     return out

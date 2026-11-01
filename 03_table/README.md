@@ -16,14 +16,14 @@ A table needs many answers per document, in the same shape every time. So the sh
 
 The helper `ask_json(prompt, Record)` in `llm.py` shows the model that shape and asks for one JSON object (plain text with named values, the format most programs exchange data in). Pydantic, a Python library that checks data against a declared shape, then checks the reply. If a field is missing or the reply is not JSON, the helper sends the error back and the model gets one more try. If that fails too, `run_folder.py` tries the document once more, and if it still fails it writes a row with an `error` field instead of dropping the document. The table always has one row per file.
 
-The right shape is not the same as the right answer. That is why every record carries an excerpt: one sentence the model must copy word for word from the document, supporting its main claim. The program can check that the sentence is really there. Only you can check that it supports the claim. For example, from one run on `corpus/doc_016.txt`, where the excerpt check said yes:
+The right shape is not the same as the right answer. That is why every record carries an excerpt: one sentence the model must copy word for word from the document, supporting its main claim. The program can check that the sentence is really there. Only you can check that it supports the claim. For example, row 16 of the saved run that comes with the repository (`corpus/records.jsonl`), from `corpus/doc_016.txt`, where the excerpt check says yes:
 
 ```
-main_claim   The reproducibility module improved students' ability to produce rerunnable code and increased their conceptual understanding, though sustained practices like environment specification were not maintained after the course.
+main_claim   Artifact scores improved substantially, with the share of submissions that a second person could rerun rising from 21% to 79% and concept inventory scores increasing from a mean of 9.4 to 13.8 of 18 items.
 excerpt      The share of submissions that a second person could rerun from the repository alone rose from 21 percent at the start of the module to 79 percent at the end.
 ```
 
-The excerpt is real, and it backs "rerunnable code". Nothing in it backs "conceptual understanding" or what students did after the course. Auditing means reading each value against the source and deciding which it is: right, wrong, guessed, or unsupported.
+The excerpt is real, and it backs the rise from 21 to 79 percent. Nothing in it backs the concept inventory scores: the document reports them in the next sentence, but this excerpt does not show them. Auditing means reading each value against the source and deciding which it is: right, wrong, guessed, or unsupported.
 
 ## Predict first
 
@@ -43,15 +43,15 @@ Here is the record (`records.py`) and one document. When the whole folder runs, 
    source        corpus/doc_001.txt
    year          2021
    method        experimental
-   sample_size   96 adult zebrafish
-   main_claim    Lirazine raised the EdU positive cardiomyocyte index from 4.1 percent in controls to 7.6 percent in treated animals, an increase of 85 percent.
+   sample_size   236 students
+   main_claim    Across the nine sessions, attendance averaged 7.6 students per session from the afternoon sections and 4.1 from the morning sections, an increase of 85 percent.
    custom_field  not stated
-   excerpt       Lirazine raised the EdU positive cardiomyocyte index from 4.1 percent in controls to 7.6 percent in treated animals, an increase of 85 percent.
+   excerpt       Across the nine sessions, attendance averaged 7.6 students per session from the afternoon sections and 4.1 from the morning sections, an increase of 85 percent.
 
    Is the excerpt really in the document? yes
    ```
 
-   The last line is the program's check: the excerpt appears word for word in the document, ignoring line breaks. `custom_field` is the column you will name in Exercise 1. Its description asks for nothing in particular yet, so the model usually writes "not stated" there, and sometimes invents something. The program, not the model, fills in `doc_id` and `source` from the file itself, so a row always points at the file it came from.
+   The last line is the program's check: the excerpt appears word for word in the document, ignoring line breaks. `custom_field` is the column you will name in Exercise 1. Its description asks for nothing in particular yet, so the model may write "not stated" there, or fill it with something from the document that it chose itself. The program, not the model, fills in `doc_id` and `source` from the file itself, so a row always points at the file it came from.
 
 2. Open the record definition and find the fields the model was asked for, and the two lines marked `EDIT 1` and `EDIT 2` at the bottom.
 
@@ -72,10 +72,10 @@ Here is the record (`records.py`) and one document. When the whole folder runs, 
 3. Find the excerpt in the document yourself, so you know what the check did.
 
    ```
-   grep -n "EdU positive" corpus/doc_001.txt
+   grep -n "attendance averaged" corpus/doc_001.txt
    ```
 
-   For example, `9:Lirazine raised the EdU positive cardiomyocyte index from 4.1 percent ...`. Now read the whole of `corpus/doc_001.txt` and decide whether that sentence supports the claim, and whether the sample size is right.
+   For example, `9:Across the nine sessions, attendance averaged 7.6 students per session ...`. Now read the whole of `corpus/doc_001.txt` and decide whether that sentence supports the claim, which two groups it compares, and whether the sample size is right.
 
 ## Checkpoint
 
@@ -144,7 +144,7 @@ One record on screen. Read its excerpt aloud to your pair and say whether it sup
    python 03_table/viewer.py
    ```
 
-   `--mark` prints the row as usual, then adds its `doc_id` to `03_table/checked.txt`, once. Row 3 now says yes.
+   `--mark` prints the row as usual, then adds its source file to `03_table/checked.txt`, once, with a short fingerprint of its claim and excerpt; if a rerun changes what the row says, the mark no longer applies. Row 3 now says yes.
 
 5. Stretch (optional): the silent document. `corpus/doc_013.txt` states no year and no sample size. Run the starter on it:
 
@@ -176,7 +176,7 @@ One record on screen. Read its excerpt aloud to your pair and say whether it sup
 
 ## If something goes wrong
 
-- `Is the excerpt really in the document? NO, check it`. The model changed a word or a symbol while copying, for example "10 µM" for "10 micromolar". The program did not crash; this is a finding. Open the source, find the nearest sentence, and judge the row as you would any other.
+- `Is the excerpt really in the document? NO, check it`. The model changed a word or a symbol while copying, for example "7.3 cm" for "7.3 centimeters". The program did not crash; this is a finding. Open the source, find the nearest sentence, and judge the row as you would any other.
 - An error right after you edit `records.py`, such as `SyntaxError` or `NameError`. One of the three lines lost its shape: a missing quote, comma or bracket, or a space in the name. Compare it with the example in Exercise 1, or put the file back with `git checkout records.py` and edit again.
 - A row in the table that has an `error` field, such as `"error": "AuthenticationError: Error code: 401 ..."`. The folder script tried that document twice and both tries failed. A reply that was not valid JSON gets one automatic repair inside each try; a network or key problem does not. The row is kept so the count stays right, and the afternoon's tools skip it. Run `python 03_table/starter.py corpus/doc_NNN.txt` on that document to see the full error, or run the folder again. A 401 on every row means the key: `bash setup.sh --reset-key`.
 - `No .txt files in mine` from `run_folder.py mine`. Run `python convert.py` first; it writes the `.txt` files the script reads.

@@ -1,12 +1,12 @@
 # Synthetic research corpus
 
-Sixteen short research documents used as lab material for the OSU LLM workshop. Every document is invented. There are no real papers, authors, institutions, journals, or DOIs anywhere in the set, and the compounds, catalysts, zeolite frameworks, and software described do not exist. The numbers are plausible but made up, so nothing here should be cited or treated as a finding.
+Sixteen short research documents used as lab material for the OSU LLM workshop. Every document is invented. There are no real papers, authors, institutions, journals, or DOIs anywhere in the set, and the courses, catalysts, zeolite frameworks, and software described do not exist. The numbers are plausible but made up, so nothing here should be cited or treated as a finding.
 
-Each file has a three line header (Title, Year, Field) followed by a blank line and a body of roughly 250 to 400 words written as an extended abstract: background, what was done, counts and units, concrete numbers, a main finding, and one limitation. Years run from 2019 to 2025. Fields are chemistry, genomics, life sciences, and engineering.
+Each file has a three line header (Title, Year, Field) followed by a blank line and a body of roughly 250 to 400 words written as an extended abstract: background, what was done, counts and units, concrete numbers, a main finding, and one limitation. Years run from 2019 to 2025. Fields are education research, chemistry, engineering, and genomics.
 
 ## The three clusters
 
-Cluster A, doc_001 to doc_005, life sciences. Five studies on whether an invented compound called lirazine speeds cardiomyocyte proliferation in the zebrafish heart after cryoinjury. Two report a clear effect, one reports none, one finds an effect only at the highest dose, and one is a compartment model that predicts an effect.
+Cluster A, doc_001 to doc_005, education research. Five studies on whether free pizza brings more students to office hours. Two report a clear effect, one reports none, one finds an effect only at the largest incentive, and one is a compartment model that predicts an effect.
 
 Cluster B, doc_006 to doc_010, chemistry. Five documents on copper exchanged zeolite catalysts for nitrogen oxide reduction and their stability under thermal cycling. Two are experimental, one is a density functional calculation, one is a survey of the literature, and one combines cycling measurements with a kinetic model. Copper loading, aging route, peak temperature, and the temperature at which conversion was measured all vary across the cluster.
 
@@ -30,7 +30,7 @@ Some documents do not state everything the record asks for. Which ones, and what
 
 Two documents are genuinely arguable, one in each half of the label set.
 
-doc_002 is labeled review. It surveys 11 published reports, which is review work, but it also obtains raw scoring sheets and recomputes a common endpoint across 284 animals, which is original secondary analysis. The defensible alternative is mixed.
+doc_002 is labeled review. It surveys 11 published reports, which is review work, but it also obtains raw sign-in sheets and recomputes a common endpoint across 1,184 students, which is original secondary analysis. The defensible alternative is mixed.
 
 doc_012 is labeled mixed. It reports a field sensor campaign and a parameter sweep of simulations together, so it is arguably just a computational study validated against data. The defensible alternative is computational.
 

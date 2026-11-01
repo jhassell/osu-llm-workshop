@@ -17,7 +17,7 @@ A score turns "this prompt seems better" into evidence. `starter.py` sends one p
 The scorer is strict on purpose. It reads the first of those six words in the reply. A reply with none of them scores as "no label". A reply that names two (a hedge) is scored by whichever comes first, so it passes or fails by luck. A miss looks like this:
 
 ```
-miss doc_009: expected review, got no label   reply: Survey
+miss doc_009: expected review, got no label   reply: survey
 ```
 
 That reply is not wrong about the document. It just is not one of the six words, so the prompt is at fault.
@@ -48,11 +48,12 @@ Four changes will be made to a bad prompt: a role, constraints, an output format
    It prints the prompt, one line per document, then the score and the misses. It takes about half a minute. For example:
 
    ```
-   doc_001  expected experimental   got: experimental
-   doc_002  expected review         got: meta-analysis
+   doc_001  expected experimental   got: experiment
+   doc_002  expected review         got: Meta-analysis
    ...
-   Score: 4 out of 10
-     miss doc_002: expected review, got no label   reply: meta-analysis
+   Score: 2 out of 10
+     miss doc_001: expected experimental, got no label   reply: experiment
+     miss doc_002: expected review, got no label   reply: Meta-analysis
    ```
 
    Write the score on your card as your starting point.
@@ -127,7 +128,7 @@ A prompt that labels a study's method, a score for each version of it on your ca
 ## If something goes wrong
 
 - `KeyError` or `ValueError: Single '}' encountered` when you run. Your prompt contains a curly brace. Python uses `{document}` to place the text, and any other `{` or `}` confuses it. Remove the extra braces, or double them as `{{` and `}}`.
-- Every reply asks you to describe the study. You deleted `{document}` from `PROMPT`, so the model never saw the document. Put it back on a line of its own. The score can still look middling, because those replies list label words as examples and the scorer counts the first one.
+- The score drops to almost nothing and the replies look like guesses, or a few ask you to describe the study. You deleted `{document}` from `PROMPT`, so the model never saw the document. Put it back on a line of its own.
 - `SyntaxError` after editing. The triple quotes around `PROMPT` no longer match. `bash catchup.sh m2` restores the original file. It first copies your edited file to `mine/catchup-backup-<date-time>/`, so you can paste your prompt back in from there.
-- The same prompt gives a different score on a second run. The model has a little randomness, so one document can flip between runs. Run twice before you believe a change of one point.
+- The same prompt gives a different score on a second run. The model has a little randomness, so one document can flip between runs. Run twice before you believe a change of one or two points.
 - A reply names the right label and still scores as a miss. The scorer reads the first label word, so "not computational but experimental" scores as computational. Ask for the label only.

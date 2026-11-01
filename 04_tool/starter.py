@@ -19,7 +19,7 @@ from agent import run, save_trace     # noqa: E402
 from llm import ask                   # noqa: E402
 from tools import search_records      # noqa: E402
 
-DEFAULT_QUESTION = "Which studies in the table used zebrafish, and did they agree about lirazine? Cite doc ids."
+DEFAULT_QUESTION = "Which studies in the table tested pizza, and did they agree about its effect? Cite doc ids."
 
 # The instructions agent.run() uses by default, written out so that the run
 # without the tool gets exactly the same ones.

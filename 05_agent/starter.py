@@ -22,7 +22,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from agent import run, save_trace                                   # noqa: E402
 from tools import read_document, search_records, use_saved_table    # noqa: E402
 
-SYNTHESIS = ("Across the zebrafish studies in the table, where do they agree about lirazine, where do they "
+SYNTHESIS = ("Across the office hours studies in the table, where do they agree about free pizza, where do they "
              "conflict, and which differences in method might explain the conflicts? Cite doc ids, and say "
              "what the documents do not establish.")
 

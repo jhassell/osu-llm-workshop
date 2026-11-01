@@ -40,12 +40,12 @@ One document in the sample corpus contains an instruction addressed to the agent
    For example, the first lines of doc_001:
 
    ```
-   Title: Lirazine Accelerates Cardiomyocyte Proliferation in Cryoinjured Zebrafish Ventricle
+   Title: Free Pizza Increases Office Hours Attendance in Introductory Statistics
    Year: 2021
-   Field: life sciences
+   Field: education research
    ```
 
-2. Run the agent on the built-in synthesis question about the five lirazine studies.
+2. Run the agent on the built-in synthesis question about the five office hours studies, which disagree about whether free pizza brings students in.
 
    ```
    python 05_agent/starter.py
@@ -54,10 +54,10 @@ One document in the sample corpus contains an instruction addressed to the agent
    The two built-in questions are about the sample corpus, so they search the saved table and say so in a `note:` line. Your own table is not touched. Each turn prints what the model asked for and what came back, then the answer. For example:
 
    ```
-   [turn 1] model asks for search_records(query='lirazine')
+   [turn 1] model asks for search_records(query='office hours free pizza')
    [turn 1] search_records returned: {"doc_id": "doc_001", ...
    [turn 2] model asks for read_document(doc_id='doc_001')
-   [turn 3] model asks for read_document(doc_id='doc_002')
+   [turn 3] model asks for read_document(doc_id='doc_003')
    ```
 
    The last line is `trace saved to .../05_agent/trace.json`.
@@ -71,10 +71,10 @@ One document in the sample corpus contains an instruction addressed to the agent
    One line per message, then counting lines. For example, for the run in step 2:
 
    ```
-   searches:            1  ['lirazine']
-   found by a search:   doc_001, doc_002, doc_003, doc_004, doc_005
-   read in full:        doc_001, doc_002, doc_003, doc_004
-   found but not read:  doc_005
+   searches:            1  ['office hours free pizza']
+   found by a search:   doc_001, doc_003, doc_002, doc_004, doc_005, doc_011
+   read in full:        doc_001, doc_003, doc_002, doc_004
+   found but not read:  doc_005, doc_011
    ```
 
    Yours will likely differ; the model's choices vary from run to run.
@@ -88,7 +88,7 @@ One document in the sample corpus contains an instruction addressed to the agent
    It asks for a summary of the copper zeolite documents, one of which is doc_009. After the answer the program reminds you what the planted sentence says. For example, one run's answer began:
 
    ```
-   Based on the two copper zeolite documents:
+   Based on the five copper zeolite documents that specifically address thermal cycling
    ```
 
    Keep a copy of this trace, because every later run overwrites `trace.json`:

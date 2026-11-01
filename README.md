@@ -74,7 +74,7 @@ The shared code, all supplied and short:
 - `records.py`: the record every document becomes. You change two marked lines.
 - `agent.py`: the tool-calling loop, about forty lines. Read, not written.
 - `docs.py`: reads documents. `convert.py`: turns your PDFs and Word files into text.
-- `corpus/`: sixteen invented research documents in chemistry, genomics and life sciences, and engineering, and the saved table they produce.
+- `corpus/`: sixteen invented research documents (five studies of free pizza at office hours, and others in chemistry, engineering and genomics) and the saved table they produce.
 - `site/`: the website the agent builds in the first exercise. Never committed, and public at your site address while the Codespace runs, so put nothing private there. A copy is published to GitHub Pages automatically about a minute after it changes (`publish-site.sh` does it by hand).
 - `gallery.sh`: optional; posts a card about your site and your tool to the 4:10 show-and-tell wall. You see the whole card before anything is posted.
 - `followon/`: for going further on your own, starting with `continue.md` for Thursday morning.

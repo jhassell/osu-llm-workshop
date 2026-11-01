@@ -1,11 +1,11 @@
 """Module 1: what the model can do. Six prompts on one document.
 
-    python 01_tour/starter.py                         all six, on the sample document
+    python 01_tour/starter.py                         all six, on the pizza study
     python 01_tour/starter.py 2                       only prompt 2
     python 01_tour/starter.py 01_tour/bench_note.txt 2 6     a document, prompts 2 and 6
     python 01_tour/starter.py mine/notes.txt          one of your own (after convert.py)
 
-Every reply is also added to the end of mine/module1-results.md, with the
+Every reply is also added to the end of mine/results/module1.md, with the
 document, the prompt and the model, so you can compare a reply from before and
 after you change a prompt.
 
@@ -56,10 +56,11 @@ numbers = numbers or range(1, len(headings) + 1)
 doc = load(DOCUMENT)
 print(f"Document: {doc['source']}   Title: {doc['title']}\n")
 
-results = ROOT / "mine" / "module1-results.md"
-results.parent.mkdir(exist_ok=True)
+# A subfolder, so convert.py and the folder scripts never mistake it for a document.
+results = ROOT / "mine" / "results" / "module1.md"
+results.parent.mkdir(parents=True, exist_ok=True)
 with open(results, "a") as saved:
-    saved.write(f"\n## {datetime.now():%Y-%m-%d %H:%M}   {doc['source']}   model: {model_name()}\n")
+    saved.write(f"\n## {datetime.now():%Y-%m-%d %H:%M}   {DOCUMENT}   model: {model_name()}\n")
     for n in numbers:
         heading = headings[n - 1]
         reply = ask(f"{PROMPTS[heading]}\n\nDocument:\n{doc['text']}")
@@ -70,7 +71,7 @@ with open(results, "a") as saved:
         print()
         saved.write(f"\n### {n}. {heading}\n\nPrompt: {PROMPTS[heading]}\n\n{reply}\n")
 
-print(f"Saved to mine/{results.name}.")
+print("Saved to mine/results/module1.md.")
 print("Check one claim against the source. Find the passage with a word or number from a reply,")
 print("then read it and ask whether it says the same thing:")
 print(f'    grep -n -i "the word" {shlex.quote(DOCUMENT)}')

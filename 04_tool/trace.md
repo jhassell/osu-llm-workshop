@@ -2,7 +2,7 @@
 
 A trace is the saved conversation: every message the program and the model sent each other, in order, in `04_tool/trace.json`. Each message has a role, which says who it is from: `system` (the program's standing instructions), `user` (the question), `assistant` (the model), or `tool` (a function's result).
 
-This is the exchange behind `python 04_tool/starter.py`, recorded on October 24 against a Nemotron model, with a note on each message. Your own trace has the same shape; the model's wording will differ. Read it with three questions in mind: what did the model ask for, what did Python run, what evidence came back.
+This is the exchange behind `python 04_tool/starter.py`, recorded on November 1 against a Nemotron model, with a note on each message. Your own trace has the same shape; the model's wording will differ. Read it with three questions in mind: what did the model ask for, what did Python run, what evidence came back.
 
 ## Message 1, from the program (system)
 
@@ -17,7 +17,7 @@ The program wrote this: `SYSTEM` in `04_tool/starter.py`, the same text `agent.p
 
 ```
 "role": "user",
-"content": "Which studies in the table used zebrafish, and did they agree about lirazine? Cite doc ids."
+"content": "Which studies in the table tested pizza, and did they agree about its effect? Cite doc ids."
 ```
 
 ## Message 3, from the model (assistant): a request, not an answer
@@ -25,18 +25,18 @@ The program wrote this: `SYSTEM` in `04_tool/starter.py`, the same text `agent.p
 ```
 "role": "assistant",
 "content": "",
-"tool_calls": [{"id": "chatcmpl-tool-9faa7a703cd21b6c", "type": "function",
-                "function": {"name": "search_records", "arguments": "{\"query\": \"zebrafish\"}"}}]
+"tool_calls": [{"id": "chatcmpl-tool-a70c814bc8fc19d1", "type": "function",
+                "function": {"name": "search_records", "arguments": "{\"query\": \"pizza\"}"}}]
 ```
 
-The content is empty: there is no answer here, only a request to run a function named `search_records` with an argument the model chose. The model has not seen the table and cannot run anything. On screen this is the line `[turn 1] model asks for search_records(query='zebrafish')`.
+The content is empty: there is no answer here, only a request to run a function named `search_records` with an argument the model chose. The model has not seen the table and cannot run anything. On screen this is the line `[turn 1] model asks for search_records(query='pizza')`.
 
 ## Message 4, from the tool
 
 ```
 "role": "tool",
-"tool_call_id": "chatcmpl-tool-9faa7a703cd21b6c",
-"content": "{"doc_id": "doc_001", "title": "Lirazine Accelerates Cardiomyocyte Proliferation in Cryoinjured Zebrafish Ventricle", "year": "2021", "method": "experimental", "sample_size": "96 adult zebrafish", "main_claim": "Lirazine raised the EdU positive cardiomyocyte index from 4.1 percent in controls to 7.6 percent in treated animals, an increase of 85 percent."}
+"tool_call_id": "chatcmpl-tool-a70c814bc8fc19d1",
+"content": "{"doc_id": "doc_001", "title": "Free Pizza Increases Office Hours Attendance in Introductory Statistics", "year": "2021", "method": "experimental", "sample_size": "236 students", "main_claim": "Free pizza increased office hours attendance by 85 percent.", "matched": ["pizza"]}
             {"doc_id": "doc_002", ...}
             ..."
 ```
@@ -47,8 +47,12 @@ Python ran `search_records` with that argument. It is a plain word search: it ke
 
 ```
 "role": "assistant",
-"content": "The studies that used zebrafish are: **doc_001**, **doc_002**, **doc_003**, and **doc_004**. ...
-Thus, while **doc_001** and **doc_002** agree on a positive proliferative effect, **doc_003** shows no effect at low dose, and **doc_004** explains that the discrepancy is due to dose dependency ..."
+"content": "The studies that tested pizza in the table are **doc_001**, **doc_002**, **doc_003**, and **doc_004**.
+
+They did **not** agree about its effect:
+- **doc_001** (experimental, 236 students) found that free pizza increased office‑hours attendance by 85 percent.
+...
+Because some studies show a positive effect, one shows no effect, and another shows an effect only under certain conditions (dose‑dependent), the evidence on pizza’s effect is inconsistent. ..."
 ```
 
 Text this time, no tool request, so the loop in `agent.py` stops and prints it under `[answer]`. Whether the answer is grounded is something you check, not something the tool guarantees: compare each doc id and number in it with message 4, and each row with its source file in `corpus/`.

@@ -4,9 +4,9 @@ A tool is an ordinary Python function: string arguments in, one string out,
 and a docstring that tells the model when to use it. The docstring is the
 part the model reads, so write it for the model.
 
-    python 04_tool/tools.py              test the tool alone on "zebrafish"
-    python 04_tool/tools.py lirazine     test it on another word
-    python 04_tool/tools.py lirazine zebrafish effect    several words: any of them
+    python 04_tool/tools.py              test the tool alone on "pizza"
+    python 04_tool/tools.py office       test it on another word
+    python 04_tool/tools.py pizza attendance effect     several words: any of them
     python 04_tool/tools.py --saved      search the saved table, not yours
 
 It searches your Module 3 table, 03_table/records.jsonl, when that has usable
@@ -81,8 +81,19 @@ its find found show shows study studies paper papers document documents record r
 
 def query_words(query):
     """The words of a query worth searching for: lower case, common words dropped."""
-    words = re.findall(r"[a-z0-9][a-z0-9._%-]*", query.lower())
-    return [w.strip(".") for w in words if w.strip(".") and w.strip(".") not in STOP]
+    words = re.findall(r"[a-z0-9][a-z0-9._%:,-]*", query.lower())   # 11:00 and 1,184 stay one word
+    words = [w.strip(".:,") for w in words]                        # "pizza:" and "pizza," are "pizza"
+    return [w for w in words if w and w not in STOP]
+
+
+def _pattern(word):
+    """The regular expression for one query word: it must start a word in the
+    record, and a number must also end there."""
+    pattern = r"(?<![a-z0-9])" + re.escape(word)
+    if re.fullmatch(r"[0-9.,%]+", word):
+        # a whole number on both sides: "6" is not the end of "7.6", "184" not the end of "1,184"
+        pattern = r"(?<![0-9][.,])" + pattern + r"(?![0-9]|[.,][0-9])"
+    return pattern
 
 
 def search_records(query: str) -> str:
@@ -98,9 +109,10 @@ def search_records(query: str) -> str:
     hits = []
     for n, row in enumerate(load_table()):
         text = " ".join(str(v) for v in row.values()).lower()
-        # A word counts when it starts a word in the record: "zebrafish" matches
-        # "zebrafish", "lirazine" matches "lirazine", but "ph" does not match "graph".
-        matched = [w for w in dict.fromkeys(words) if re.search(r"(?<![a-z0-9])" + re.escape(w), text)]
+        # A word counts when it starts a word in the record: "pizza" matches
+        # "pizza", "attend" matches "attendance", but "ph" does not match "graph".
+        # A number must match a whole number: "2" does not match "236" or "2.6".
+        matched = [w for w in dict.fromkeys(words) if re.search(_pattern(w), text)]
         if matched:
             # The search reads every column; only these six go back to the model.
             # The stretch adds one more here, and says so in the docstring.
@@ -114,4 +126,4 @@ def search_records(query: str) -> str:
 if __name__ == "__main__":
     # Test the tool on its own before the model ever sees it.
     words = [a for a in sys.argv[1:] if not a.startswith("-")]
-    print(search_records(" ".join(words) if words else "zebrafish"))
+    print(search_records(" ".join(words) if words else "pizza"))

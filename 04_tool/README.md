@@ -21,7 +21,7 @@ The program saves the conversation as a trace, `04_tool/trace.json`. Each messag
 ```
 "role": "assistant",
 "content": "",
-"tool_calls": [{"function": {"name": "search_records", "arguments": "{\"query\": \"zebrafish\"}"}}]
+"tool_calls": [{"function": {"name": "search_records", "arguments": "{\"query\": \"pizza\"}"}}]
 ```
 
 The empty content is the point: no answer yet, only a request.
@@ -40,14 +40,14 @@ The model will be asked the same question about the table twice, with the same i
     python 04_tool/tools.py
     ```
 
-    You should see the rows that contain "zebrafish", one per line. For example:
+    You should see the rows that contain "pizza", one per line, each ending with the words it matched. For example:
 
     ```
-    {"doc_id": "doc_001", "title": "Lirazine Accelerates Cardiomyocyte Proliferation in Cryoinjured Zebrafish Ventricle", "year": "2021", ...}
-    {"doc_id": "doc_002", "title": "Pooled Reanalysis of Lirazine Studies in Zebrafish Cardiac Regeneration", ...}
+    {"doc_id": "doc_001", "title": "Free Pizza Increases Office Hours Attendance in Introductory Statistics", "year": "2021", "method": "experimental", "sample_size": "236 students", "main_claim": "Free pizza increased office hours attendance by 85 percent.", "matched": ["pizza"]}
+    {"doc_id": "doc_002", "title": "Pooled Reanalysis of Pizza Incentive Studies in Office Hours Attendance", ...}
     ```
 
-    No model was involved. This is plain Python. If your Module 3 table came from your own documents, it has no zebrafish, so run the demo on the saved table instead; `--saved` searches it and leaves your table untouched:
+    No model was involved. This is plain Python. If your Module 3 table came from your own documents, it has no pizza, so run the demo on the saved table instead; `--saved` searches it and leaves your table untouched:
 
     ```bash
     python 04_tool/tools.py --saved
@@ -62,11 +62,13 @@ The model will be asked the same question about the table twice, with the same i
     The program prints each step as it happens: the request, what the function returned, then the answer. For example:
 
     ```
-    [turn 1] model asks for search_records(query='zebrafish')
-    [turn 1] search_records returned: {"doc_id": "doc_001", "title": "Lirazine Accelerates ...
+    [turn 1] model asks for search_records(query='pizza')
+    [turn 1] search_records returned: {"doc_id": "doc_001", "title": "Free Pizza Increases Office Hours Attendance in Introductory Statistics", ...
 
     [answer]
-    The studies that used zebrafish are: **doc_001**, **doc_002**, **doc_003**, and **doc_004**.
+    The studies that tested pizza in the table are **doc_001**, **doc_002**, **doc_003**, and **doc_004**.
+
+    They did **not** agree about its effect:
     ...
     trace saved to /workspaces/.../04_tool/trace.json
     ```
@@ -94,7 +96,7 @@ In your own `trace.json`, point your pair to the message where the model asked f
 
 ## Exercises
 
-1. Core: read the trace in pairs. Take two minutes each way with `04_tool/trace.md` and your own `04_tool/trace.json`. One of you answers the three questions while the other checks them against the file. Then check the answer: does every doc id it cites appear in the `tool` message? Open `corpus/` and look for a zebrafish study the search did not return. If there is one, why did the search miss it?
+1. Core: read the trace in pairs. Take two minutes each way with `04_tool/trace.md` and your own `04_tool/trace.json`. One of you answers the three questions while the other checks them against the file. Then check the answer: does every doc id it cites appear in the `tool` message? Open `corpus/` and look for a study of office hours attendance that the search did not return. If there is one, why did the search miss it?
 
 2. Core: ask your own question, with the tool and without it. Both runs get the same instructions; only the tool differs.
 
@@ -117,7 +119,7 @@ In your own `trace.json`, point your pair to the message where the model asked f
 
     ```bash
     python 04_tool/tools.py
-    python 04_tool/starter.py "Which zebrafish study found no effect of lirazine, and what sentence supports that? Cite doc ids."
+    python 04_tool/starter.py "Which pizza study found no effect, and what sentence supports that? Cite doc ids."
     ```
 
     Does the model quote the excerpt? Search the source file in `corpus/` for the quoted sentence: is it there word for word?
@@ -131,8 +133,8 @@ In your own `trace.json`, point your pair to the message where the model asked f
 
 ## If something goes wrong
 
-- The search returns `no matches` for something you know is in the table. None of the query's words appear in any row, often because the table uses a different word ("cardiomyocyte" where you wrote "heart cell"). Test words on their own with `python 04_tool/tools.py lirazine`.
-- The search returns rows that are not about your question. It matches any word, so a row about zebrafish comes back for a question about zebrafish funding. Look at `matched` in each row: the model is supposed to notice when no row matched the part of the question that matters.
+- The search returns `no matches` for something you know is in the table. None of the query's words appear in any row, often because the table uses a different word ("attendance" where you wrote "turnout"). Test words on their own with `python 04_tool/tools.py attendance`.
+- The search returns rows that are not about your question. It matches any word, so the pizza studies come back for a question about pizza funding, and a flood simulation whose row mentions "6 hours" comes back for a question about office hours. Look at `matched` in each row: the model is supposed to notice when no row matched the part of the question that matters.
 - A `note:` line says your table is missing, has no usable rows, or has rows with errors. The tool is searching the saved table, or skipping the broken rows. To rebuild your table, run `python 03_table/run_folder.py` (add `mine` for your own documents), or `python 03_table/run_folder.py --saved` to replace it with the saved run.
 - After the stretch, the starter fails with `SyntaxError` or `NameError`. Run `python 04_tool/tools.py` to see the line. To put the original file back: `git checkout 04_tool/tools.py`.
 - The answer is `Stopped: the turn limit was reached before the model answered.` The model kept asking for eight turns. Ask a narrower question, or name the words it should search for.

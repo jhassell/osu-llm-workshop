@@ -4,7 +4,7 @@ These are saved exchanges from runs that went wrong in a way the answer alone wo
 
 ## stopped-early.json
 
-The question asked the agent to summarize what the copper zeolite documents conclude about stability under thermal cycling, and to read each one.
+The question asked the agent to summarize what the copper zeolite documents conclude about stability under thermal cycling, and to read each one. The trace was saved before the search changed on November 1. A query then had to appear word for word in a record; now a record matches any of the query's words, so the same first search finds more.
 
 ```
 python 05_agent/show_trace.py 05_agent/failures/stopped-early.json

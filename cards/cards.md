@@ -26,11 +26,11 @@ From the build: the one thing the agent got wrong or invented, and the rule I ga
 
 ## Module 1
 
-Prediction, after reading the abstract: the model will rewrite its main finding for a first-year student. One detail I expect it to keep, and one qualification I expect it to lose:
+Prediction, after reading the study: the model will rewrite its main finding for a first-year student. One detail I expect it to keep, and one limit or caveat I expect it to lose (an idea, not a word):
 
 Keep:                                Lose:
 
-From the build: one claim I checked, the passage that settles it, and my judgment (supported, contradicted, added, dropped and it matters, or fair simplification):
+From the build: the claim I will show my pair, the passage that settles it, and my judgment (supported, contradicted, added, dropped and it matters, or fair simplification):
 
 ---
 
