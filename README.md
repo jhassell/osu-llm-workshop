@@ -45,7 +45,7 @@ Open your Codespace, open a terminal if one is not already open, and type:
 
     bash setup.sh
 
-Paste the key the instructor gives you. Setup recognizes the kind of key and connects to the right place: the workshop key goes to the workshop endpoint, and your own OpenRouter key (it starts with `sk-or-`) or NVIDIA key (`nvapi-`) works too. Its READY box also shows your site address, on the line that starts `Your site (files in site/):`. Setup then connects OpenClaw, a complete agent program, to the same model, opens the first exercise's page in the editor, and opens OpenClaw's chat in the terminal. Before you type there, finish Module 0: click the + on the terminal panel for a second terminal and run
+Paste the key the instructor gives you. Setup recognizes the kind of key and connects to the right place: the workshop key goes to the workshop endpoint, and your own OpenRouter key (it starts with `sk-or-`) or NVIDIA key (`nvapi-`) works too. With an OpenRouter key, setup offers five tested models; Enter picks NVIDIA Nemotron. Its READY box also shows your site address, on the line that starts `Your site (files in site/):`. Setup then connects OpenClaw, a complete agent program, to the same model, opens the first exercise's page in the editor, and opens OpenClaw's chat in the terminal. Before you type there, finish Module 0: click the + on the terminal panel for a second terminal and run
 
     python 00_setup/check.py
 

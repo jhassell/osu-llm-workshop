@@ -46,7 +46,7 @@ When the check runs, what will its second line say? Write your answer on your ca
    Setup picks the endpoint from the kind of key you paste, and sends the key only to that endpoint:
 
    - the OSU workshop key from the card goes to the OSU workshop endpoint
-   - an OpenRouter key (starts with `sk-or-`) goes to OpenRouter, using `nvidia/nemotron-3-super-120b-a12b`
+   - an OpenRouter key (starts with `sk-or-`) goes to OpenRouter, and setup then lists five models tested with this workshop. Press Enter for the first, `nvidia/nemotron-3-super-120b-a12b`, or type the number of another. `bash setup.sh --choose-model` shows the list again later
    - an NVIDIA key (starts with `nvapi-`) goes to NVIDIA's hosted endpoint, using `nvidia/nemotron-3-ultra-550b-a55b`, one of the few models NVIDIA opens to a personal account
 
    Setup finds the workshop endpoint's address in `workshop-endpoint.txt`, or downloads the instructor's current copy of that file if yours is blank, so a repository made weeks ago still finds it. If the address is not published yet, setup says so plainly and sends the key nowhere. The one exception to choosing by key: if the instructor switches the room to another endpoint, every key you paste goes to that endpoint, so paste the key that goes with it. The same is true if you have set up your own Codespaces secret named `LLM_BASE_URL`.

@@ -9,6 +9,7 @@
 #   bash setup.sh --reset-key       forget the saved key and ask for a new one
 #   bash setup.sh --base-url URL    point the labs at a different endpoint
 #   bash setup.sh --model NAME      pick a model by name
+#   bash setup.sh --choose-model    with an OpenRouter key, pick from the list of models again
 #   bash setup.sh --openclaw        connect OpenClaw to the same model and open it
 #
 # Everything the labs need is two values, written to .env in this folder:
@@ -18,7 +19,8 @@
 #
 # The key decides the endpoint. Paste any of these at the prompt:
 #   the OSU workshop key   (from the card)        goes to the OSU workshop endpoint
-#   an OpenRouter key      (starts with sk-or-)   goes to OpenRouter
+#   an OpenRouter key      (starts with sk-or-)   goes to OpenRouter, and you pick
+#                                                 one of five tested models (Enter: Nemotron)
 #   an NVIDIA key          (starts with nvapi-)   goes to NVIDIA's hosted endpoint
 # A key is only ever sent to the endpoint it belongs to. --base-url, or a
 # Codespaces secret LLM_BASE_URL, overrides this and uses that endpoint instead.
@@ -58,6 +60,20 @@ OSU_MODEL=""
 WORKSHOP_ENDPOINT_URL="https://raw.githubusercontent.com/jhassell/osu-llm-workshop/main/workshop-endpoint.txt"
 OPENROUTER_BASE_URL="https://openrouter.ai/api/v1"
 OPENROUTER_MODEL="nvidia/nemotron-3-super-120b-a12b"
+# The models offered when someone pastes an OpenRouter key: id|what the person
+# sees. The first is the default (Enter). Each was run through Module 3's
+# extraction and Module 4's tool-calling agent on 2026-10-31 and passed both.
+# OpenRouter prices then, per million input/output tokens: Nemotron 0.30/2.40,
+# Claude Haiku 5.5 0.10/0.50, GPT-6 Luna 0.10/0.50, Gemini 3.7 Flash 0.75/3.75,
+# DeepSeek V4.1 Flash 0.045/0.50. Check https://openrouter.ai/models before a
+# workshop: models are renamed and retired.
+OPENROUTER_CHOICES=(
+  "nvidia/nemotron-3-super-120b-a12b|NVIDIA Nemotron 3 Super: open model, the one this workshop was built on"
+  "anthropic/claude-haiku-5.5|Anthropic Claude Haiku 5.5: fast, low cost"
+  "openai/gpt-6-luna|OpenAI GPT-6 Luna: fast, low cost"
+  "google/gemini-3.7-flash|Google Gemini 3.7 Flash: fast, costs the most of these"
+  "deepseek/deepseek-v4.1-flash|DeepSeek V4.1 Flash: open model, lowest cost"
+)
 NVIDIA_BASE_URL="https://integrate.api.nvidia.com/v1"
 # NVIDIA opens only some hosted models to a personal account: on 2026-10-28 a fresh
 # account got 404 from nvidia/nemotron-3-super-120b-a12b and 200 from this one.
@@ -85,12 +101,15 @@ RESET_KEY=0
 BASE_ARG=""
 MODEL_ARG=""
 OPENCLAW_ARG=0
+CHOOSE_MODEL=0
+KEY_FROM=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --reset-key) RESET_KEY=1 ;;
     --base-url) shift; BASE_ARG="${1:-}" ;;
     --model) shift; MODEL_ARG="${1:-}" ;;
     --openclaw) OPENCLAW_ARG=1 ;;
+    --choose-model) CHOOSE_MODEL=1 ;;
     -h|--help) sed -n '2,/^# Adapted from/p' "$0" | sed '$d' | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) echo "Unknown option: $1   (try: bash setup.sh --help)"; exit 2 ;;
   esac
@@ -509,6 +528,7 @@ fi
 if [ -n "$SECRET_KEY" ]; then
   echo "Using your Codespaces secret LLM_API_KEY"
   KEY="$SECRET_KEY"
+  KEY_FROM=secret
   endpoint_for_key || die "The key in your Codespaces secret LLM_API_KEY has no endpoint yet." \
     "Add a Codespaces secret LLM_BASE_URL with the endpoint, or use an OpenRouter or NVIDIA key."
   dots_start "Checking the key against the endpoint"
@@ -563,6 +583,7 @@ if [ -z "$KEY" ] && [ -z "${WORKSHOP_NO_PROMPT:-}" ] && { : </dev/tty; } 2>/dev/
       continue
     fi
     KEY="${ENTRY//[[:space:]]/}"
+    KEY_FROM=prompt
     ENTRY=""
     [ -n "$KEY" ] || break
     echo "Received ${#KEY} characters."
@@ -584,6 +605,47 @@ if [ -z "$KEY" ] && [ -z "${WORKSHOP_NO_PROMPT:-}" ] && { : </dev/tty; } 2>/dev/
 fi
 
 # ------------------------------------------------------------- 5. write and report
+# OpenRouter serves hundreds of models. When an OpenRouter key was just pasted
+# (or --choose-model was given) and no model was named, offer the short tested
+# list. Enter keeps the first. A choice is checked with one token before it is
+# saved; if it fails, the default stays.
+choose_openrouter_model() {
+  local i n=${#OPENROUTER_CHOICES[@]} pick id current="$MODEL"
+  echo
+  echo "Which model? OpenRouter offers many; these five were tested with this workshop."
+  for ((i = 0; i < n; i++)); do
+    id="${OPENROUTER_CHOICES[$i]%%|*}"
+    printf '  %d  %s\n     %s%s\n' "$((i + 1))" "${OPENROUTER_CHOICES[$i]#*|}" "$id" \
+      "$([ "$id" = "$current" ] && echo "   (current)")"
+  done
+  while :; do
+    printf "Type a number, or press Enter for 1: "
+    pick=""
+    IFS= read -r pick </dev/tty || pick=""
+    pick="${pick//[[:space:]]/}"
+    [ -n "$pick" ] || pick=1
+    if [[ "$pick" =~ ^[0-9]+$ ]] && [ "$pick" -ge 1 ] && [ "$pick" -le "$n" ]; then break; fi
+    echo "That is not one of the numbers 1 to $n."
+  done
+  id="${OPENROUTER_CHOICES[$((pick - 1))]%%|*}"
+  [ "$id" != "$current" ] || { echo "Model: $id"; return 0; }
+  MODEL="$id"
+  dots_start "Checking $MODEL"
+  check_key
+  if [ "$HTTP" = "200" ]; then
+    dots_stop ok
+  else
+    dots_stop fail
+    echo "   $MODEL did not answer (HTTP $HTTP). Keeping $current; to try another: bash setup.sh --choose-model"
+    MODEL="$current"
+  fi
+}
+if [ -n "$KEY" ] && [ "$(provider_of "$KEY")" = openrouter ] && [ "${BASE%/}" = "$OPENROUTER_BASE_URL" ] \
+   && [ "$MODEL_SOURCE" != named ] && { [ "$KEY_FROM" = prompt ] || [ "$CHOOSE_MODEL" -eq 1 ]; } \
+   && [ -t 0 ] && [ -z "${WORKSHOP_NO_PROMPT:-}" ] && { : </dev/tty; } 2>/dev/null; then
+  [ -n "$MODEL" ] || MODEL="$OPENROUTER_MODEL"
+  choose_openrouter_model
+fi
 # With an accepted key and no model named, choose one from what the endpoint lists.
 if [ -n "$KEY" ] && [ -z "$MODEL" ]; then MODEL="$(pick_model)"; fi
 if [ -z "$KEY" ] && [ "$BASE_SOURCE" = "key" ]; then BASE="$OSU_BASE_URL"; MODEL=""; fi
