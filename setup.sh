@@ -62,16 +62,17 @@ OPENROUTER_BASE_URL="https://openrouter.ai/api/v1"
 OPENROUTER_MODEL="nvidia/nemotron-3-super-120b-a12b"
 # The models offered when someone pastes an OpenRouter key: id|what the person
 # sees. The first is the default (Enter). Each was run through Module 3's
-# extraction and Module 4's tool-calling agent on 2026-10-31 and passed both.
+# extraction and Module 4's tool-calling agent on 2026-10-31 and passed both
+# (Gemini 3.8 Flash replaced 3.7 Flash the same evening, after the same test).
 # OpenRouter prices then, per million input/output tokens: Nemotron 0.30/2.40,
-# Claude Haiku 5.5 0.10/0.50, GPT-6 Luna 0.10/0.50, Gemini 3.7 Flash 0.75/3.75,
+# Claude Haiku 5.5 0.10/0.50, GPT-6 Luna 0.10/0.50, Gemini 3.8 Flash 0.825/4.125,
 # DeepSeek V4.1 Flash 0.045/0.50. Check https://openrouter.ai/models before a
 # workshop: models are renamed and retired.
 OPENROUTER_CHOICES=(
   "nvidia/nemotron-3-super-120b-a12b|NVIDIA Nemotron 3 Super: open model, the one this workshop was built on"
   "anthropic/claude-haiku-5.5|Anthropic Claude Haiku 5.5: fast, low cost"
   "openai/gpt-6-luna|OpenAI GPT-6 Luna: fast, low cost"
-  "google/gemini-3.7-flash|Google Gemini 3.7 Flash: fast, costs the most of these"
+  "google/gemini-3.8-flash|Google Gemini 3.8 Flash: fast, costs the most of these"
   "deepseek/deepseek-v4.1-flash|DeepSeek V4.1 Flash: open model, lowest cost"
 )
 NVIDIA_BASE_URL="https://integrate.api.nvidia.com/v1"
