@@ -12,7 +12,7 @@ About 50 minutes. Folder: `04_tool/`. Behind? `bash catchup.sh m4`
 
 ## The idea
 
-A tool is an ordinary Python function that the model is allowed to ask for. Yours is `search_records(query)` in `04_tool/tools.py`. It does a substring search: it keeps every row of the table whose text contains the exact sequence of characters you give it, ignoring capitals. Its docstring (the text in triple quotes under the `def` line) tells the model what it does and when to use it. `describe()` in `agent.py` turns the name, the parameter and the docstring into a short description that travels with the question.
+A tool is an ordinary Python function that the model is allowed to ask for. Yours is `search_records(query)` in `04_tool/tools.py`. It does a plain word search: it keeps every row of the table that contains any of the words you give it, ignoring capitals and common words such as "the" or "which", puts the rows that match more of the words first, and says which words each row matched. That is deliberately generous. The search finds candidates; deciding which of them actually answer the question is the model's job, and that is what you are judging. Its docstring (the text in triple quotes under the `def` line) tells the model what it does and when to use it. `describe()` in `agent.py` turns the name, the parameter and the docstring into a short description that travels with the question.
 
 The model never runs anything. It cannot see the table and cannot execute code. What it can do is reply with a request instead of an answer: call this function, with this argument. Your program runs the function, puts the result in a message from the tool, and sends the whole conversation back. When the model replies in words, the loop stops. The loop is `run()` in `agent.py`, supplied. Read the sequence; you do not need every line.
 
@@ -131,7 +131,8 @@ In your own `trace.json`, point your pair to the message where the model asked f
 
 ## If something goes wrong
 
-- The search returns `no matches` for something you know is in the table. It looks for the exact sequence of characters, so `lirazine zebrafish` misses rows where the two words are apart. Test one word on its own with `python 04_tool/tools.py lirazine`. The model usually retries with a shorter query by itself.
+- The search returns `no matches` for something you know is in the table. None of the query's words appear in any row, often because the table uses a different word ("cardiomyocyte" where you wrote "heart cell"). Test words on their own with `python 04_tool/tools.py lirazine`.
+- The search returns rows that are not about your question. It matches any word, so a row about zebrafish comes back for a question about zebrafish funding. Look at `matched` in each row: the model is supposed to notice when no row matched the part of the question that matters.
 - A `note:` line says your table is missing, has no usable rows, or has rows with errors. The tool is searching the saved table, or skipping the broken rows. To rebuild your table, run `python 03_table/run_folder.py` (add `mine` for your own documents), or `python 03_table/run_folder.py --saved` to replace it with the saved run.
 - After the stretch, the starter fails with `SyntaxError` or `NameError`. Run `python 04_tool/tools.py` to see the line. To put the original file back: `git checkout 04_tool/tools.py`.
 - The answer is `Stopped: the turn limit was reached before the model answered.` The model kept asking for eight turns. Ask a narrower question, or name the words it should search for.

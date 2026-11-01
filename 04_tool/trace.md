@@ -41,7 +41,7 @@ The content is empty: there is no answer here, only a request to run a function 
             ..."
 ```
 
-Python ran `search_records` with that argument. It is a substring match: it keeps every row whose text contains that exact sequence of characters, ignoring capitals, and nothing cleverer. It searched `03_table/records.jsonl` if you built it in Module 3, or the saved `corpus/records.jsonl` if not. Each matching row came back as one line of text (in `trace.json` the inner quotes are escaped as `\"`). The program put that text into a message with the role `tool` and the same id as the request it answers, then sent the whole conversation back to the model and asked again.
+Python ran `search_records` with that argument. It is a plain word search: it keeps every row that contains any of the query's words, ignoring capitals and common words, puts rows matching more words first, and adds a `matched` list to each row. It is generous on purpose, so the question is what the model does with what comes back. It searched `03_table/records.jsonl` if you built it in Module 3, or the saved `corpus/records.jsonl` if not. Each matching row came back as one line of text (in `trace.json` the inner quotes are escaped as `\"`). The program put that text into a message with the role `tool` and the same id as the request it answers, then sent the whole conversation back to the model and asked again.
 
 ## Message 5, from the model (assistant): the answer
 
