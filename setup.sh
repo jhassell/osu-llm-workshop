@@ -718,7 +718,7 @@ providers["workshop"] = {
     "apiKey": os.environ["WS_KEY"],
     "api": "openai-completions",
     "models": [{"id": model, "name": model, "input": ["text"],
-                "contextWindow": 65536, "maxTokens": 4096}],
+                "contextWindow": 65536, "maxTokens": 16384}],
 }
 d = cfg.setdefault("agents", {}).setdefault("defaults", {})
 d.setdefault("model", {})["primary"] = "workshop/" + model
