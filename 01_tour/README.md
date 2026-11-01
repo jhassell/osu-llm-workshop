@@ -8,7 +8,7 @@ About 40 minutes. Folder: `01_tour/`. Behind? `bash catchup.sh m1`
 
 1. Call the model from Python with one line, `ask(prompt)`, on a document you choose.
 2. Name the two or three things it did well on a research document.
-3. Name one thing it got wrong, or one claim you checked and found supported, and say what evidence in the source settles it.
+3. Judge one claim against the source, using the five judgments below, and point to the passage that settles it. A claim you checked and found supported is a full answer.
 
 ## The idea
 
@@ -23,6 +23,16 @@ The model brings two things to each reply: general knowledge it learned in train
 On a short research document the model is often useful. It compresses (a two-sentence summary), it re-levels (the same finding for a first-year student), and it lists (methods, numbers, questions a reviewer would ask).
 
 It also slips in ways that read just as confidently as the good output. It adds things the source does not say, such as a word like "significant" when no test is reported. It loses nuance, such as a limitation, because a short rewrite has to drop something. It presents plans as things already done. And when asked about something it was not shown, it can produce precise-looking specifics.
+
+When you check a claim, give it one of five judgments:
+
+- Supported: the source says it, in these words or others.
+- Contradicted: the source says something different.
+- Added: the source does not say it at all, such as "significantly" when no test is reported.
+- Dropped, and it matters: something left out changes how a reader would take the result, such as a limitation.
+- Fair simplification: shorter or plainer, and a reader would still take it the right way, such as leaving out the dose in a three-sentence rewrite.
+
+Supported means faithful to this document, not proven true: the document itself can overstate. And an accurate reply is a good outcome, not a failed exercise; the point is that you checked.
 
 So the habit this module builds is to check one claim against the source. `grep` is a terminal command that prints every line of a file containing some text; `-n` adds line numbers and `-i` ignores capital letters. It only finds the passage. Then read the passage and ask whether it says what the reply says. A word that is missing may still be supported in other words, and a number that matches may still be used for the wrong thing.
 
@@ -68,56 +78,42 @@ The model will be asked to rewrite an abstract for a first-year student. Write o
 
    The number matches. Now check that the reply used it for the same thing: the EdU-positive index in treated fish, not, say, a scar area.
 
-4. Pick the two of the six results you would actually use, and read them properly against the document.
+4. Pick the two of the six results you would actually use. Check one claim in each the same way, and give each a judgment from the list above.
 
 ## Checkpoint
 
-Show your pair the best and the worst of the six results, and one claim you checked: the passage you found, and whether it supports the claim.
+Show your pair the most useful of the six results, and one claim whose support matters: the claim, the passage you found, and your judgment. If everything you checked was supported, that is your result; say which claim you would check next.
 
 ## Exercises
 
-1. Core: run on another sample document. Pass its path after the command. `doc_003` is a lirazine study with a null result, meaning it found no difference between treated and untreated fish, so it makes a good contrast with `doc_001`. `doc_006` (chemistry), `doc_011` (engineering) and `doc_015` (genomics) are other fields.
+1. Core: one more document, your choice. Pick one of these; one is enough.
+
+   The bench note, `01_tour/bench_note.txt`: four sentences of a lab notebook that mix what was observed, what is only suspected, and what is planned for next week. Ask for one rewrite, not six:
 
    ```bash
-   python 01_tour/starter.py corpus/doc_003.txt
+   python 01_tour/ask.py "Rewrite the main finding of this note for a first-year undergraduate, in three sentences, no jargon." 01_tour/bench_note.txt
    ```
 
-   Look for whether the summary keeps the reasons the result might be null. Then check one number or one strong word, and read the passage you find:
+   Read the note itself, then sort its sentences into observed, suspected and planned. Look for whether the rewrite keeps them apart: does it say the fresh-buffer test worked, when the note only plans it? If your reply keeps them apart, compare it with one from a test run, which did not:
 
-   ```bash
-   grep -n -i "signific" corpus/doc_003.txt
+   ```text
+   When we began preparing fresh liquid each morning and checked its acidity, the daily
+   increase went away, indicating that making fresh liquid every day would stop the drift.
    ```
 
-2. Core: run on your own document. If you put PDF, Word or Markdown files in `mine/`, convert them first; it prints one line per file and the name of the `.txt` it wrote.
-
-   ```bash
-   python convert.py
-   ```
-
-   If you brought none, right-click `mine/` in the file tree, choose **New File**, name it `notes.txt`, and paste in a paragraph or two of your own writing. A `.txt` file needs no conversion. Then pass your file to the starter, using its own name in place of `notes.txt`:
+   Your own document: if you put PDF, Word or Markdown files in `mine/`, convert them first with `python convert.py`. If you brought none, right-click `mine/` in the file tree, choose **New File**, name it `notes.txt`, and paste in a paragraph or two of your own writing. Then:
 
    ```bash
    python 01_tour/starter.py mine/notes.txt
    ```
 
-   If the file name has spaces, put the path in quotes, here and in `grep`:
+   Put the path in quotes if the name has spaces, here and in `grep`. Look for the one result you would trust, and check one claim. Plans are worth a look: does any reply describe as done something your document only proposes?
 
-   ```bash
-   python 01_tour/starter.py "mine/my paper.txt"
-   grep -n -i "the word" "mine/my paper.txt"
-   ```
+   Another sample: `doc_003` is a lirazine study that found no difference between treated and untreated fish, a contrast with `doc_001`; `doc_006` (chemistry), `doc_011` (engineering) and `doc_015` (genomics) are other fields. Run `python 01_tour/starter.py corpus/doc_003.txt` and check whether the summary keeps the reasons the result might be null.
 
-   Look for the one result you would trust. Then either name one thing it got wrong that only someone who knows the work would catch, or one claim you checked and found supported. Plans are worth a look: does any reply describe as done something your document only proposes?
+2. Stretch (optional): change one of the six prompts. Open `01_tour/starter.py`. In `PROMPTS`, each entry is a heading in quotes, a colon, then the instruction in quotes, then a comma. Replace one entry with something you actually want from your documents, keeping the quotes and the comma, and run it again with `python 01_tour/starter.py`. Look for whether it did what you meant. If it did not, find the words in your prompt that let it go somewhere else. Module 2 is about exactly that.
 
-3. Core: change one of the six prompts. Open `01_tour/starter.py`. In `PROMPTS`, each entry is a heading in quotes, a colon, then the instruction in quotes, then a comma. Replace one entry with something you actually want from your documents, keeping the quotes and the comma, and run it again.
-
-   ```bash
-   python 01_tour/starter.py
-   ```
-
-   Look for whether it did what you meant. If it did not, find the words in your prompt that let it go somewhere else. Module 2 is about exactly that.
-
-4. Stretch (optional): send the same prompt twice. `01_tour/ask.py` sends one prompt, with a document after it if you give one, and `--twice` sends it twice.
+3. Stretch (optional): send the same prompt twice. `01_tour/ask.py` sends one prompt, with a document after it if you give one, and `--twice` sends it twice.
 
    ```bash
    python 01_tour/ask.py --twice "Summarize this document in two sentences." corpus/doc_001.txt
@@ -125,20 +121,21 @@ Show your pair the best and the worst of the six results, and one claim you chec
 
    Look for which words change between the two replies, and whether any fact changes. The helper asks the model for a little randomness, so the wording varies from run to run. A detail that changes between runs is a detail to check against the source; a detail that stays the same still needs checking.
 
-5. Stretch (optional): ask about a paper you know well, with no document attached. The reply comes only from what the model learned in training. Put the paper in your own words inside the quotes.
+4. Stretch (optional): ask about a paper you know well, with no document attached. The reply comes only from what the model learned in training. Put the paper in your own words inside the quotes.
 
    ```bash
    python 01_tour/ask.py "What did <a paper you know well> report? Give its full title, journal, volume and pages, and three specific findings with numbers."
    ```
 
-   Check two or three details against the paper itself, a figure or a table. Write down what it got wrong, or what you checked and found right, and what in the paper settled it. Specific-sounding details such as page numbers and percentages are the ones to check first.
+   Check two or three details against the paper itself, a figure or a table. Give each a judgment, and write what in the paper settled it. Specific-sounding details such as page numbers and percentages are the ones to check first.
 
 ## What you have now
 
 - `llm.py` and its one call, `ask(prompt)`, which every later module uses.
 - `01_tour/ask.py` for a quick one-off question, with or without a document.
 - The habit of finding the passage behind a claim and reading it, which Module 3 turns into an audit of a whole table.
-- A sense of which of the six jobs are worth asking for, and the one prompt you wrote yourself, which leads into Module 2.
+- Five judgments for any claim (supported, contradicted, added, dropped and it matters, fair simplification), which Module 3 uses to audit a whole table.
+- A sense of which of the six jobs are worth asking for, which leads into Module 2.
 
 ## If something goes wrong
 

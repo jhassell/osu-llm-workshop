@@ -30,7 +30,7 @@ Prediction: the model will rewrite an abstract for a first-year student. One thi
 
 My answer:
 
-From the build: the one result I would actually use, and how I would check it:
+From the build: one claim I checked, the passage that settles it, and my judgment (supported, contradicted, added, dropped and it matters, or fair simplification):
 
 ---
 
