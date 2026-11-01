@@ -70,10 +70,10 @@ OPENROUTER_MODEL="nvidia/nemotron-3-super-120b-a12b"
 # workshop: models are renamed and retired.
 OPENROUTER_CHOICES=(
   "nvidia/nemotron-3-super-120b-a12b|NVIDIA Nemotron 3 Super: open model, the one this workshop was built on"
+  "deepseek/deepseek-v4.1-flash|DeepSeek V4.1 Flash: open model, lowest cost, most consistent in testing"
   "anthropic/claude-haiku-5.5|Anthropic Claude Haiku 5.5: fast, low cost"
   "openai/gpt-6-luna|OpenAI GPT-6 Luna: fast, low cost"
   "google/gemini-3.8-flash|Google Gemini 3.8 Flash: fast, costs the most of these"
-  "deepseek/deepseek-v4.1-flash|DeepSeek V4.1 Flash: open model, lowest cost"
 )
 NVIDIA_BASE_URL="https://integrate.api.nvidia.com/v1"
 # NVIDIA opens only some hosted models to a personal account: on 2026-10-28 a fresh
