@@ -26,9 +26,9 @@ From the build: the one thing the agent got wrong or invented, and the rule I ga
 
 ## Module 1
 
-Prediction: the model will rewrite an abstract for a first-year student. One thing I expect it to lose:
+Prediction, after reading the abstract: the model will rewrite its main finding for a first-year student. One detail I expect it to keep, and one qualification I expect it to lose:
 
-My answer:
+Keep:                                Lose:
 
 From the build: one claim I checked, the passage that settles it, and my judgment (supported, contradicted, added, dropped and it matters, or fair simplification):
 
