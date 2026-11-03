@@ -10,3 +10,5 @@ Nothing here is for the workshop day. Each item is a real exercise with its own 
 - public-api.md: look up references through a public API as a tool.
 - frameworks.md: the same agent in a popular framework, and what you give up.
 - openclaw/: OpenClaw, the full agent program that built your website in the first exercise, for comparison with the forty-line loop. `openclaw chat` opens it; `bash setup.sh --openclaw` connects it to the workshop model again and opens it.
+
+Two free resources outside this repository. NVIDIA's Generative AI Teaching Kit lectures 8.1 to 8.3 (LLM components, retrieval, agents) are the theory behind the workshop, as free lecture videos linked from https://developer.nvidia.com/gen-ai-teaching-kit-syllabus. Two self-paced DLI courses, Building RAG Agents with LLMs and Evaluating RAG and Semantic Search Systems, are the next step after Module 5; faculty who join the DLI Teaching Kit program at https://developer.nvidia.com/teaching-kits are eligible for free codes for themselves and their students.
