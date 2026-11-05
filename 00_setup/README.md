@@ -45,11 +45,12 @@ When the check runs, what will its second line say? Write your answer on your ca
 
    Setup picks the endpoint from the kind of key you paste, and sends the key only to that endpoint:
 
-   - the OSU workshop key from the card goes to the OSU workshop endpoint
+   - the workshop word from the card (letter case does not matter) is looked up at the address in `workshop-endpoint.txt`, and the labs then run on OpenRouter with the workshop's own key and `nvidia/nemotron-3-super-120b-a12b`; no model list is shown
+   - the OSU workshop key from the card, when the room has its own endpoint, goes to that endpoint
    - an OpenRouter key (starts with `sk-or-`) goes to OpenRouter, and setup then lists five models tested with this workshop. Press Enter for the first, `nvidia/nemotron-3-super-120b-a12b`, or type the number of another. `bash setup.sh --choose-model` shows the list again later
    - an NVIDIA key (starts with `nvapi-`) goes to NVIDIA's hosted endpoint, using `nvidia/nemotron-3-ultra-550b-a55b`, one of the few models NVIDIA opens to a personal account
 
-   Setup finds the workshop endpoint's address in `workshop-endpoint.txt`, or downloads the instructor's current copy of that file if yours is blank, so a repository made weeks ago still finds it. If the address is not published yet, setup says so plainly and sends the key nowhere. The one exception to choosing by key: if the instructor switches the room to another endpoint, every key you paste goes to that endpoint, so paste the key that goes with it. The same is true if you have set up your own Codespaces secret named `LLM_BASE_URL`.
+   Setup finds the workshop addresses in `workshop-endpoint.txt`, or downloads the instructor's current copy of that file if yours is blank, so a repository made weeks ago still finds them. A word nobody published is refused with a plain message, and a key is never sent anywhere but its own endpoint. The one exception to choosing by key: if the instructor switches the room to another endpoint, every key you paste goes to that endpoint, so paste the key that goes with it. The same is true if you have set up your own Codespaces secret named `LLM_BASE_URL`.
 
    You should end at a READY box. For example, with an OpenRouter key:
 
@@ -122,4 +123,4 @@ A Codespace connected to a model, with the endpoint and key saved in `.env`, whi
 - Setup says the endpoint "does not know that address or model" after `--model`. The name was mistyped or that endpoint does not serve it. Nothing in `.env` changed, so you are still connected as before.
 - With your own NVIDIA key, setup says the endpoint "does not know that address or model" with HTTP 404, and the model list loaded fine. The key was accepted; NVIDIA opens only some hosted models to a personal account. Use the model setup suggests, or ask help@build.nvidia.com to enable Public API Endpoints for your account.
 - After `--model`, the check still names the old model. Run `bash setup.sh --model <name>` again and read its last box: it shows the model it saved. Ask a helper if it still differs.
-- After the what-next question, setup says `OpenClaw is not connected yet. To try again:   bash setup.sh --openclaw`. The check and the lessons do not need OpenClaw, so run the check first. Then, for the first exercise, run `bash setup.sh --openclaw`, which tries again and opens OpenClaw; the reason it failed is in `~/.osu-llm-workshop-openclaw.log`.
+- After the key is accepted, setup says `OpenClaw is not connected yet. To try again:   bash setup.sh --openclaw`. The check and the lessons do not need OpenClaw, so run the check first. Then, for the first exercise, run `bash setup.sh --openclaw`, which tries again and opens OpenClaw; the reason it failed is in `~/.osu-llm-workshop-openclaw.log`.

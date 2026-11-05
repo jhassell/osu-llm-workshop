@@ -6,6 +6,8 @@ One card per module, printed two to a page and handed out at 8:30. Each card has
 
 ## Module 0
 
+Workshop word, for the key prompt: OpeningDayToken (letter case does not matter)
+
 Prediction: when the check runs, what will its second line say?
 
 My answer:

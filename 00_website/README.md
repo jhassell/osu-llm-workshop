@@ -48,7 +48,7 @@ Picture the site before you type anything. On your card write three things a fir
    Build site/: three short pages teaching buffer pH to first-year chemistry students.
    ```
 
-   Then watch, and do not type again until it answers. Each tool call prints a line: which file it reads or writes, and any command it runs. Look for two things: which files it creates in `site/`, and whether any command fetches a page from the web (a `curl` or `wget` in an `exec` line). If none does, everything on the pages came from the model's memory.
+   Then watch, and do not type again until it answers. Each tool call prints a line: which file it reads or writes, and any command it runs. Look for two things: which files it creates in `site/`, and whether any tool call fetched a page from the web (a fetch line, or a `curl` or `wget` in an `exec` line). If none did, everything on the pages came from the model's memory.
 
    A build takes a few minutes, and longer this morning, because the whole room starts at once and every step is a call to the same shared model.
 
@@ -66,7 +66,7 @@ Picture the site before you type anything. On your card write three things a fir
    Which facts came from no source?
    ```
 
-   Compare its answer with the tool-call lines from step 2. If no command fetched a source, every fact came from memory, whatever the answer says.
+   Compare its answer with the tool-call lines from step 2. If no tool call fetched a source, every fact came from memory, whatever the answer says.
 
 5. Give it a rule, and ask for the fix. Turn the thing on your card into one rule for every page, in your own words. For example:
 
@@ -167,4 +167,4 @@ OpenClaw connected to the workshop model, and a small site in `site/` at your si
 - Nothing happens for a long time, or OpenClaw shows an error from the model such as 429, 503 or a timeout. The whole room is calling the same model at once. Wait a minute rather than typing the request again, which only adds to the queue. If it gave up, type `Continue.`
 - OpenClaw says it is not connected, or that its configuration was not accepted. Type `/exit`, then `bash setup.sh --openclaw`. The reason is in `~/.osu-llm-workshop-openclaw.log`.
 - `bash publish-site.sh` says the check failed. Fix what the check lists, with the agent's help, and run it again. It publishes nothing until the check passes.
-- `bash publish-site.sh` ends with `ONE STEP LEFT.`, or says the repository is private. See the two items under Make it permanent.
+- `bash publish-site.sh` ends with `ONE STEP LEFT.`, or says the repository is private. See the two items under The permanent address: automatic.

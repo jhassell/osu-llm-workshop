@@ -1,7 +1,13 @@
 # The OSU workshop endpoint, read by setup.sh when someone pastes the workshop
-# key. The instructor fills in the address (and, if the endpoint serves more than
-# one model, the model name). Copies of this repository made before it was
-# filled in read the current version from github.com/jhassell/osu-llm-workshop.
+# key or word. The instructor fills in the address (and, if the endpoint serves
+# more than one model, the model name). Copies of this repository made before it
+# was filled in read the current version from github.com/jhassell/osu-llm-workshop.
 # Nothing secret belongs in this file.
+#
+# OSU_KEY_URL is where the word printed on the card is looked up: setup fetches
+# OSU_KEY_URL/<word in lower case> and, if the reply is an OpenRouter key, runs
+# the labs on OpenRouter with that key. The address holds nothing without the
+# word, and the key behind the word is cancelled at the end of the workshop.
 OSU_BASE_URL=
 OSU_MODEL=
+OSU_KEY_URL=https://osu-llm-workshop-key.netlify.app

@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # Behind? Restore one module's lab files and the saved table, then start there.
 #
-#   bash catchup.sh m4      restores 04_tool/ and the saved records table
-#   bash catchup.sh m6      restores 06_project/, the earlier tool files it uses,
-#                           and the saved records table
+#   bash catchup.sh m4      restores 04_tool/, and copies in the saved records
+#                           table if yours has no usable rows
+#   bash catchup.sh m6      restores 06_project/ and the earlier tool files it
+#                           uses, with the same table rule
 #
 # Before anything is restored, the files about to be replaced are copied to
 # mine/catchup-backup-<date-time>/, so nothing you wrote is lost. It never

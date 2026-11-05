@@ -120,7 +120,7 @@ def search_records(query: str) -> str:
             hit["matched"] = matched
             hits.append((-len(matched), n, hit))
     hits.sort(key=lambda h: (h[0], h[1]))
-    return "\n".join(json.dumps(h[2]) for h in hits) or "no matches"
+    return "\n".join(json.dumps(h[2], ensure_ascii=False) for h in hits) or "no matches"
 
 
 if __name__ == "__main__":

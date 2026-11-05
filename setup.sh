@@ -32,17 +32,18 @@
 #      Press Enter without a key to finish the pre-work: the Codespace is ready
 #      and the endpoint check waits for the key.
 #
-# After a key is accepted, setup asks what to do next: the first exercise (Enter),
-# where OpenClaw, a complete agent program already installed in this Codespace,
-# builds a small tutorial website in site/; or open OpenClaw now. Either way
-# OpenClaw is connected to the same endpoint and model as the labs.
+# After a key is accepted, setup connects OpenClaw, a complete agent program
+# already installed in this Codespace, to the same endpoint and model as the
+# labs, opens the first exercise's page in the editor, and opens OpenClaw's chat,
+# where the first exercise builds a small tutorial website in site/. With no
+# terminal attached it connects OpenClaw without opening it.
 #
 # In a Codespace, site/ is served on port 8000 and the port is made public
 # (.devcontainer/site-public.sh); the READY box shows the address.
 #
 # Switches for test harnesses:
 #   WORKSHOP_FORCE=1     run even though setup is already running in another terminal
-#   WORKSHOP_NO_PROMPT=1 never ask anything (no key prompt, no what-next question)
+#   WORKSHOP_NO_PROMPT=1 never ask anything (no key prompt; OpenClaw is connected, not opened)
 #   WORKSHOP_NO_CHAT=1   with --openclaw, configure OpenClaw but do not open it
 #
 # Adapted from jhassell/asee9 (CC BY 4.0): the run-once lock, the hidden key
@@ -57,6 +58,8 @@ set -uo pipefail
 # anywhere, a workshop key is refused with a plain message, never sent.
 OSU_BASE_URL=""                                   # leave empty; set workshop-endpoint.txt instead
 OSU_MODEL=""
+OSU_KEY_URL=""                                    # where the card's word is looked up; also from workshop-endpoint.txt
+OSU_LOADED=0
 WORKSHOP_ENDPOINT_URL="https://raw.githubusercontent.com/jhassell/osu-llm-workshop/main/workshop-endpoint.txt"
 OPENROUTER_BASE_URL="https://openrouter.ai/api/v1"
 OPENROUTER_MODEL="nvidia/nemotron-3-super-120b-a12b"
@@ -384,15 +387,45 @@ provider_of() {
 # load_osu_endpoint: fill OSU_BASE_URL and OSU_MODEL from workshop-endpoint.txt
 # here, or, if that has no address, from the instructor's current copy online.
 load_osu_endpoint() {
-  [ -z "$OSU_BASE_URL" ] || return 0
+  [ "$OSU_LOADED" -eq 0 ] || return 0
+  OSU_LOADED=1
   local txt=""
   [ -f "$ROOT/workshop-endpoint.txt" ] && txt="$(cat "$ROOT/workshop-endpoint.txt")"
-  if ! printf '%s\n' "$txt" | grep -qE '^OSU_BASE_URL=https://'; then
+  if ! printf '%s\n' "$txt" | grep -qE '^OSU_(BASE|KEY)_URL=https://'; then
     txt="$(curl -fsS -m 10 "$WORKSHOP_ENDPOINT_URL" 2>/dev/null)" || txt=""
   fi
-  OSU_BASE_URL="$(printf '%s\n' "$txt" | sed -n 's/^OSU_BASE_URL=//p' | tail -1 | tr -d '[:space:]')"
-  OSU_MODEL="$(printf '%s\n' "$txt" | sed -n 's/^OSU_MODEL=//p' | tail -1 | tr -d '[:space:]')"
+  [ -n "$OSU_BASE_URL" ] || OSU_BASE_URL="$(printf '%s\n' "$txt" | sed -n 's/^OSU_BASE_URL=//p' | tail -1 | tr -d '[:space:]')"
+  [ -n "$OSU_MODEL" ] || OSU_MODEL="$(printf '%s\n' "$txt" | sed -n 's/^OSU_MODEL=//p' | tail -1 | tr -d '[:space:]')"
+  [ -n "$OSU_KEY_URL" ] || OSU_KEY_URL="$(printf '%s\n' "$txt" | sed -n 's/^OSU_KEY_URL=//p' | tail -1 | tr -d '[:space:]')"
   case "$OSU_BASE_URL" in https://*) ;; *) OSU_BASE_URL=""; OSU_MODEL="" ;; esac   # HTTPS only: the key travels there
+  case "$OSU_KEY_URL" in https://*) OSU_KEY_URL="${OSU_KEY_URL%/}" ;; *) OSU_KEY_URL="" ;; esac
+}
+
+# exchange_word: the card may carry a word instead of a key. The word, in any
+# letter case, is looked up at OSU_KEY_URL/<word in lower case>; when the reply
+# is an OpenRouter key, that key replaces the word and the labs run on
+# OpenRouter with the workshop model. A word nobody published is refused here,
+# with a message, unless the room has its own endpoint (OSU_BASE_URL), where the
+# word may be that endpoint's own secret and is passed on untouched. The word
+# itself goes to the lookup address and nowhere else.
+exchange_word() {
+  [ "$(provider_of "$KEY")" = osu ] || return 0
+  [ "$BASE_SOURCE" = key ] || [ "${BASE%/}" = "$OPENROUTER_BASE_URL" ] || return 0
+  load_osu_endpoint
+  [ -n "$OSU_KEY_URL" ] || return 0
+  local word got=""
+  word="$(printf '%s' "$KEY" | tr '[:upper:]' '[:lower:]')"
+  case "$word" in *[!a-z0-9-]*) return 0 ;; esac          # only a plain word is looked up
+  got="$(curl -fsS -m 15 "$OSU_KEY_URL/$word" 2>/dev/null | tr -d '[:space:]' | head -c 200)" || got=""
+  case "$got" in
+    sk-or-*) KEY="$got"; KEY_FROM=word
+             echo "That is the workshop word: using the workshop's own OpenRouter key."
+             return 0 ;;
+  esac
+  [ -z "$OSU_BASE_URL" ] || return 0
+  echo "That word is not the workshop word. Check the spelling on the card (letter case does not matter),"
+  echo "or paste your own OpenRouter key (sk-or-...) or NVIDIA key (nvapi-...)."
+  return 1
 }
 
 # endpoint_for_key: when the key decides (BASE_SOURCE=key), set BASE and the
@@ -569,8 +602,8 @@ if [ -z "$KEY" ] && [ -z "${WORKSHOP_NO_PROMPT:-}" ] && { : </dev/tty; } 2>/dev/
   while [ "$ATTEMPT" -lt 3 ]; do
     ATTEMPT=$((ATTEMPT + 1))
     echo
-    echo "Paste your key: the workshop key from the card, or your own OpenRouter key (sk-or-...)"
-    echo "or NVIDIA key (nvapi-...). It will not show on screen. Then press Enter."
+    echo "Paste your key: the workshop word or key from the card, or your own OpenRouter key"
+    echo "(sk-or-...) or NVIDIA key (nvapi-...). It will not show on screen. Then press Enter."
     echo "No key yet? Just press Enter: the Codespace is ready and the check waits for the key."
     printf "> "
     ENTRY=""
@@ -592,12 +625,16 @@ if [ -z "$KEY" ] && [ -z "${WORKSHOP_NO_PROMPT:-}" ] && { : </dev/tty; } 2>/dev/
       echo "That does not look like a key: it should be at least eight characters with no spaces."
       KEY=""; continue
     fi
+    exchange_word || { KEY=""; continue; }
     endpoint_for_key || { KEY=""; continue; }
     dots_start "Checking the key against the endpoint"
     check_key
     case "$HTTP" in
       200) dots_stop ok; break ;;
-      401|403) dots_stop fail; echo "That key was not accepted (HTTP $HTTP). Copy the whole key and try again."; KEY="" ;;
+      401|403) dots_stop fail
+        if [ "$KEY_FROM" = word ]; then echo "The workshop key behind that word was not accepted (HTTP $HTTP). Tell the instructor."
+        else echo "That key was not accepted (HTTP $HTTP). Copy the whole key and try again."; fi
+        KEY="" ;;
       400|404) not_found ;;
       000) die "Could not reach $BASE (network)." "Check your connection, then run bash setup.sh again." ;;
       *) die "Unexpected reply from the endpoint (HTTP $HTTP)." "Wait a minute, then run bash setup.sh again." ;;

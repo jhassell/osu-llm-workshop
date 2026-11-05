@@ -2,7 +2,7 @@
 
 OpenClaw is a complete personal agent program: the same loop you read in agent.py, grown up, with skills instead of a docstring, memory instead of a transcript, a schedule instead of you pressing run, and connections to messaging apps. You met it in the first exercise of the day, when it built a tutorial website in `site/`. This page is for going further with it, because seeing a full agent makes the forty-line version easier to understand.
 
-It is already installed in your Codespace. When you press Enter at setup's what-next question, setup connects it to the same endpoint, key and model as the labs, without opening it; choice 2 connects it and opens it at once. To open it after that:
+It is already installed in your Codespace. When setup accepts your key, it connects OpenClaw to the same endpoint, key and model as the labs, opens the first exercise's page, and opens OpenClaw's chat. To open it after that:
 
     openclaw chat
 

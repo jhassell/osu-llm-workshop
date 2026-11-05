@@ -40,7 +40,9 @@ Here is the record (`records.py`) and one document. When the whole folder runs, 
    It takes a few seconds. For example:
 
    ```
+   doc_id        doc_001
    source        corpus/doc_001.txt
+   title         Free Pizza Increases Office Hours Attendance in Introductory Statistics
    year          2021
    method        experimental
    sample_size   236 students

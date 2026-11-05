@@ -90,7 +90,7 @@ Every lab talks to one endpoint through two values in `.env`, `LLM_BASE_URL` and
 | Only a line ending in `$`; setup never started | Type `bash setup.sh`, press Enter. |
 | The key was not accepted | Copy the whole key again and type `bash setup.sh --reset-key`. |
 | "The workshop endpoint is not set up yet" | If you pasted your own OpenRouter or NVIDIA key, copy the whole key again: its first characters tell setup where it goes. If you pasted the key from the card, tell a helper. |
-| Setup says it is already running in another terminal | Switch to the first terminal: the list at the right edge of the panel. |
+| Setup says it has already started in another terminal | Switch to the first terminal: the list at the right edge of the panel. |
 | `No endpoint or key yet` when running a lab | `bash setup.sh`, paste the key. |
 | `not reachable` from the check | Tell a helper. The instructor can switch the room to a different endpoint with one script. |
 | HTTP 404 with your own NVIDIA key | The key is fine; NVIDIA opens only some models to a personal account. Use the model setup suggests, or ask help@build.nvidia.com to enable Public API Endpoints. |
