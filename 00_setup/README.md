@@ -37,7 +37,7 @@ When the check runs, what will its second line say? Write your answer on your ca
 
    This morning you finish the job. Open your Codespace. If no terminal is open, click the **+** on the terminal panel.
 
-2. Run setup and paste the key from your card. What you paste does not show on screen; that is on purpose. Paste once and press Enter once.
+2. Run setup and type the word from your card (letter case does not matter) or paste a key. It shows on screen as you type. Press Enter once.
 
    ```
    bash setup.sh

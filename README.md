@@ -110,6 +110,6 @@ Every lab talks to one endpoint through two values in `.env`, `LLM_BASE_URL` and
 
 ## Credits and license
 
-Original material written for this workshop. The Codespace machinery (the pinned container, the setup script that starts by itself, the hidden key prompt) is adapted from [jhassell/asee9](https://github.com/jhassell/asee9), the 2026 ASEE Midwest workshop repository. The corpus is invented: no real papers, authors or findings. Licensed under CC BY 4.0; see LICENSE.
+Original material written for this workshop. The Codespace machinery (the pinned container, the setup script that starts by itself, the key prompt) is adapted from [jhassell/asee9](https://github.com/jhassell/asee9), the 2026 ASEE Midwest workshop repository. The corpus is invented: no real papers, authors or findings. Licensed under CC BY 4.0; see LICENSE.
 
 This workshop carries no certificate. Anyone who wants an NVIDIA credential in this area can take the NVIDIA-Certified Associate: Generative AI LLMs (NCA-GENL) exam separately.

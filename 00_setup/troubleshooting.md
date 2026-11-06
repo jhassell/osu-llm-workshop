@@ -3,7 +3,7 @@
 Carry this on a laptop or a printout. Order matters: the common fixes are first.
 
 1. No terminal, or a terminal with only a `$`. Click in it, type `bash setup.sh`, Enter. If there is no terminal panel at all: the menu at the top left, Terminal, New Terminal.
-2. The key prompt is waiting. Pasting does not show anything; that is on purpose. Paste once, press Enter once. If someone typed `bash setup.sh` into the key prompt, setup says so and asks again.
+2. The key prompt is waiting. What they type shows on screen, so a typo in the word is visible before Enter. Type or paste once, press Enter once. If someone typed `bash setup.sh` into the key prompt, setup says so and asks again.
 3. Setup chooses the endpoint from the key: a key starting `sk-or-` goes to OpenRouter, one starting `nvapi-` goes to NVIDIA's hosted endpoint, anything else is the workshop word or key from the card. The word (any letter case) is looked up at the address in `workshop-endpoint.txt` and exchanged for the workshop's OpenRouter key, so a card word ends with "That is the workshop word" and then "That is an OpenRouter key: using https://openrouter.ai/api/v1", with no model list. The addresses come from `workshop-endpoint.txt` in their repository, or, if that is blank, from the instructor's current copy online, so an old copy of the repository finds them too.
    - "That word is not the workshop word." A typo. Have them type it again from the card; case does not matter, spaces are stripped.
    - "The workshop key behind that word was not accepted." The instructor's problem, not theirs: the key behind the word is wrong or cancelled. Tell John.

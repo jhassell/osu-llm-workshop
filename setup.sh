@@ -28,7 +28,7 @@
 # Where each value comes from, first match wins:
 #   1. a Codespaces secret of the same name (nothing to type)
 #   2. the value saved by an earlier run, in .env (the key is skipped by --reset-key)
-#   3. the terminal asks you for the key; what you paste does not show on screen.
+#   3. the terminal asks you for the word or key from the card.
 #      Press Enter without a key to finish the pre-work: the Codespace is ready
 #      and the endpoint check waits for the key.
 #
@@ -46,8 +46,8 @@
 #   WORKSHOP_NO_PROMPT=1 never ask anything (no key prompt; OpenClaw is connected, not opened)
 #   WORKSHOP_NO_CHAT=1   with --openclaw, configure OpenClaw but do not open it
 #
-# Adapted from jhassell/asee9 (CC BY 4.0): the run-once lock, the hidden key
-# prompt and the key check are the same design; the provider is different.
+# Adapted from jhassell/asee9 (CC BY 4.0): the run-once lock, the key
+# prompt (shown here, since the card carries a word) and the key check are the same design; the provider is different.
 set -uo pipefail
 
 # The three endpoints a pasted key can belong to. The OSU one comes from
@@ -603,12 +603,12 @@ if [ -z "$KEY" ] && [ -z "${WORKSHOP_NO_PROMPT:-}" ] && { : </dev/tty; } 2>/dev/
     ATTEMPT=$((ATTEMPT + 1))
     echo
     echo "Paste your key: the workshop word or key from the card, or your own OpenRouter key"
-    echo "(sk-or-...) or NVIDIA key (nvapi-...). It will not show on screen. Then press Enter."
+    echo "(sk-or-...) or NVIDIA key (nvapi-...). Then press Enter."
     echo "No key yet? Just press Enter: the Codespace is ready and the check waits for the key."
     printf "> "
     ENTRY=""
     READING=1
-    IFS= read -rs ENTRY </dev/tty || true
+    IFS= read -r ENTRY </dev/tty || true
     READING=0
     echo
     if entry_is_command "$ENTRY"; then
