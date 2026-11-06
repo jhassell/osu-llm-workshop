@@ -12,6 +12,6 @@ try:
     ast.parse(src)
 except SyntaxError as e:
     print("Syntax error:", e); sys.exit(1)
-print("No blanks left and the file parses. Now point 04_tool/starter.py at it: change")
+print("No blanks left and the file parses. Now point followon/old-modules/04_tool/starter.py at it: change")
 print("    from agent import run, save_trace")
 print("to  from agent_blanks import run, save_trace   (after copying this file next to agent.py)")

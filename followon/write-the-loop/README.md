@@ -1,6 +1,6 @@
 # Write the loop yourself
 
-agent.py was supplied on the day. Here is the same file with the five decisions blanked out. Fill them in, then run it against 04_tool/starter.py by changing one import, and compare with the original.
+agent.py was supplied on the day. Here is the same file with the five decisions blanked out. Fill them in, then run it against followon/old-modules/04_tool/starter.py by changing one import, and compare with the original.
 
     python followon/write-the-loop/check.py      tells you which blanks still fail
 

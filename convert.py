@@ -61,4 +61,4 @@ for path in files:
         verdict = "   long: the labs work best under about three pages, consider trimming"
     print(f"{path.name}: {where}{words} words -> {out.name}{verdict}")
 
-print(f"\nDone. {len(files)} file(s) converted. Try:  python 01_tour/starter.py mine/<name>.txt")
+print(f"\nDone. {len(files)} file(s) converted. For PDFs, Stop 3 reads them directly: python 03_lit/pdfask.py")

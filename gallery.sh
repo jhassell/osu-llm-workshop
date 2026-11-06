@@ -83,7 +83,7 @@ echo "The next three are for after lunch. Press Enter to skip them."
 ask          QUESTION "Your research question (optional): "
 ask          TOOL     "The tool you built (optional): "
 ask          RESULT   "One result someone could check (optional): "
-ask          PRESENT  "Willing to present at 4:10? (y/N): "
+ask          PRESENT  "Willing to present at show and tell (4:00)? (y/N): "
 case "$PRESENT" in [Yy]*) PRESENT=yes ;; *) PRESENT=no ;; esac
 
 LIVE="$(first_line "$SITE_URL_FILE")"

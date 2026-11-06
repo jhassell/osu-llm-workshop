@@ -20,7 +20,7 @@
 # The key decides the endpoint. Paste any of these at the prompt:
 #   the OSU workshop key   (from the card)        goes to the OSU workshop endpoint
 #   an OpenRouter key      (starts with sk-or-)   goes to OpenRouter, and you pick
-#                                                 one of five tested models (Enter: Nemotron)
+#                                                 one of six tested models (Enter: Nemotron Ultra)
 #   an NVIDIA key          (starts with nvapi-)   goes to NVIDIA's hosted endpoint
 # A key is only ever sent to the endpoint it belongs to. --base-url, or a
 # Codespaces secret LLM_BASE_URL, overrides this and uses that endpoint instead.
@@ -45,6 +45,7 @@
 #   WORKSHOP_FORCE=1     run even though setup is already running in another terminal
 #   WORKSHOP_NO_PROMPT=1 never ask anything (no key prompt; OpenClaw is connected, not opened)
 #   WORKSHOP_NO_CHAT=1   with --openclaw, configure OpenClaw but do not open it
+#   WORKSHOP_SWITCHING=1 set by 00_setup/switch_backend.sh: reconnect OpenClaw, open nothing
 #
 # Adapted from jhassell/asee9 (CC BY 4.0): the run-once lock, the key
 # prompt (shown here, since the card carries a word) and the key check are the same design; the provider is different.
@@ -59,10 +60,14 @@ set -uo pipefail
 OSU_BASE_URL=""                                   # leave empty; set workshop-endpoint.txt instead
 OSU_MODEL=""
 OSU_KEY_URL=""                                    # where the card's word is looked up; also from workshop-endpoint.txt
+OSU_CONTEXT=""                                    # the OSU endpoint's context window, from workshop-endpoint.txt
 OSU_LOADED=0
 WORKSHOP_ENDPOINT_URL="https://raw.githubusercontent.com/jhassell/osu-llm-workshop/main/workshop-endpoint.txt"
 OPENROUTER_BASE_URL="https://openrouter.ai/api/v1"
-OPENROUTER_MODEL="nvidia/nemotron-3-super-120b-a12b"
+# The room's model, chosen 2026-11-06 as the most capable Nemotron: Ultra replayed
+# every old module (7 of 7) and the website exercise for less than Super, because
+# its providers bill the cached prompt OpenClaw resends at a fifth of the price.
+OPENROUTER_MODEL="nvidia/nemotron-3-ultra-550b-a55b"
 # The models offered when someone pastes an OpenRouter key: id|what the person
 # sees. The first is the default (Enter). Each was run through Module 3's
 # extraction and Module 4's tool-calling agent on 2026-10-31 and passed both
@@ -72,7 +77,8 @@ OPENROUTER_MODEL="nvidia/nemotron-3-super-120b-a12b"
 # DeepSeek V4.1 Flash 0.045/0.50. Check https://openrouter.ai/models before a
 # workshop: models are renamed and retired.
 OPENROUTER_CHOICES=(
-  "nvidia/nemotron-3-super-120b-a12b|NVIDIA Nemotron 3 Super: open model, the one this workshop was built on"
+  "nvidia/nemotron-3-ultra-550b-a55b|NVIDIA Nemotron 3 Ultra: open model, the most capable Nemotron, the workshop's model"
+  "nvidia/nemotron-3-super-120b-a12b|NVIDIA Nemotron 3 Super: open model, smaller and faster"
   "deepseek/deepseek-v4.1-flash|DeepSeek V4.1 Flash: open model, lowest cost, most consistent in testing"
   "anthropic/claude-haiku-5.5|Anthropic Claude Haiku 5.5: fast, low cost"
   "openai/gpt-6-luna|OpenAI GPT-6 Luna: fast, low cost"
@@ -397,6 +403,8 @@ load_osu_endpoint() {
   [ -n "$OSU_BASE_URL" ] || OSU_BASE_URL="$(printf '%s\n' "$txt" | sed -n 's/^OSU_BASE_URL=//p' | tail -1 | tr -d '[:space:]')"
   [ -n "$OSU_MODEL" ] || OSU_MODEL="$(printf '%s\n' "$txt" | sed -n 's/^OSU_MODEL=//p' | tail -1 | tr -d '[:space:]')"
   [ -n "$OSU_KEY_URL" ] || OSU_KEY_URL="$(printf '%s\n' "$txt" | sed -n 's/^OSU_KEY_URL=//p' | tail -1 | tr -d '[:space:]')"
+  [ -n "$OSU_CONTEXT" ] || OSU_CONTEXT="$(printf '%s\n' "$txt" | sed -n 's/^OSU_CONTEXT=//p' | tail -1 | tr -d '[:space:]')"
+  case "$OSU_CONTEXT" in ''|*[!0-9]*) OSU_CONTEXT=65536 ;; esac
   case "$OSU_BASE_URL" in https://*) ;; *) OSU_BASE_URL=""; OSU_MODEL="" ;; esac   # HTTPS only: the key travels there
   case "$OSU_KEY_URL" in https://*) OSU_KEY_URL="${OSU_KEY_URL%/}" ;; *) OSU_KEY_URL="" ;; esac
 }
@@ -650,7 +658,7 @@ fi
 choose_openrouter_model() {
   local i n=${#OPENROUTER_CHOICES[@]} pick id current="$MODEL"
   echo
-  echo "Which model? OpenRouter offers many; these five were tested with this workshop."
+  echo "Which model? OpenRouter offers many; these six were tested with this workshop."
   for ((i = 0; i < n; i++)); do
     id="${OPENROUTER_CHOICES[$i]%%|*}"
     printf '  %d  %s\n     %s%s\n' "$((i + 1))" "${OPENROUTER_CHOICES[$i]#*|}" "$id" \
@@ -714,6 +722,17 @@ hr
 OPENCLAW_CONFIG="$HOME/.openclaw/openclaw.json"
 OPENCLAW_LOG="$HOME/.osu-llm-workshop-openclaw.log"   # why configuration failed; never a key
 
+# openclaw_context: how much conversation OpenClaw may keep before it compacts.
+# OpenRouter's Nemotron providers serve at least 200,000 tokens, and a long
+# analysis session needs it; the OSU endpoint states its own (the NIM recipe
+# caps it at 65,536); anything else gets 65,536.
+openclaw_context() {
+  if [ "${BASE%/}" = "$OPENROUTER_BASE_URL" ]; then echo 200000; return; fi
+  load_osu_endpoint
+  if [ -n "$OSU_BASE_URL" ] && [ "${BASE%/}" = "${OSU_BASE_URL%/}" ]; then echo "$OSU_CONTEXT"; return; fi
+  echo 65536
+}
+
 openclaw_configure() {
   if ! command -v openclaw >/dev/null 2>&1; then
     # Install it only in a Codespace: elsewhere this would be a global npm
@@ -737,7 +756,7 @@ openclaw_configure() {
   fi
   dots_start "Connecting OpenClaw to $MODEL"
   ( umask 077; : >"$OPENCLAW_LOG" ) 2>/dev/null
-  if ! WS_KEY="$KEY" WS_BASE="$BASE" WS_ROOT="$ROOT" python3 - "$MODEL" >/dev/null 2>>"$OPENCLAW_LOG" <<'PYEOF'
+  if ! WS_KEY="$KEY" WS_BASE="$BASE" WS_ROOT="$ROOT" WS_CTX="$(openclaw_context)" python3 - "$MODEL" >/dev/null 2>>"$OPENCLAW_LOG" <<'PYEOF'
 import json, os, sys
 model = sys.argv[1]
 path = os.path.expanduser("~/.openclaw/openclaw.json")
@@ -755,7 +774,7 @@ providers["workshop"] = {
     "apiKey": os.environ["WS_KEY"],
     "api": "openai-completions",
     "models": [{"id": model, "name": model, "input": ["text"],
-                "contextWindow": 65536, "maxTokens": 16384}],
+                "contextWindow": int(os.environ["WS_CTX"]), "maxTokens": 16384}],
 }
 d = cfg.setdefault("agents", {}).setdefault("defaults", {})
 d.setdefault("model", {})["primary"] = "workshop/" + model
@@ -897,7 +916,7 @@ openclaw_open() {
   echo "Module 0's check, if you skipped it:     python 00_setup/check.py"
   echo "The first exercise:                      00_website/README.md"
   [ -z "${CODESPACE_NAME:-}" ] || echo "Your site:                               $(site_address)"
-  echo "Later, the lessons start:                python 01_tour/starter.py"
+  echo "After the website, Stop 2:                02_data/README.md"
 }
 
 # exercise_show: open the first exercise in the editor and say what comes next.
@@ -918,7 +937,7 @@ exercise_show() {
   echo " First, finish Module 0:    python 00_setup/check.py"
   echo " Then the first exercise:   openclaw chat"
   [ -z "${CODESPACE_NAME:-}" ] || echo " Your site:                 $(site_address)"
-  echo " Later, the lessons start:  python 01_tour/starter.py"
+  echo " After the website, Stop 2:  02_data/README.md"
   if [ "${1:-0}" = 1 ]; then
     echo
     echo " OpenClaw is not connected yet. To try again:   bash setup.sh --openclaw"
@@ -931,7 +950,16 @@ exercise_open() {
   if openclaw_configure; then exercise_show 0; else exercise_show 1; fi
 }
 
-if [ "$OPENCLAW_ARG" -eq 1 ]; then
+if [ -n "${WORKSHOP_SWITCHING:-}" ]; then
+  # From 00_setup/switch_backend.sh, between stops: reconnect OpenClaw to the
+  # new endpoint, and open nothing.
+  if openclaw_configure; then
+    echo "OpenClaw now uses this endpoint too. A chat that was already open keeps the old one:"
+    echo "close it (/exit) and type:   openclaw chat"
+  else
+    echo "OpenClaw is not connected to the new endpoint. To try again:   bash setup.sh --openclaw"
+  fi
+elif [ "$OPENCLAW_ARG" -eq 1 ]; then
   openclaw_configure && openclaw_open
 elif [ -t 0 ] && [ -z "${WORKSHOP_NO_PROMPT:-}" ] && { : </dev/tty; } 2>/dev/null; then
   # No question: straight into the first exercise, in OpenClaw's chat.

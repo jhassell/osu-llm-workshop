@@ -1,25 +1,38 @@
 #!/usr/bin/env bash
-# Behind? Restore one module's lab files and the saved table, then start there.
+# Behind? Restore one stop's files from the repository, then start there.
 #
-#   bash catchup.sh m4      restores 04_tool/, and copies in the saved records
-#                           table if yours has no usable rows
-#   bash catchup.sh m6      restores 06_project/ and the earlier tool files it
-#                           uses, with the same table rule
+#   bash catchup.sh s2      restores 02_data/ (and so on for s3, s4, s5, s6)
+#   bash catchup.sh s6      also, if results/ has no Stop 2 report yet, copies in
+#                           a finished one from a shipped dataset, so the page
+#                           recipe has something to build from
+#
+# The old six modules, now in followon/old-modules/, restore the same way:
+#   bash catchup.sh m4      restores followon/old-modules/04_tool/, and copies in
+#                           the saved records table if yours has no usable rows
 #
 # Before anything is restored, the files about to be replaced are copied to
 # mine/catchup-backup-<date-time>/, so nothing you wrote is lost. It never
-# touches .env, mine/ (apart from adding that backup), or your edits to records.py.
+# touches .env, mine/ (apart from that backup), results/ (apart from adding a
+# missing report for s6), or your edits to records.py.
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# DIR is the module; NEEDS are the earlier module files it imports.
+OLD=followon/old-modules
+# DIR is the folder; NEEDS are other files it imports; TABLE=1 when it searches
+# the Module 3 records table.
+TABLE=0
 case "${1:-}" in
-  m1) DIR=01_tour;    NEEDS="" ;;
-  m2) DIR=02_prompts; NEEDS="" ;;
-  m3) DIR=03_table;   NEEDS="" ;;
-  m4) DIR=04_tool;    NEEDS="" ;;
-  m5) DIR=05_agent;   NEEDS="04_tool/tools.py" ;;
-  m6) DIR=06_project; NEEDS="04_tool/tools.py 05_agent/tools.py" ;;
-  *) echo "usage: bash catchup.sh m1|m2|m3|m4|m5|m6"; exit 2 ;;
+  s2) DIR=02_data;  NEEDS="" ;;
+  s3) DIR=03_lit;   NEEDS="03_table" ;;
+  s4) DIR=04_see;   NEEDS="" ;;
+  s5) DIR=05_repair; NEEDS="" ;;
+  s6) DIR=06_build; NEEDS="03_lit/pdfask.py 03_lit/lit.py" ;;
+  m1) DIR=$OLD/01_tour;    NEEDS="" ;;
+  m2) DIR=$OLD/02_prompts; NEEDS="" ;;
+  m3) DIR=03_table;        NEEDS="" ;;
+  m4) DIR=$OLD/04_tool;    NEEDS=""; TABLE=1 ;;
+  m5) DIR=$OLD/05_agent;   NEEDS="$OLD/04_tool/tools.py"; TABLE=1 ;;
+  m6) DIR=$OLD/06_project; NEEDS="$OLD/04_tool/tools.py $OLD/05_agent/tools.py"; TABLE=1 ;;
+  *) echo "usage: bash catchup.sh s2|s3|s4|s5|s6   (the old modules: m1 to m6)"; exit 2 ;;
 esac
 cd "$ROOT"
 
@@ -36,11 +49,10 @@ echo "Your current files are copied to $BACKUP/ first."
 git checkout -- "$DIR" $NEEDS llm.py agent.py docs.py 2>/dev/null \
   || git checkout HEAD -- "$DIR" $NEEDS llm.py agent.py docs.py
 
-# The table the afternoon searches. A row is usable when it has a doc_id and
-# recorded no error (the same rule the Module 4 search uses).
-# With no usable row (missing, empty, or only errors), the saved table is copied
-# in, and an unusable table is kept beside it under a new name.
-if ! python3 - 03_table/records.jsonl <<'PYEOF' 2>/dev/null
+# The table the old afternoon modules search. A row is usable when it has a
+# doc_id and recorded no error (the same rule the Module 4 search uses). With no
+# usable row, the saved table is copied in, and an unusable one is kept beside it.
+if [ "$TABLE" = 1 ] && ! python3 - 03_table/records.jsonl <<'PYEOF' 2>/dev/null
 import json, sys
 for line in open(sys.argv[1]):
     try:
@@ -60,5 +72,19 @@ then
   cp corpus/records.jsonl 03_table/records.jsonl
   echo "Saved table copied to 03_table/records.jsonl."
 fi
+
+# Stop 6's page recipe builds from Stop 2's report and figures. If there are
+# none yet, borrow the finished ones from the penguins dataset.
+if [ "${1:-}" = s6 ] && [ ! -s results/report.md ]; then
+  REF=02_data/datasets/penguins/reference
+  if [ -n "$REF" ] && [ -s "$REF/report.md" ]; then
+    mkdir -p results/figures
+    cp "$REF/report.md" results/report.md
+    cp "$REF"/figures/* results/figures/ 2>/dev/null || true
+    # Its printed output, so the page recipe can check the report's numbers.
+    python3 "$REF/analysis.py" > results/analysis-output.txt 2>&1 || true
+    echo "No Stop 2 report in results/ yet: copied the finished one from $REF/."
+  fi
+fi
 echo "$DIR restored from the repository. Your .env, mine/ and records.py are untouched."
-echo "Next: open $DIR/README.md and run its one command."
+echo "Next: open $DIR/README.md."

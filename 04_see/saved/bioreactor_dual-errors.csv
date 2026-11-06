@@ -1,0 +1,3 @@
+column,matched to,matched,mean_err,max_err,pct_range,median_rel
+temperature (C),Temperature (°C),13/13,0.0154,0.1,0.2,0.0
+dissolved oxygen (%),Dissolved oxygen (% saturation),13/13,1.32,4.1,1.5,3.3

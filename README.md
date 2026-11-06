@@ -1,12 +1,12 @@
 # Building with LLMs: a one-day hands-on workshop
 
-What a language model can do for a researcher, and how to make it do that with a few lines of plain Python. Oklahoma State University, Digital Scholarship Center, Edmon Low Library, Wednesday, November 11, 2026. Instructor: John Hassell, OU Polytechnic Institute.
+What an AI agent can do for a researcher, shown one capability at a time, on your own files or on a real public example. Oklahoma State University, Digital Scholarship Center, Edmon Low Library, Wednesday, November 11, 2026. Instructor: John Hassell, OU Polytechnic Institute.
 
-Everyone builds one program that grows all day: a document assistant over a corpus of short research documents. By the close you leave with three things:
+The day is a tour of seven stops. At each one the agent works in a folder: it runs code on your files, leaves files you can open, and leaves a program that runs again next week. Every stop ends with something in your repository and the same checkpoint: show the file, explain one choice that mattered, and show one check you made yourself. By the close you leave with:
 
-1. A script that turns a folder of your own documents into a table, with each value tied to the sentence that supports it.
-2. An agent that answers a research question from those documents with sources, and says so when they do not settle it.
-3. This repository, yours to keep, pointed at any model by changing two lines, with your own tool already working in it.
+1. A small tutorial website on something you teach, live and at a permanent address.
+2. A script that rebuilds every figure and number of an analysis from the raw file, a bibliography with every DOI checked, and an evidence table with a quoted sentence and a page behind every value.
+3. One tool from your own week that runs on a new input with one command, and this repository, yours to keep, pointed at any model by changing two lines.
 
 Nothing is installed on your laptop. Everything runs in a GitHub Codespace: VS Code in a browser tab, with a terminal, on a machine GitHub runs for you.
 
@@ -25,15 +25,19 @@ You need a free GitHub account and a laptop with a current browser.
 
    ![Click Trust Folder and Continue](docs/screenshots/A-trust-folder-and-continue.png)
 
-4. **Press Enter when the terminal asks for a key.** Setup starts by itself in the terminal at the bottom. You will get the workshop key on the morning, so for now just press Enter. The terminal prints:
+4. **Press Enter when the terminal asks for a key.** Setup starts by itself in the terminal at the bottom. You get a word for it on a card on the morning, so for now just press Enter. The terminal prints:
 
        Codespace ready; endpoint check pending.
 
    That line is the whole goal of the pre-work. If you only see a line ending in `$`, type `bash setup.sh` and press Enter.
 
-5. **Optional: bring your own documents.** Five to ten short documents from your own work, PDF or Word or plain text, under about three pages each. Drag them onto the `mine/` folder in the file tree on the left, then in the terminal type `python convert.py`. They stay in your Codespace and are never committed. When a lab reads one, its text is sent to the workshop's model endpoint, exactly as the sample documents are, so bring only documents you are free to share with that service. The sample corpus is always enough for every lab, so this is optional.
+5. **Optional: bring your own material.** Every stop works on a shipped public example if you bring nothing, but the day is better with your own. Keep these on your laptop; on the morning you drag them onto the `mine/` folder in the file tree and run `python upload_check.py`, which says whether each one is ready.
 
-Also write one sentence, anywhere you like: the question about your own documents you would most like a program to answer. You will use it after lunch.
+   - One small CSV from your work (a few thousand rows is plenty), with a line about what each column means and its units. If it lives in Excel, save a copy as CSV.
+   - Two or three short research papers as PDFs you can select text in, not scans.
+   - One chart from a paper you are reading, as a PNG or JPEG. A screenshot is fine.
+
+   Whatever you upload travels from your laptop to your GitHub Codespace, and a stop that reads it sends its contents to the model service. So leave at home unpublished results you are not free to share, student records, and anything under an IRB protocol. `mine/` is never committed.
 
 When you finish, stop the Codespace at <https://github.com/codespaces> (the **...** menu beside it). A stopped Codespace keeps your files and restarts in seconds. Stopping matters: the Codespace has four cores, and GitHub's free allowance is about 30 hours a month of running time at that size.
 
@@ -45,38 +49,65 @@ Open your Codespace, open a terminal if one is not already open, and type:
 
     bash setup.sh
 
-Paste the key the instructor gives you. Setup recognizes the kind of key and connects to the right place: the workshop key goes to the workshop endpoint, and your own OpenRouter key (it starts with `sk-or-`) or NVIDIA key (`nvapi-`) works too. With an OpenRouter key, setup offers five tested models; Enter picks NVIDIA Nemotron. Its READY box also shows your site address, on the line that starts `Your site (files in site/):`. Setup then connects OpenClaw, a complete agent program, to the same model, opens the first exercise's page in the editor, and opens OpenClaw's chat in the terminal. Before you type there, finish Module 0: click the + on the terminal panel for a second terminal and run
+Type the word on your card (letter case does not matter) and press Enter. Setup recognizes what you typed and connects to the right place: the card's word connects you to the room's model, and your own OpenRouter key (it starts with `sk-or-`) or NVIDIA key (`nvapi-`) works too. With your own OpenRouter key, setup offers six tested models; Enter picks NVIDIA Nemotron 3 Ultra. Its READY box also shows your site address, on the line that starts `Your site (files in site/):`. Setup then connects OpenClaw, a complete agent program, to the same model, opens Stop 1's page in the editor, and opens OpenClaw's chat in the terminal. Before you type there, finish Stop 0: click the + on the terminal panel for a second terminal and run
 
     python 00_setup/check.py
 
-which prints the model the endpoint serves and a one-word reply. Turn your card green. Then the first exercise, back in the chat: ask for a small tutorial website on something you teach. It ends with your site's live address and its permanent address.
+which prints the model the endpoint serves and a one-word reply. Turn your card green. If you brought files, drag them onto `mine/` and run `python upload_check.py` in the same terminal. Then Stop 1, back in the chat: ask for a small tutorial website on something you teach. It ends with your site's live address and its permanent address.
 
 ---
 
 ## The day
 
-| Module | Folder | The one command |
-|---|---|---|
-| 0, everyone green | `00_setup/` | `python 00_setup/check.py` |
-| The first exercise, a website for your students | `00_website/` | `openclaw chat` |
-| 1, what the model can do | `01_tour/` | `python 01_tour/starter.py` |
-| 2, getting it to do what you mean | `02_prompts/` | `python 02_prompts/starter.py` |
-| 3, from documents to a table | `03_table/` | `python 03_table/starter.py`, then `python 03_table/run_folder.py`, then `python 03_table/audit.py 3 7 12`, then `python 03_table/viewer.py` |
-| 4, giving the model a tool | `04_tool/` | `python 04_tool/starter.py` |
-| 5, an agent on your question | `05_agent/` | `python 05_agent/starter.py` |
-| 6, your own tool | `06_project/` | `python 06_project/csv_tool.py` then `python 06_project/starter.py` |
+| Time | Stop | Folder | Start with |
+|---|---|---|---|
+| 8:30 | 0, everyone green | `00_setup/` | `python 00_setup/check.py`, then `python upload_check.py` |
+| 9:00 | 1, an agent that builds: a website for your students | `00_website/` | `openclaw chat` |
+| 9:35 | 2, your data, analyzed and reproducible, opening with a weak and a strong prompt | `02_data/` | `openclaw chat`, on your CSV or a shipped dataset |
+| 10:45 | Break | | |
+| 11:00 | 3, three papers to an evidence table, ending with the minute paper and your Stop 6 choice | `03_lit/` | `openclaw chat`, which runs `03_lit/lit.py`; then `python 03_lit/pdfask.py` |
+| 12:15 | Lunch | | |
+| 1:00 | 4, a chart back into data, after rerunning the morning's script from memory | `04_see/` | `python results/analysis.py`, then `python 04_see/see.py 04_see/charts/penguin_bars.png --extract` |
+| 1:25 | 5, the agent repairs research code, on Cimarron if it is up | `05_repair/` | `openclaw chat`, on `05_repair/analysis.py` |
+| 2:10 | Break | | |
+| 2:25 | 6, build one thing from your week; first result and the transfer test at 3:15 | `06_build/` | one of three recipes in `06_build/README.md` |
+| 4:00 | Show and tell | | `bash gallery.sh` |
+| 4:25 | Close: one trace read as a loop, Cimarron and accounts, export for everyone | | `bash export.sh` |
 
-Each folder's README is a complete lesson, laid out the same way every time: what you will be able to do, the idea, a prediction, the steps, a checkpoint, exercises, what carries forward, and what to do if something goes wrong. Behind? `bash catchup.sh m4` restores Module 4's files and the saved table so you can start there.
+Each stop's README is the lesson, laid out the same way every time: what you will be able to do, the idea, a prediction, the steps, a checkpoint, extensions, what carries forward, and what to do if something goes wrong.
 
-The shared code, all supplied and short:
+The room's model is NVIDIA Nemotron 3 Ultra (`nvidia/nemotron-3-ultra-550b-a55b`), reached through OpenRouter. Stop 4 reads images, so it uses NVIDIA Nemotron 3.5 Super VL, also on OpenRouter.
 
-- `llm.py`: `ask(prompt)` and `ask_json(prompt, Record)`. The whole interface.
-- `records.py`: the record every document becomes. You change two marked lines.
-- `agent.py`: the tool-calling loop, about forty lines. Read, not written.
-- `docs.py`: reads documents. `convert.py`: turns your PDFs and Word files into text.
-- `corpus/`: sixteen invented research documents (five studies of free pizza at office hours, and others in chemistry, engineering and genomics) and the saved table they produce.
-- `site/`: the website the agent builds in the first exercise. Never committed, and public at your site address while the Codespace runs, so put nothing private there. A copy is published to GitHub Pages automatically about a minute after it changes (`publish-site.sh` does it by hand).
-- `gallery.sh`: optional; posts a card about your site and your tool to the 4:10 show-and-tell wall. You see the whole card before anything is posted.
+Everything the stops make goes into `results/`, which is never committed, because what is built from your files can hold your data. `bash export.sh` packs it into one zip to download; everyone does that at the close. To show something to the room, look at it first, then copy it into `site/share/`: it is public on your site at once, so put there only what could go on a conference slide. `bash gallery.sh` then posts a card linking to your site.
+
+Behind? `bash catchup.sh s3` restores Stop 3's files so you can start there (`s2` to `s6`; your own versions are copied to `mine/` first). The first version of the day, six modules on prompting, structured output and the tool loop, is in `followon/old-modules/`, and `bash catchup.sh m1` to `m6` restores those.
+
+---
+
+## Three steps: a chat box, an agent in your folder, an agent on your campus cluster
+
+A chat box answers from what you paste into it. An agent in your folder runs code on your files and leaves programs that run again: that is the day, on OpenRouter. An agent on your campus cluster does the same with the model running on OSU's Cimarron cluster instead of at a commercial provider.
+
+If Cimarron is up, one command moves your Codespace there between stops, and one moves it back:
+
+    bash 00_setup/switch_backend.sh cimarron
+    bash 00_setup/switch_backend.sh openrouter
+
+On Cimarron the model's work, reading your prompt and the file contents the agent sends it and writing the reply, happens on OSU hardware in Stillwater. Nothing else moves: your files still sit in your GitHub Codespace, so the rule about what to bring is the same on both. If Cimarron is up, Stop 5 runs on it; otherwise the instructor shows it from the front. Stop 4 stays on OpenRouter either way. Whether the Cimarron endpoint keeps running after November 11 is the HPCC's decision: ask them, and ask about an account for your own work, at <https://hpcc.okstate.edu>.
+
+---
+
+## What is in the repository
+
+- `00_setup/` to `06_build/`: one folder per stop, each with its README and its helpers (`03_lit/lit.py` and `pdfask.py`, `04_see/see.py` and `compare.py`, `05_repair/check_expected.py`, the three Stop 6 starters).
+- `corpus/papers/`: three open-access papers for Stop 3. `corpus/SOURCES.md` says where every shipped dataset, paper and chart comes from, with its license.
+- `upload_check.py`: checks what you put in `mine/`. `export.sh`: zips `results/`. `catchup.sh`: restores a stop's files.
+- `llm.py`: `ask(prompt)` and `ask_json(prompt, Record)`, the interface the helpers use to call the model; it also records what each call cost.
+- `agent.py`: the tool-calling loop, about forty lines: the loop OpenClaw runs, in its smallest form. At the close you read one of your own traces as this loop.
+- `site/`: the website the agent builds in Stop 1. Never committed, and public at your site address while the Codespace runs, so put nothing private there. A copy is published to GitHub Pages automatically about a minute after it changes (`publish-site.sh` does it by hand). `site/share/` is where you put what you show the room.
+- `gallery.sh`: optional; posts a card about your site and your tool to the show-and-tell wall. You see the whole card before anything is posted.
+- `convert.py`: turns a Word file in `mine/` into text.
+- `03_table/`, `docs.py`, `records.py` and `corpus/doc_*.txt`: the first version of the day's evidence-table module and its sixteen invented documents, used by the modules in `followon/old-modules/`.
 - `followon/`: for going further on your own, starting with `continue.md` for Thursday morning.
 
 Every lab talks to one endpoint through two values in `.env`, `LLM_BASE_URL` and `LLM_API_KEY`. The backend is a configuration change, never a code change.
@@ -88,28 +119,37 @@ Every lab talks to one endpoint through two values in `.env`, `LLM_BASE_URL` and
 | What you see | What to do |
 |---|---|
 | Only a line ending in `$`; setup never started | Type `bash setup.sh`, press Enter. |
+| "That word is not the workshop word" | Type it again from the card. Letter case does not matter. |
 | The key was not accepted | Copy the whole key again and type `bash setup.sh --reset-key`. |
-| "The workshop endpoint is not set up yet" | If you pasted your own OpenRouter or NVIDIA key, copy the whole key again: its first characters tell setup where it goes. If you pasted the key from the card, tell a helper. |
+| "The workshop endpoint is not set up yet" | If you pasted your own OpenRouter or NVIDIA key, copy the whole key again: its first characters tell setup where it goes. If you typed the word from the card, tell a helper. |
 | Setup says it has already started in another terminal | Switch to the first terminal: the list at the right edge of the panel. |
-| `No endpoint or key yet` when running a lab | `bash setup.sh`, paste the key. |
+| `No endpoint or key yet` when running a lab | `bash setup.sh`, then the word from the card. |
 | `not reachable` from the check | Tell a helper. The instructor can switch the room to a different endpoint with one script. |
 | HTTP 404 with your own NVIDIA key | The key is fine; NVIDIA opens only some models to a personal account. Use the model setup suggests, or ask help@build.nvidia.com to enable Public API Endpoints. |
+| `upload_check.py` says `NOT READY` | It says why: an Excel file (save it as CSV), a scanned PDF, an iPhone photo (export it as JPEG). Give it three minutes, then use the shipped example it names and come back to yours in Stop 6. |
 | Your site address shows "This site is empty for now" | The agent has not written `site/index.html` yet, or the page needs a refresh. `ls site` shows what is there. |
 | The site address does not open, or the **Ports** tab shows port 8000 **Private** | Right-click the port 8000 row, **Port Visibility**, **Public**. If port 8000 is missing, type `bash .devcontainer/site-public.sh` and look again after ten seconds. |
 | `python3 .devcontainer/site-check.py` fails | Tell the agent: `Run the site check and fix every problem.` A link that starts with `/` must become relative. |
 | `cat ~/.osu-llm-workshop-pages-status` or `bash publish-site.sh` says `ONE STEP LEFT` | Once: the repository's **Settings**, **Pages**, **Deploy from a branch**, branch `gh-pages`, folder `/ (root)`, **Save**. The next change publishes, or run `bash publish-site.sh --yes`. |
 | The site never reaches its permanent address, or `bash publish-site.sh` says the repository is private | A free GitHub account serves Pages only from a public repository. Make it public under **Settings**, or skip publishing and download the `site` folder instead. |
-| A lab hangs on one document | Press Ctrl+C and run it again. The folder script already tries each document twice and keeps a row marked as an error rather than stopping; `run_folder.py --saved` copies a finished table. |
+| OpenClaw is slow, or shows 429, 503 or a timeout | The whole room calls the same model. Wait a minute rather than typing the request again; if it gave up, type `Continue.` |
+| The chat gets slow and forgets what it did | Type `/new`, then ask it to read the files it made and continue. |
+| "Stop 4 needs OpenRouter" | `bash 00_setup/switch_backend.sh openrouter`, then run the command again. |
+| You moved to Cimarron and OpenClaw still uses the old endpoint | A chat that was already open keeps it. Type `/exit`, then `openclaw chat`. |
+| Stop 3 says it used a saved answer, or OpenAlex did not answer | The room shares OpenAlex's limit on free searches. `python 03_lit/lit.py --topics` lists topics that always work; try yours again later. |
+| The agent edits a check, or a file it was told to use as it is | `git checkout <file>` puts it back. Then tell it not to change that file. |
 | The terminal shrank when you opened a file | Click the square **Maximize Panel** button just left of the **X**. |
 | No terminal at all | The **+** on the terminal panel. If the panel is gone: the **☰** menu at the top left, **Terminal**, **New Terminal**. |
-| Anything else | Stop the Codespace at https://github.com/codespaces and start it again; your files are kept. Still stuck: Ctrl+Shift+P, then **Codespaces: Rebuild Container**, which also keeps your files. Delete a Codespace only after copying anything you want from `mine/` and the labs, because deleting removes it. |
+| Anything else | Stop the Codespace at https://github.com/codespaces and start it again; your files are kept. Still stuck: Ctrl+Shift+P, then **Codespaces: Rebuild Container**, which also keeps your files. Delete a Codespace only after `bash export.sh` and downloading the zip, and copying anything you want from `mine/`, because deleting removes them. |
 
 ![The ☰ menu, Terminal, New Terminal](docs/screenshots/F-menu-terminal-new-terminal.png)
+
+Helpers in the room work from `00_setup/troubleshooting.md`, which covers every stop.
 
 ---
 
 ## Credits and license
 
-Original material written for this workshop. The Codespace machinery (the pinned container, the setup script that starts by itself, the key prompt) is adapted from [jhassell/asee9](https://github.com/jhassell/asee9), the 2026 ASEE Midwest workshop repository. The corpus is invented: no real papers, authors or findings. Licensed under CC BY 4.0; see LICENSE.
+Original material written for this workshop. The Codespace machinery (the pinned container, the setup script that starts by itself, the key prompt) is adapted from [jhassell/asee9](https://github.com/jhassell/asee9), the 2026 ASEE Midwest workshop repository. The datasets, papers and charts the stops use are real and public; `corpus/SOURCES.md` gives each one's source and license. The sixteen documents in `corpus/` are invented: no real papers, authors or findings. Licensed under CC BY 4.0; see LICENSE, except the shipped datasets and papers, which keep their own licenses.
 
 This workshop carries no certificate. Anyone who wants an NVIDIA credential in this area can take the NVIDIA-Certified Associate: Generative AI LLMs (NCA-GENL) exam separately.

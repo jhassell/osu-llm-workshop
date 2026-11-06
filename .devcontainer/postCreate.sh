@@ -46,8 +46,8 @@ fi
 # GATE. A prebuild must not be marked ready without the libraries in it. Check
 # the real thing, not a log line, and fail the lifecycle command if anything is
 # missing. (Without a prebuild, a failure here is repaired by setup.sh.)
-if python3 -c 'import openai, pydantic, pypdf, docx' 2>/dev/null; then
-  echo "GATE PASSED: openai, pydantic, pypdf, python-docx import."
+if MPLBACKEND=Agg python3 -c 'import openai, pydantic, pypdf, docx, pandas, matplotlib.pyplot, scipy, statsmodels.api, seaborn' 2>/dev/null; then
+  echo "GATE PASSED: the workshop libraries import (openai, pydantic, pypdf, python-docx, the data stack)."
 else
   echo "GATE FAILED: a Python library does not import. In the Codespace, bash setup.sh repairs it."
   exit 1

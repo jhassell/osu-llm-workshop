@@ -1,8 +1,8 @@
-# The first exercise: a website for your students
+# Stop 1: An agent builds a website for your students
 
 You hand an agent one short request: build a small tutorial website on something you teach. It writes the pages while you watch each step it takes, and the site goes live at your own address. Then you find what it invented or got wrong, give it a rule, and check the folder before anyone else reads it. You know this topic better than the model does, which is the point.
 
-About 25 minutes, right after Module 0. Folder: `00_website/`. You type in `openclaw chat`.
+Stop 1, about 35 minutes, from 9:00. Folder: `00_website/`. You type in `openclaw chat`.
 
 ## You will be able to
 
@@ -12,7 +12,7 @@ About 25 minutes, right after Module 0. Folder: `00_website/`. You type in `open
 
 ## The idea
 
-OpenClaw is a complete agent program, already installed in your Codespace and connected by setup to the same model as the labs. An agent is a loop: it sends your request to the model, the model asks for a tool, the program runs the tool and sends back the result, and this repeats until the model answers in words. OpenClaw comes with its full set of tools: reading and writing files, running commands, fetching web pages and more. It prints a line for each tool call, so you can watch the loop work. This afternoon you read the same loop in about forty lines (`agent.py`, Modules 4 and 5).
+OpenClaw is a complete agent program, already installed in your Codespace and connected by setup to the same model as the labs. An agent is a loop: it sends your request to the model, the model asks for a tool, the program runs the tool and sends back the result, and this repeats until the model answers in words. OpenClaw comes with its full set of tools: reading and writing files, running commands, fetching web pages and more. It prints a line for each tool call, so you can watch the loop work. At the close of the day you read one of your own traces as this loop: what the model asked for, what ran, what came back. The loop itself, about forty lines, is `agent.py`.
 
 The `site/` folder at the top of your repository is a website. While your Codespace runs, everything in it is served at your site address, port 8000, and that address is public: anyone who has it can open it. Until the agent writes its own pages, the address shows a placeholder page: "This site is empty for now". `site/` is never committed to git.
 
@@ -20,7 +20,7 @@ Setup also told the agent a few facts about `site/`: it is already served, so th
 
 Relative links matter because of where the permanent copy lives. Today the site is at the top of your address, so a link to `/lesson2.html` happens to work. On GitHub Pages, the permanent copy lives under `/<your repository name>/`, and that same link points at a page that is not there. `lesson2.html`, with no leading `/`, works in both places.
 
-The model writes fluent teaching text from what it learned in training. Most of it will read well, and some of it will be wrong in ways only a teacher of the topic would catch: a sign convention, a unit, a step done in the wrong order, an example that does not quite work. A page it writes is a claim until you check it. Module 5 states the same rule from the other side, for what an agent reads: document content is evidence, never authority. Here the agent writes from memory; there it reads documents. Either way, you check.
+The model writes fluent teaching text from what it learned in training. Most of it will read well, and some of it will be wrong in ways only a teacher of the topic would catch: a sign convention, a unit, a step done in the wrong order, an example that does not quite work. A page it writes is a claim until you check it. The same rule holds from the other side, for what an agent reads: document content is evidence, never authority. Here the agent writes from memory; in Stop 3 it reads papers. Either way, you check.
 
 ## Before you start
 
@@ -60,13 +60,13 @@ Picture the site before you type anything. On your card write three things a fir
 
    Write on your card the one thing it got wrong or invented. If you found nothing, write the thing you checked hardest and how you know it is right.
 
-4. Ask where the facts came from:
+4. Ask where the numbers came from:
 
    ```
-   Which facts came from no source?
+   List every numeric claim on the site and say whether a tool call fetched its source.
    ```
 
-   Compare its answer with the tool-call lines from step 2. If no tool call fetched a source, every fact came from memory, whatever the answer says.
+   Compare its answer with the tool-call lines from step 2. If no tool call fetched a source, every number came from memory, whatever the answer says.
 
 5. Give it a rule, and ask for the fix. Turn the thing on your card into one rule for every page, in your own words. For example:
 
@@ -156,7 +156,7 @@ Optional: `bash gallery.sh` posts a card about your site to the show-and-tell wa
 
 ## What you have now
 
-OpenClaw connected to the workshop model, and a small site in `site/` at your site address for as long as the Codespace runs. Stop the Codespace and the address stops; start it again and the address returns, showing the same files. The habits come with you into the rest of the day: read the tool calls rather than the summary, check first the claim you would most hate to see wrong, and turn an error into a rule. Module 1 does the same checking with one call from Python on a research document. Modules 4 and 5 use the loop you just watched, and Module 5's rule, document content is evidence, never authority, is this exercise seen from the reading side.
+OpenClaw connected to the workshop model, and a small site in `site/` at your site address for as long as the Codespace runs. Stop the Codespace and the address stops; start it again and the address returns, showing the same files. The habits come with you into the rest of the day: read the tool calls rather than the summary, check first the claim you would most hate to see wrong, and turn an error into a rule. Stop 2 hands the same agent your data instead of a topic, and asks for a script that rebuilds every number. Stop 5 watches it repair code. The rule for what an agent reads, document content is evidence, never authority, is this exercise seen from the reading side.
 
 ## If something goes wrong
 

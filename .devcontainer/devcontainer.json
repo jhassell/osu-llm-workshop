@@ -12,7 +12,7 @@
   // features block. A Codespace's first open is mostly the time it takes to
   // download the image. To change the libraries, rebuild the image and paste the
   // new digest here; requirements.txt must match what the image holds.
-  "image": "ghcr.io/jhassell/osu-llm-workshop-devcontainer@sha256:8617c3be9e13804be593743e5f7f388032db2c8972ea7854adefd0f92d193a70",
+  "image": "ghcr.io/jhassell/osu-llm-workshop-devcontainer@sha256:36d33f4b4ebe866800f9ff4e89660355e161e20ea50d86d8776397000daf5def",
 
   // onCreateCommand, NOT postCreateCommand: GitHub runs onCreateCommand inside
   // a Codespaces prebuild and never runs postCreateCommand there. Without a

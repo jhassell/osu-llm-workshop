@@ -7,6 +7,14 @@
 Both talk to one OpenAI-compatible endpoint named by two values in .env:
 LLM_BASE_URL and LLM_API_KEY. Nothing in this file is specific to a vendor.
 Optional: LLM_MODEL picks a model; otherwise the first one the endpoint lists.
+
+Every call records what it cost, so the day's numbers are honest:
+    import llm; llm.ask("..."); print(llm.LAST, llm.TOTAL)
+LAST is the latest call (model, request id, tokens, cost in dollars when the
+endpoint reports it); TOTAL adds up every call this program made.
+
+On OpenRouter, ask(prompt, web=True) lets the model search the web first; the
+pages it used are in llm.LAST["sources"].
 """
 import json
 import os
@@ -45,6 +53,10 @@ if not BASE_URL or not API_KEY:
     )
 
 client = OpenAI(base_url=BASE_URL, api_key=API_KEY)
+ON_OPENROUTER = BASE_URL.startswith("https://openrouter.ai/")
+
+LAST = {}
+TOTAL = {"calls": 0, "prompt_tokens": 0, "completion_tokens": 0, "cost": 0.0}
 
 
 def model_name() -> str:
@@ -55,7 +67,7 @@ def model_name() -> str:
     return MODEL
 
 
-def chat(messages, tools=None, max_tokens=3000, temperature=0.2):
+def chat(messages, tools=None, max_tokens=3000, temperature=0.2, web=False):
     """One round trip. Returns the assistant message object (content, tool_calls).
     max_tokens is generous because some models think before they answer, and
     the thinking counts against it (a Nemotron answer can spend 1,000 tokens
@@ -63,6 +75,15 @@ def chat(messages, tools=None, max_tokens=3000, temperature=0.2):
     kwargs = dict(model=model_name(), messages=messages, max_tokens=max_tokens, temperature=temperature)
     if tools:
         kwargs["tools"] = tools
+    if ON_OPENROUTER:
+        extra = {"usage": {"include": True}}
+        if web:
+            # OpenRouter's web search, with the engine named so the price is
+            # known (Exa: about $0.004 per search of five results, plus tokens).
+            extra["plugins"] = [{"id": "web", "engine": "exa", "max_results": 5}]
+        kwargs["extra_body"] = extra
+    elif web:
+        raise SystemExit("Web search needs OpenRouter. Switch with: bash 00_setup/switch_backend.sh openrouter")
     choice = _complete(kwargs)
     if choice.finish_reason == "length" or (not choice.message.tool_calls
                                             and not (choice.message.content or "").strip()):
@@ -103,7 +124,9 @@ def _arguments_complete(tool_calls):
 
 def _complete(kwargs):
     """One request. Returns the first choice, with any inline thinking removed."""
-    choice = client.chat.completions.create(**kwargs).choices[0]
+    response = client.chat.completions.create(**kwargs)
+    _record(response)
+    choice = response.choices[0]
     if choice.message.content and "<think>" in choice.message.content:
         # Some servers return a model's thinking inline. It is not the answer.
         # An unclosed block (thinking cut off by the length limit) goes too.
@@ -111,13 +134,37 @@ def _complete(kwargs):
     return choice
 
 
-def ask(prompt: str, system: str | None = None) -> str:
-    """Send one prompt, get the text back."""
+def _record(response):
+    """Note what one request cost in LAST, and add it to TOTAL."""
+    usage = getattr(response, "usage", None)
+    extra = getattr(usage, "model_extra", None) or {}
+    cost = extra.get("cost")
+    message = response.choices[0].message if response.choices else None
+    sources = [a.get("url_citation", {}).get("url") for a in (getattr(message, "annotations", None) or [])
+               if isinstance(a, dict)] if message is not None else []
+    if message is not None and not sources:
+        sources = [getattr(getattr(a, "url_citation", None), "url", None)
+                   for a in (getattr(message, "annotations", None) or [])]
+    LAST.clear()
+    LAST.update({"model": response.model, "id": response.id,
+                 "prompt_tokens": getattr(usage, "prompt_tokens", 0) or 0,
+                 "completion_tokens": getattr(usage, "completion_tokens", 0) or 0,
+                 "cost": cost, "sources": [s for s in sources if s]})
+    TOTAL["calls"] += 1
+    TOTAL["prompt_tokens"] += LAST["prompt_tokens"]
+    TOTAL["completion_tokens"] += LAST["completion_tokens"]
+    if isinstance(cost, (int, float)):
+        TOTAL["cost"] += cost
+
+
+def ask(prompt: str, system: str | None = None, web: bool = False) -> str:
+    """Send one prompt, get the text back. web=True lets the model search the
+    web first (OpenRouter only); the pages it used are in LAST["sources"]."""
     messages = []
     if system:
         messages.append({"role": "system", "content": system})
     messages.append({"role": "user", "content": prompt})
-    return (chat(messages).content or "").strip()
+    return (chat(messages, web=web).content or "").strip()
 
 
 def _json_text(text: str) -> str:

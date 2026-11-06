@@ -1,17 +1,100 @@
 #!/usr/bin/env bash
-# The room switch. Rewrites .env to point every lab at a different endpoint.
+# Move every lab, and OpenClaw, to another model endpoint, between stops.
 #
-#   bash 00_setup/switch_backend.sh https://integrate.api.nvidia.com/v1 <model name>
+#   bash 00_setup/switch_backend.sh cimarron      OSU's Cimarron cluster (Nemotron on campus GPUs)
+#   bash 00_setup/switch_backend.sh openrouter    back to the workshop's default
+#   bash 00_setup/switch_backend.sh               say which one you are on now
+#   bash 00_setup/switch_backend.sh https://host/v1 [model]   any other endpoint
 #
-# The model name is needed on an endpoint that serves many models; a NIM that
-# serves one needs only the URL.
+# The first move to an endpoint asks for the word on the card. After that each
+# endpoint's settings are kept in a file of their own (.env.cimarron,
+# .env.openrouter, never committed), so moving back and forth asks for nothing.
+# Cimarron's address comes from workshop-endpoint.txt, filled in by the
+# instructor; if it is empty, the switch says so and changes nothing.
 #
-# Then paste the key for that endpoint when asked. It runs setup.sh again, which
-# reconnects OpenClaw as well. The labs read LLM_BASE_URL and LLM_API_KEY from
-# .env and nothing else.
+# The labs read .env each time they run, so the next python command already
+# uses the new endpoint. OpenClaw is reconnected too, but a chat that is already
+# open keeps the old endpoint until you close it (/exit) and type: openclaw chat
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-URL="${1:-}"; MODEL="${2:-}"
-[ -n "$URL" ] || { echo "usage: bash 00_setup/switch_backend.sh https://host/v1 [model]"; exit 2; }
-if [ -n "$MODEL" ]; then exec bash "$ROOT/setup.sh" --reset-key --base-url "$URL" --model "$MODEL"; fi
-exec bash "$ROOT/setup.sh" --reset-key --base-url "$URL"
+ENV_FILE="$ROOT/.env"
+OPENROUTER_BASE_URL="https://openrouter.ai/api/v1"
+ENDPOINT_TXT_URL="https://raw.githubusercontent.com/jhassell/osu-llm-workshop/main/workshop-endpoint.txt"
+
+env_value() { [ -f "$1" ] && sed -n "s/^$2=//p" "$1" | tail -1 | tr -d '[:space:]"'"'" || true; }
+
+# Cimarron's address and model: this copy's workshop-endpoint.txt, or the
+# instructor's current one online when this copy's is empty.
+cimarron_endpoint() {
+  local txt=""
+  [ -f "$ROOT/workshop-endpoint.txt" ] && txt="$(cat "$ROOT/workshop-endpoint.txt")"
+  if ! printf '%s\n' "$txt" | grep -q '^OSU_BASE_URL=https://'; then
+    txt="$(curl -fsS -m 10 "$ENDPOINT_TXT_URL" 2>/dev/null)" || txt=""
+  fi
+  CIM_URL="$(printf '%s\n' "$txt" | sed -n 's/^OSU_BASE_URL=//p' | tail -1 | tr -d '[:space:]')"
+  CIM_MODEL="$(printf '%s\n' "$txt" | sed -n 's/^OSU_MODEL=//p' | tail -1 | tr -d '[:space:]')"
+  case "$CIM_URL" in https://*) CIM_URL="${CIM_URL%/}" ;; *) CIM_URL="" ;; esac
+}
+
+# Which named endpoint a .env points at: openrouter, cimarron or other.
+backend_of() {
+  local base; base="$(env_value "$1" LLM_BASE_URL)"; base="${base%/}"
+  if [ -z "$base" ]; then echo none
+  elif [ "$base" = "$OPENROUTER_BASE_URL" ]; then echo openrouter
+  elif [ -n "$CIM_URL" ] && [ "$base" = "$CIM_URL" ]; then echo cimarron
+  else echo other; fi
+}
+
+cimarron_endpoint
+CURRENT="$(backend_of "$ENV_FILE")"
+TARGET="${1:-}"
+
+if [ -z "$TARGET" ]; then
+  case "$CURRENT" in
+    none) echo "No endpoint yet. Run: bash setup.sh" ;;
+    other) echo "Now on: $(env_value "$ENV_FILE" LLM_BASE_URL)  model $(env_value "$ENV_FILE" LLM_MODEL)" ;;
+    *) echo "Now on: $CURRENT ($(env_value "$ENV_FILE" LLM_BASE_URL), model $(env_value "$ENV_FILE" LLM_MODEL))" ;;
+  esac
+  echo "To move: bash 00_setup/switch_backend.sh cimarron   or   bash 00_setup/switch_backend.sh openrouter"
+  exit 0
+fi
+
+case "$TARGET" in
+  http://*|https://*)   # any endpoint, as before: setup asks for its key
+    if [ -n "${2:-}" ]; then exec bash "$ROOT/setup.sh" --reset-key --base-url "$TARGET" --model "$2"; fi
+    exec bash "$ROOT/setup.sh" --reset-key --base-url "$TARGET" ;;
+  cimarron|openrouter) ;;
+  *) echo "usage: bash 00_setup/switch_backend.sh cimarron | openrouter | https://host/v1 [model]"; exit 2 ;;
+esac
+
+if [ "$TARGET" = cimarron ] && [ -z "$CIM_URL" ]; then
+  echo "Cimarron is not connected for this workshop yet (no address in workshop-endpoint.txt)."
+  echo "Nothing changed: you are still on ${CURRENT}."
+  exit 1
+fi
+if [ "$TARGET" = "$CURRENT" ]; then
+  echo "Already on $TARGET. Nothing changed."
+  exit 0
+fi
+
+# Keep the settings of the endpoint being left, so coming back asks for nothing.
+if [ "$CURRENT" = openrouter ] || [ "$CURRENT" = cimarron ]; then
+  ( umask 077; cp -p "$ENV_FILE" "$ROOT/.env.$CURRENT" ) && chmod 600 "$ROOT/.env.$CURRENT"
+fi
+
+echo "Moving from $CURRENT to $TARGET..."
+SAVED="$ROOT/.env.$TARGET"
+if [ -f "$SAVED" ] && [ -n "$(env_value "$SAVED" LLM_API_KEY)" ]; then
+  # Settings kept from an earlier visit. setup checks the key still works; if it
+  # does not, setup asks for the word again.
+  ( umask 077; cp -p "$SAVED" "$ENV_FILE" ) && chmod 600 "$ENV_FILE"
+  WORKSHOP_SWITCHING=1 exec bash "$ROOT/setup.sh"
+fi
+echo "Type the word on the card when asked."
+if [ "$TARGET" = openrouter ]; then
+  WORKSHOP_SWITCHING=1 exec bash "$ROOT/setup.sh" --reset-key
+fi
+if [ -n "$CIM_MODEL" ]; then
+  WORKSHOP_SWITCHING=1 exec bash "$ROOT/setup.sh" --reset-key --base-url "$CIM_URL" --model "$CIM_MODEL"
+fi
+WORKSHOP_SWITCHING=1 exec bash "$ROOT/setup.sh" --reset-key --base-url "$CIM_URL"

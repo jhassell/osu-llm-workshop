@@ -1,6 +1,6 @@
-# For helpers: the first ten minutes
+# For helpers: the first ten minutes, then every stop
 
-Carry this on a laptop or a printout. Order matters: the common fixes are first.
+Carry this on a laptop or a printout. Order matters: the common fixes for Stop 0 are first, then one section per stop. All day, most people who stall are stuck on one of four things: chat versus shell (OpenClaw's chat is not a `$` prompt), editor versus terminal, finding a file, and finding where the output went (`results/`, or the address of their site).
 
 1. No terminal, or a terminal with only a `$`. Click in it, type `bash setup.sh`, Enter. If there is no terminal panel at all: the menu at the top left, Terminal, New Terminal.
 2. The key prompt is waiting. What they type shows on screen, so a typo in the word is visible before Enter. Type or paste once, press Enter once. If someone typed `bash setup.sh` into the key prompt, setup says so and asks again.
@@ -15,13 +15,13 @@ Carry this on a laptop or a printout. Order matters: the common fixes are first.
 7. `not reachable` with HTTP 429 or 503. The endpoint is busy. Wait thirty seconds and run the check again. If it persists, tell the instructor.
 8. After `bash setup.sh --model <name>`, the check still names the old model. The labs and the check read only `.env`, so look at the model line in setup's last box; if setup reported an error, the model name is wrong for this endpoint. A Codespaces secret `LLM_MODEL` only matters to setup, and `--model` overrides it.
 9. Someone pasted their own NVIDIA key and setup says "does not know that address or model" with HTTP 404 even though the model list loaded. The key was accepted; NVIDIA opens only some hosted models to a personal account. Setup's message names a model that works; `bash setup.sh --reset-key --model <that name>`. For other models they must ask help@build.nvidia.com to enable Public API Endpoints on their account, which is not a same-day fix.
-10. Setup opens OpenClaw's chat straight after READY. Someone who typed the check into the chat: the chat is not a shell. Open a second terminal with the **+** and run `python 00_setup/check.py` there; the chat stays open for the first exercise. Pressing Enter (choice 1) also connects OpenClaw, without opening it. If setup said OpenClaw could not be connected, or OpenClaw later says it is not connected or its configuration was not accepted, `bash setup.sh --openclaw` writes it again and opens it; the reason is in `~/.osu-llm-workshop-openclaw.log`. The check and the lessons do not need OpenClaw, so the check comes first either way.
+10. Setup opens OpenClaw's chat straight after READY. Someone who typed the check into the chat: the chat is not a shell. Open a second terminal with the **+** and run `python 00_setup/check.py` there; the chat stays open for Stop 1. Pressing Enter (choice 1) also connects OpenClaw, without opening it. If setup said OpenClaw could not be connected, or OpenClaw later says it is not connected or its configuration was not accepted, `bash setup.sh --openclaw` writes it again and opens it; the reason is in `~/.osu-llm-workshop-openclaw.log`. The check does not need OpenClaw, so the check comes first either way; Stops 1, 2, 3, 5 and 6 do need it.
 11. Trust Folder dialog never clicked. The terminal cannot start until it is. It is a blue button in the editor area, easy to miss behind a tab.
 12. Codespace stuck on "Setting up your codespace" for more than five minutes. Go to github.com/codespaces, stop it, start it again. If that fails, delete it and create a new one from their repository; it builds in three minutes.
 13. No GitHub account, or the template step was skipped. Pair them with a neighbor for the morning. A helper creates the repository and Codespace with them at the break.
-14. After the instructor switches the room (`bash 00_setup/switch_backend.sh ...` on screen), every pasted key goes to that endpoint, so make sure people paste the key for it. To redo the paste after a switch, run the switch command again, not `bash setup.sh --reset-key`, which lets the key choose the endpoint again.
+14. Moving between OpenRouter and Cimarron, only when the instructor says Cimarron is up (Stop 5, and anyone who asks between stops): `bash 00_setup/switch_backend.sh cimarron` and `bash 00_setup/switch_backend.sh openrouter`; with no word after it, it says which one the Codespace is on. The first move to each asks for the card word; after that each endpoint's settings are kept (`.env.cimarron`, `.env.openrouter`) and moving asks for nothing. "Cimarron is not connected for this workshop yet" means `workshop-endpoint.txt` has no address: nothing changed. The labs follow at once; an OpenClaw chat that was already open keeps the old endpoint until it is closed (`/exit`) and reopened (`openclaw chat`). If a saved key stops working, the switch asks for the word again. For any other endpoint, `bash 00_setup/switch_backend.sh <url> <model>` still works, and re-pasting after it means running that command again, not `bash setup.sh --reset-key`, which lets the key choose the endpoint. Stop 4 refuses to run on Cimarron (the vision model is not there): `switch_backend.sh openrouter`. If someone asks what the move changes: the model's work happens on OSU hardware in Stillwater instead of at a commercial provider; their files still sit in their GitHub Codespace, so the rule about what to bring is the same on both. Say no more than that: their files were never on campus, and protected data stays home on either backend. Whether the endpoint keeps running after today is the HPCC's decision (https://hpcc.okstate.edu).
 
-## The first exercise: the website
+## Stop 1: the website
 
 15. The site address shows the placeholder page, "This site is empty for now". Either the agent has not written `site/index.html` yet (look at its tool-call lines, or `ls site`), or the browser tab needs a refresh. If the agent wrote its pages somewhere else, have them type: `Put the pages in site/ at the top of the repository.`
 16. The site address does not open, or the Ports tab shows port 8000 as Private. Right-click the port 8000 row, Port Visibility, Public. If their GitHub organization forbids public ports it stays private: the site still opens for them from the Ports tab, which is enough for today. If port 8000 is not in the Ports tab at all, `bash .devcontainer/site-public.sh` starts the server and makes it public; it prints nothing, so wait ten seconds and look again. What it did is in `~/.osu-llm-workshop-site.log`. The READY box shows `the Ports tab, port 8000` instead of an address whenever making the port public had not finished or failed; that alone is not a problem.
@@ -30,4 +30,56 @@ Carry this on a laptop or a printout. Order matters: the common fixes are first.
 19. `bash publish-site.sh` says the repository is private. On a free account Pages serves only public repositories. Their choice: make it public (Settings, General, Danger Zone, Change visibility, after looking at what is committed; `.env` and `mine/` never are), or skip publishing and download the `site` folder (right-click it in the file list, Download). Their site publishes itself once the repository is public.
 20. A Check your understanding box says "not connected yet" or "checked all the answers it can for today". The first means `.env` has no key: `bash setup.sh`. The second is the daily cap of 150 checks per Codespace, which protects the key on a public address; it resets the next day. On the permanent github.io copy the box always says answers are checked on the live site; that is expected.
 
-What not to do: do not open, print or edit anyone's `.env` by hand, do not type a key for them on a shared screen, do not delete `mine/`, and do not run `publish-site.sh` for anyone. To see which settings `.env` holds without showing the key: `grep -o '^[A-Z_]*=' .env`.
+21. `python upload_check.py` says `NOT READY`. It names the reason and the shipped example to use. An Excel file: open it on the laptop, File, Save As, CSV, upload that. An iPhone photo (`.heic`): on a Mac, Preview, File, Export, JPEG. A PDF with "almost no text" is a scan; the model cannot read it here. A CSV over 50 MB: a sample of a few thousand rows. Give it three minutes, then the shipped example, with their file kept for Stop 6. Text files (.txt, .md) are `ready` as they are; a Word file needs `python convert.py`.
+22. Someone asks whether they may upload a file. The rule is the same all day and on either backend: what a stop reads goes to the model service, so no unpublished results they are not free to share, no student records, nothing under an IRB protocol. When in doubt, the shipped example. You are not the judge of their data; they are.
+
+## Stop 2: your data
+
+23. The agent says `No module named pandas`. The image has pandas, numpy, matplotlib, scipy, statsmodels and seaborn. `python -c "import pandas"` in a terminal; if that fails, `bash setup.sh` repairs the libraries.
+24. The agent runs `pip install`. It does not need to, and forty of them at once is how Stop 2 slows down. Have them type: `Use the libraries already installed: pandas, matplotlib, scipy, statsmodels, seaborn.`
+25. Their CSV will not load: an encoding error, one column instead of many, a header on line 3. They tell the agent what they know (`the file is separated by semicolons`, `the header is on line 3`). Three minutes, then a shipped dataset (`ls 02_data/datasets`).
+26. Empty figures, or every point in one place. The outcome column was read as text. `Which columns did you read as numbers?`
+27. The report has a number the script never printed, or the hand check disagrees with the report. That is the lesson working, not a fault. `Which line of output does each number in the report come from?` For a row-count difference, find in the tool calls where rows were dropped and why.
+28. The chat gets slow and forgets what it did. The context is full. `/new`, then `Read results/analysis.py and results/report.md, then continue.`
+29. Can't find the output. Everything is in `results/` (the report: right-click `results/report.md`, Open Preview). `results/` is never committed; that is on purpose.
+
+## Stop 3: papers and the evidence table
+
+30. The agent answers with references without running anything. They came from memory. `Run 03_lit/lit.py; do not write references yourself.` If it edits `lit.py` or writes its own search code: `git checkout 03_lit/lit.py`, then `Use 03_lit/lit.py as it is.`
+31. OpenAlex limits. Without a key, OpenAlex gives a small daily budget per network address, and Codespaces share a few addresses, so the room runs out together. When the room's OpenAlex key is in `workshop-endpoint.txt` (or someone's own in `.env` as `OPENALEX_API_KEY=`), `lit.py` uses it; that limit is the instructor's to watch. When a search says it used a saved answer, or that OpenAlex did not answer: `python 03_lit/lit.py --topics` lists the topics that always work offline; use one, and try theirs later. Crossref, which checks the DOIs, is not limited.
+32. A DOI comes back `missing` with a note that another agency registered it. It is real (Zenodo, arXiv, DataCite), just not checkable in Crossref. `missing` with no note is often a typo, sometimes an invented DOI.
+33. `pdfask.py` says a PDF has almost no text: a scan. Another paper, or the shipped ones in `corpus/papers/`. A long paper is read only for about its first 120,000 characters (roughly 20,000 words); they should say so in their table.
+34. Opening the evidence table: right-click `results/evidence-table.html`, Download, open it on the laptop. The text the model read is in `results/papers/`.
+35. "Found" means the sentence is in the paper, not that it supports the value. If someone reads every found as proof, ask them to read one aloud next to its value.
+
+## Stop 4: a chart back into data
+
+36. "Stop 4 needs OpenRouter". They are still on Cimarron. `bash 00_setup/switch_backend.sh openrouter`, then the same command again.
+37. `python results/analysis.py` fails at the start of the stop. They may have no Stop 2 script; that is fine, go straight to the charts.
+38. A call takes more than a minute, or says it ran past the deadline and is trying again. The model thinks at length and the room is asking at once. Let the retry run.
+39. "The reply is not a table pandas can read". Open the `.reply.txt` beside where the CSV would be: the model described instead of tabulating. Run `--extract` again, or `--extract "one row per x value"`.
+40. `compare.py` says it matched columns by position, or a series shows `0/12 matched`. The model named or dropped a series; check the order in the printed table, or run `--extract` again.
+
+## Stop 5: code repair
+
+41. At the start, if Cimarron is up: `bash 00_setup/switch_backend.sh cimarron`, then `/exit` and `openclaw chat` so the chat uses it. At the end: `bash 00_setup/switch_backend.sh openrouter`, then `/exit` and `openclaw chat` again. If Cimarron is not up, nobody switches. On Cimarron the context is smaller; a chat that slows or fails on length: `/new` and the same request again.
+42. The agent edits `check_expected.py` or `EXPECTED.md` to make the check pass. That is what this stop is about. `git checkout 05_repair/check_expected.py 05_repair/EXPECTED.md`, then `Do not change the check or the expected numbers. Fix analysis.py.`
+43. It installs an older pandas to make the old call work. `Use the installed pandas; change the code.` Then `pip install pandas==3.1.0` puts the workshop's version back.
+44. It stops once the script runs, without the check: `Now run python 05_repair/check_expected.py.` To start over: `bash catchup.sh s5` restores the broken script, with their version backed up in `mine/`.
+
+## Stop 6: build one thing
+
+45. The starter fails before anything is changed. `python 00_setup/check.py` first: if the model is not reachable, nothing else will work.
+46. The agent rewrote more than they asked. `git diff 06_build/` shows it; `git checkout 06_build/<file>` puts one file back.
+47. The page recipe says the report names a missing figure, or a number is not in the script's output. Either a number was typed by hand or the output file is old: `python results/analysis.py > results/analysis-output.txt`, then again. No Stop 2 report at all: `bash catchup.sh s6` copies in a finished one.
+48. Their documents are scans. Build on the shipped papers; keep the scans for later.
+49. Running out of time. Commit what runs (`git add 06_build && git commit -m "my tool"`) and write the next step as a comment at the top of the file.
+
+## Any stop, and the close
+
+50. Behind: `bash catchup.sh s2` to `s6` restores that stop's files; it copies theirs to `mine/catchup-backup-<date-time>/` first and never touches `.env`, and touches `results/` only to add a missing Stop 2 report for `s6`.
+51. OpenClaw slow, or 429, 503 or a timeout. Wait a minute; retyping only adds to the queue. If it gave up: `Continue.`
+52. Showing the room: they look at the file first, copy it into `site/share/` (public on their site at once, so only what could go on a conference slide), then `bash gallery.sh`, which shows the whole card before anything is posted.
+53. `bash export.sh` says `results/ is empty`. Nothing has been made yet. Otherwise it writes `results-<date>.zip` at the top of the repository: right-click it, Download. Everyone does this at the close, before stopping the Codespace.
+
+What not to do: do not open, print or edit anyone's `.env` by hand, do not type a key for them on a shared screen, do not delete `mine/` or `results/`, do not copy anyone's files into `site/share/` for them, and do not run `publish-site.sh` for anyone. To see which settings `.env` holds without showing the key: `grep -o '^[A-Z_]*=' .env`.

@@ -1,0 +1,5 @@
+column,matched to,matched,mean_err,max_err,pct_range,median_rel
+female (g),Female (g),3/3,42.0,80.0,0.8,0.8
+female err (g),Female err (g),3/3,17.3,19.0,0.3,6.4
+male (g),Male (g),3/3,55.7,85.0,1.0,1.1
+male err (g),Male err (g),3/3,48.7,87.0,0.9,13.5
