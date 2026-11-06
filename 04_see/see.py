@@ -120,6 +120,7 @@ def see(image_path, question):
         {"type": "text", "text": question},
         {"type": "image_url", "image_url": {"url": image_data_url(image_path)}}]}]
     start = time.time()
+    spent_before = llm.TOTAL["cost"]          # so a retried call reports both attempts' cost
     problem = ""
     max_tokens = MAX_TOKENS
     for attempt in (1, 2):
@@ -135,7 +136,8 @@ def see(image_path, question):
         # Some providers return the thinking inline. It is not the answer.
         text = re.sub(r"<think>.*?(</think>\s*|$)", "", text, flags=re.S).strip()
         INFO.update({"provider": (response.model_extra or {}).get("provider"),
-                     "seconds": round(time.time() - start, 1), "attempts": attempt})
+                     "seconds": round(time.time() - start, 1), "attempts": attempt,
+                     "cost": llm.TOTAL["cost"] - spent_before})
         if text and choice.finish_reason != "length":
             return text
         problem = "the model used its whole allowance thinking" if not text else "the answer was cut off"
@@ -146,8 +148,9 @@ def see(image_path, question):
 
 
 def cost_line():
-    """One line saying what the last call took: provider, time, tokens, dollars."""
-    cost = llm.LAST.get("cost")
+    """One line saying what the last call took: provider, time, tokens, dollars.
+    The dollars cover every attempt of that call, not only the one that answered."""
+    cost = INFO.get("cost", llm.LAST.get("cost"))
     dollars = f"${cost:.4f}" if isinstance(cost, (int, float)) else "cost not reported"
     return (f"[{VISION_MODEL} via {INFO.get('provider')}, {INFO.get('seconds')} s, "
             f"attempt {INFO.get('attempts')}, {llm.LAST.get('prompt_tokens', 0):,} tokens in, "

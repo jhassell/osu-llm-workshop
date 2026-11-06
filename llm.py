@@ -52,7 +52,10 @@ if not BASE_URL or not API_KEY:
         "No endpoint or key yet. Run:  bash setup.sh   (it writes LLM_BASE_URL and LLM_API_KEY to .env)"
     )
 
-client = OpenAI(base_url=BASE_URL, api_key=API_KEY)
+# A stalled request must not hold a terminal for long: the client's defaults are a
+# 600-second timeout and two retries, half an hour in the worst case. The slowest
+# call measured on November 6 took about a minute; three minutes, one retry.
+client = OpenAI(base_url=BASE_URL, api_key=API_KEY, timeout=180, max_retries=1)
 ON_OPENROUTER = BASE_URL.startswith("https://openrouter.ai/")
 
 LAST = {}
