@@ -53,7 +53,7 @@ Type the word on your card (letter case does not matter) and press Enter. Setup 
 
     python 00_setup/check.py
 
-which prints the model the endpoint serves and a one-word reply. Turn your card green. If you brought files, drag them onto `mine/` and run `python upload_check.py` in the same terminal. Then Stop 1, back in the chat: ask for a small tutorial website on something you teach. It ends with your site's live address and its permanent address.
+which prints the model the endpoint serves and a one-word reply. Stick the green note on the back of your laptop lid. If you brought files, drag them onto `mine/` and run `python upload_check.py` in the same terminal. Then Stop 1, back in the chat: ask for a small tutorial website on something you teach. It ends with your site's live address and its permanent address.
 
 ---
 

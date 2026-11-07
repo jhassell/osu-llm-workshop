@@ -1,6 +1,6 @@
 # Stop 0: Everyone green
 
-Before anything else, every Codespace in the room has to reach the model. This stop connects yours with the word on your card and proves it with one command, then checks any files you brought. Every later stop sends the same kind of request this check sends, with different text in it.
+Before anything else, every Codespace in the room has to reach the model. This stop connects yours with the word on your card and proves it with one command, then checks any files you brought. You were handed two sticky notes at the door: the green one on the back of your laptop lid, facing the front, means you are ready; the pink one means you want a helper, at any point today. Every later stop sends the same kind of request this check sends, with different text in it.
 
 Stop 0, about 30 minutes, from 8:30. Folder: `00_setup/`.
 
@@ -77,7 +77,7 @@ When the check runs, what will its second line say? Write your answer on your ca
        reachable; serving nvidia/nemotron-3-ultra-550b-a55b
        completion: ready
 
-   The wording of the second line can vary from run to run. Compare it with your prediction, then turn your card green.
+   The wording of the second line can vary from run to run. Compare it with your prediction, then stick the green note on the back of your laptop lid.
 
 4. If you brought files for the day (a CSV, two or three PDFs, a chart image), drag them from your laptop onto the `mine/` folder in the file tree, then check them, in the same second terminal:
 
