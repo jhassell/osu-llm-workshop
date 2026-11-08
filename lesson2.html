@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 2: Henderson–Hasselbalch — Buffer pH Workshop</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Buffer pH Workshop</h1>
+  <p class="subtitle">Lesson 2: The Henderson–Hasselbalch Equation</p>
+</header>
+
+<main>
+  <nav class="breadcrumb">
+    <a href="index.html">← Home</a> / <a href="lesson1.html">Lesson 1</a> / Lesson 2
+  </nav>
+
+  <section>
+    <h2>2.1 Deriving the Equation</h2>
+    <p>Start with the equilibrium expression for a weak acid HA:</p>
+    <p class="equation">Kₐ = [H⁺][A⁻] / [HA]</p>
+    
+    <p>Take the negative log of both sides:</p>
+    <p class="equation">–log Kₐ = –log[H⁺] – log([A⁻]/[HA])</p>
+    <p class="equation">pKₐ = pH – log([A⁻]/[HA])</p>
+    
+    <p>Rearrange to get the <strong>Henderson–Hasselbalch equation</strong>:</p>
+    <p class="equation highlight">pH = pKₐ + log([A⁻] / [HA])</p>
+    
+    <div class="key-concept">
+      <h3>What This Means</h3>
+      <ul>
+        <li>Buffer pH depends on the <strong>ratio</strong> of conjugate base to weak acid, not their absolute concentrations</li>
+        <li>When [A⁻] = [HA], the log term is 0, so <strong>pH = pKₐ</strong></li>
+        <li>Increasing [A⁻]/[HA] raises pH; decreasing it lowers pH</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>2.2 Using the Equation: Calculating Buffer pH</h2>
+    
+    <div class="example">
+      <h3>Example: Acetate Buffer</h3>
+      <p>Calculate the pH of a buffer containing 0.15 M CH₃COO⁻ and 0.10 M CH₃COOH (pKₐ = 4.76).</p>
+      <p class="equation">pH = 4.76 + log(0.15 / 0.10)</p>
+      <p class="equation">pH = 4.76 + log(1.5)</p>
+      <p class="equation">pH = 4.76 + 0.18 = <strong>4.94</strong></p>
+    </div>
+
+    <div class="example">
+      <h3>Example: Phosphate Buffer</h3>
+      <p>A buffer is made from 0.050 M H₂PO₄⁻ and 0.10 M HPO₄²⁻ (pKₐ = 7.21). What is its pH?</p>
+      <p class="equation">pH = 7.21 + log(0.10 / 0.050)</p>
+      <p class="equation">pH = 7.21 + log(2.0)</p>
+      <p class="equation">pH = 7.21 + 0.30 = <strong>7.51</strong></p>
+    </div>
+  </section>
+
+  <section>
+    <h2>2.3 Preparing a Buffer of Target pH</h2>
+    <p>To prepare a buffer at a specific pH, rearrange the equation to find the needed ratio:</p>
+    <p class="equation">[A⁻] / [HA] = 10^(pH – pKₐ)</p>
+
+    <div class="example">
+      <h3>Example: Prepare pH 5.00 Acetate Buffer</h3>
+      <p>Target pH = 5.00, pKₐ = 4.76</p>
+      <p class="equation">[A⁻]/[HA] = 10^(5.00 – 4.76) = 10^0.24 = <strong>1.74</strong></p>
+      <p>So you need about 1.74 times more acetate than acetic acid. For a 0.20 M total buffer:</p>
+      <p class="equation">[HA] + [A⁻] = 0.20 M</p>
+      <p class="equation">[A⁻] = 1.74[HA]</p>
+      <p class="equation">2.74[HA] = 0.20 M → [HA] = 0.073 M, [A⁻] = 0.127 M</p>
+    </div>
+
+    <div class="key-concept">
+      <h3>Choosing the Right Buffer System</h3>
+      <p>Pick a weak acid with pKₐ within ±1 unit of your target pH. This ensures both components are present in reasonable amounts (ratio between 0.1 and 10).</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>2.4 Dilution & the Henderson–Hasselbalch Equation</h2>
+    <p>A beautiful property: <strong>diluting a buffer does not change its pH</strong> (ideally).</p>
+    <p>Since pH depends on the <em>ratio</em> [A⁻]/[HA], and both concentrations decrease by the same factor on dilution, the ratio stays constant. The Henderson–Hasselbalch equation predicts no pH change.</p>
+    <p class="note">In reality, very dilute buffers (< 0.01 M) deviate due to activity effects and water autoionization — but for typical lab concentrations, dilution barely changes pH.</p>
+  </section>
+
+  <div class="socratic" data-question="hh-1">
+    <p>A buffer has pH = pKₐ + 1. What is the ratio [A⁻]/[HA]? If you double the concentration of both HA and A⁻, what happens to the pH?</p>
+  </div>
+
+  <div class="socratic" data-question="hh-2">
+    <p>You need a buffer at pH 8.50. Which buffer system would you choose: phosphate (pKₐ = 7.21) or TRIS (pKₐ = 8.07)? Explain your choice and calculate the approximate [base]/[acid] ratio needed for your chosen system.</p>
+  </div>
+
+  <nav class="lesson-nav">
+    <a href="lesson1.html" class="btn">← Previous: Lesson 1</a>
+    <a href="lesson3.html" class="btn primary">Next: Lesson 3 →</a>
+  </nav>
+</main>
+
+<footer>
+  <p>OSU LLM Workshop · Buffer pH Module</p>
+</footer>
+
+<script src="socratic.js" defer></script>
+</body>
+</html>

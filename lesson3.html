@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 3: Buffer Capacity & Applications — Buffer pH Workshop</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Buffer pH Workshop</h1>
+  <p class="subtitle">Lesson 3: Buffer Capacity & Applications</p>
+</header>
+
+<main>
+  <nav class="breadcrumb">
+    <a href="index.html">← Home</a> / <a href="lesson1.html">Lesson 1</a> / <a href="lesson2.html">Lesson 2</a> / Lesson 3
+  </nav>
+
+  <section>
+    <h2>3.1 Buffer Capacity: The Limit of Resistance</h2>
+    <p>Buffers don't resist pH changes forever. <strong>Buffer capacity (β)</strong> is the amount of strong acid or base a buffer can absorb before the pH changes significantly (typically by 1 unit).</p>
+
+    <div class="key-concept">
+      <h3>What Determines Buffer Capacity?</h3>
+      <ul>
+        <li><strong>Total concentration:</strong> Higher [HA] + [A⁻] = higher capacity</li>
+        <li><strong>Ratio:</strong> Maximum capacity when [A⁻] = [HA] (pH = pKₐ)</li>
+        <li><strong>Volume:</strong> More solution = more total moles to absorb acid/base</li>
+      </ul>
+    </div>
+
+    <p class="equation">β ≈ 2.3 × [HA] × [A⁻] / ([HA] + [A⁻])</p>
+    <p>This simplifies to β ≈ 0.576 × C<sub>total</sub> when [HA] = [A⁻] (where C<sub>total</sub> = [HA] + [A⁻]).</p>
+  </section>
+
+  <section>
+    <h2>3.2 What Happens When Capacity Is Exceeded?</h2>
+    <p>Once one component is nearly consumed, the buffer can no longer neutralize added acid/base effectively. The pH then changes rapidly — the solution behaves like a weak acid or base alone.</p>
+
+    <div class="example">
+      <h3>Example: Acetate Buffer Exhaustion</h3>
+      <p>1 L of 0.10 M CH₃COOH / 0.10 M CH₃COO⁻ buffer (pH 4.76). Add 0.12 mol HCl.</p>
+      <ul>
+        <li>Initial: 0.10 mol HA, 0.10 mol A⁻</li>
+        <li>HCl reacts: H⁺ + A⁻ → HA</li>
+        <li>After reaction: 0.22 mol HA, –0.02 mol A⁻ (impossible!)</li>
+      </ul>
+      <p>All A⁻ is consumed after 0.10 mol HCl. The remaining 0.02 mol H⁺ makes the solution strongly acidic (pH ≈ 1.7). The buffer is exhausted.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>3.3 Biological Buffers: Life Depends on Them</h2>
+    <table>
+      <thead>
+        <tr><th>System</th><th>Buffer Pair</th><th>pKₐ</th><th>Physiological pH</th><th>Role</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Blood</td><td>H₂CO₃ / HCO₃⁻</td><td>6.1</td><td>7.40</td><td>CO₂ transport, pH stability</td></tr>
+        <tr><td>Intracellular</td><td>H₂PO₄⁻ / HPO₄²⁻</td><td>7.21</td><td>7.0–7.4</td><td>Enzyme function, ATP</td></tr>
+        <tr><td>Protein side chains</td><td>Various (His, Cys, etc.)</td><td>6–10</td><td>~7.2</td><td>Local microenvironments</td></tr>
+        <tr><td>Hemoglobin</td><td>Hb / HbH⁺</td><td>~7.0</td><td>7.4</td><td>O₂/CO₂ exchange, Bohr effect</td></tr>
+      </tbody>
+    </table>
+
+    <div class="key-concept">
+      <h3>The Bicarbonate Blood Buffer</h3>
+      <p>CO₂ + H₂O ⇌ H₂CO₃ ⇌ H⁺ + HCO₃⁻</p>
+      <p>This open system is unique: the "weak acid" (H₂CO₃) is in equilibrium with CO₂ gas. The lungs regulate CO₂, and the kidneys regulate HCO₃⁻ — giving the body two physiological "knobs" to control blood pH.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>3.4 Laboratory Buffer Preparation: Best Practices</h2>
+    <ol>
+      <li><strong>Choose the right system:</strong> pKₐ within ±1 of target pH</li>
+      <li><strong>Decide total concentration:</strong> 0.01–0.2 M typical; higher = more capacity</li>
+      <li><strong>Calculate ratio:</strong> [A⁻]/[HA] = 10^(pH–pKₐ)</li>
+      <li><strong>Prepare stock solutions:</strong> Weigh weak acid and conjugate base salt (e.g., NaCH₃COO)</li>
+      <li><strong>Mix and check pH:</strong> Use a calibrated pH meter; adjust with small amounts of strong acid/base if needed</li>
+      <li><strong>Dilute to final volume:</strong> pH should stay nearly constant</li>
+      <li><strong>Label:</strong> Composition, pH, date, preparer</li>
+    </ol>
+
+    <div class="warning">
+      <h3>Common Mistakes</h3>
+      <ul>
+        <li>Using a buffer outside its useful pH range (ratio > 10:1 or < 1:10)</li>
+        <li>Not checking pH after preparation — Henderson–Hasselbalch is approximate</li>
+        <li>Assuming temperature doesn't matter (pKₐ changes with temperature)</li>
+        <li>Contaminating stock solutions (always use clean glassware)</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>3.5 Buffer Selection Quick Reference</h2>
+    <p>For a target pH, choose the buffer whose pKₐ is closest:</p>
+    <table>
+      <thead>
+        <tr><th>Target pH Range</th><th>Recommended Buffer</th><th>pKₐ</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>2.0–4.0</td><td>Glycine-HCl / Citrate</td><td>2.34 / 3.13</td></tr>
+        <tr><td>3.5–5.5</td><td>Acetate / Formate</td><td>4.76 / 3.75</td></tr>
+        <tr><td>5.5–7.5</td><td>MES / PIPES / Phosphate</td><td>6.15 / 6.80 / 7.21</td></tr>
+        <tr><td>7.0–9.0</td><td>HEPES / TRIS / Phosphate</td><td>7.55 / 8.07 / 7.21</td></tr>
+        <tr><td>8.5–10.5</td><td>Bicine / Carbonate / Glycine</td><td>8.35 / 10.33 / 9.78</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="socratic" data-question="cap-1">
+    <p>Two acetate buffers both have pH 4.76. Buffer A is 0.01 M HA / 0.01 M A⁻. Buffer B is 0.50 M HA / 0.50 M A⁻. Which has greater buffer capacity? How much more strong acid can Buffer B absorb than Buffer A before the pH drops by 1 unit?</p>
+  </div>
+
+  <div class="socratic" data-question="cap-2">
+    <p>A biologist prepares a 50 mM phosphate buffer at pH 7.4 for a cell culture experiment. The cells produce lactic acid, lowering the pH to 6.9 over 24 hours. What happened to the buffer components? Could a higher concentration buffer have prevented this? Explain.</p>
+  </div>
+
+  <nav class="lesson-nav">
+    <a href="lesson2.html" class="btn">← Previous: Lesson 2</a>
+    <a href="index.html" class="btn primary">Back to Home →</a>
+  </nav>
+</main>
+
+<footer>
+  <p>OSU LLM Workshop · Buffer pH Module</p>
+</footer>
+
+<script src="socratic.js" defer></script>
+</body>
+</html>
