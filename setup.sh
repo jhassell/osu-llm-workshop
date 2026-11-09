@@ -452,6 +452,43 @@ exchange_word() {
   return 1
 }
 
+# word_expired: the card's word was for the workshop day only, Wednesday,
+# November 11, 2026. From Thursday on (Oklahoma time, UTC-6 in November, which
+# needs no time zone files) setup does not look it up:
+# it says the word has ended and how to go on with a key of your own, and the
+# prompt asks again. WORKSHOP_TODAY=YYYY-MM-DD stands in for today's date in tests.
+WORKSHOP_WORD="openingdaytoken"
+WORKSHOP_WORD_LAST_DAY=20261111
+after_workshop_day() {
+  local today="${WORKSHOP_TODAY:-$(TZ=CST6 date +%Y-%m-%d)}"
+  today="${today//-/}"
+  case "$today" in ''|*[!0-9]*) return 1 ;; esac
+  [ "$today" -gt "$WORKSHOP_WORD_LAST_DAY" ]
+}
+word_expired() {
+  local word
+  word="$(printf '%s' "$KEY" | tr '[:upper:]' '[:lower:]')"
+  [ "$word" = "$WORKSHOP_WORD" ] || return 1
+  after_workshop_day || return 1
+  hr
+  echo " OpeningDayToken was only for the OSU workshop on Wednesday, November 11, 2026."
+  echo " It no longer works. Every exercise still works with a key of your own:"
+  echo
+  echo " Your own OpenRouter key. Make one at https://openrouter.ai/keys, add a few"
+  echo "   dollars of credit and set a limit on the key. It starts with sk-or-."
+  echo "   Paste it at the prompt below. At the list of models, press Enter for"
+  echo "   Nemotron 3 Ultra, the workshop's model."
+  echo " Cimarron, OSU's cluster, if it is available to you. Ask the HPCC about access"
+  echo "   and a key (https://hpcc.okstate.edu). Then run, with the address they give you:"
+  echo "     bash setup.sh --reset-key --base-url <address>"
+  echo "   and paste their key."
+  echo
+  echo " No key yet? Press Enter. When you have one, run: bash setup.sh --reset-key"
+  echo " More in followon/continue.md."
+  hr
+  return 0
+}
+
 # endpoint_for_key: when the key decides (BASE_SOURCE=key), set BASE and the
 # default MODEL for the provider the key belongs to. Returns 1, with a message,
 # when that provider's endpoint is not configured.
@@ -626,8 +663,13 @@ if [ -z "$KEY" ] && [ -z "${WORKSHOP_NO_PROMPT:-}" ] && { : </dev/tty; } 2>/dev/
   while [ "$ATTEMPT" -lt 3 ]; do
     ATTEMPT=$((ATTEMPT + 1))
     echo
-    echo "Paste your key: the workshop word or key from the card, or your own OpenRouter key"
-    echo "(sk-or-...) or NVIDIA key (nvapi-...). Then press Enter."
+    if after_workshop_day; then
+      echo "Paste your key: your own OpenRouter key (sk-or-...) or NVIDIA key (nvapi-...)."
+      echo "Then press Enter."
+    else
+      echo "Paste your key: the workshop word or key from the card, or your own OpenRouter key"
+      echo "(sk-or-...) or NVIDIA key (nvapi-...). Then press Enter."
+    fi
     echo "No key yet? Just press Enter: the Codespace is ready and the check waits for the key."
     printf "> "
     ENTRY=""
@@ -649,6 +691,7 @@ if [ -z "$KEY" ] && [ -z "${WORKSHOP_NO_PROMPT:-}" ] && { : </dev/tty; } 2>/dev/
       echo "That does not look like a key: it should be at least eight characters with no spaces."
       KEY=""; continue
     fi
+    if word_expired; then KEY=""; continue; fi
     exchange_word || { KEY=""; continue; }
     endpoint_for_key || { KEY=""; continue; }
     dots_start "Checking the key against the endpoint"
@@ -722,7 +765,8 @@ if [ -n "$KEY" ]; then
   echo " The key is saved in .env (never committed)."
 else
   echo " Codespace ready; endpoint check pending."
-  echo " When you have the workshop key, type:   bash setup.sh"
+  if after_workshop_day; then echo " When you have a key, type:   bash setup.sh"
+  else echo " When you have the workshop key, type:   bash setup.sh"; fi
   hr
   exit 0
 fi
