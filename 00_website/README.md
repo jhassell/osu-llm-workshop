@@ -8,7 +8,7 @@ Stop 1, about 35 minutes, from 9:00. Folder: `00_website/`. You type in `opencla
 
 - Hand a small, real job to an agent in one short request, and say what each of its tool calls did.
 - Find one thing it got wrong or invented on a topic you teach, and get it fixed with one rule.
-- Check a public folder, and get a permanent public address for it with no extra step.
+- Get a permanent public address for the site with no extra step.
 
 ## The idea
 
@@ -76,23 +76,7 @@ On your card write three things a first-time learner must get right about your t
 
    Or name the error itself: `Page 2 has the ratio upside down: base over acid. Fix it.` Refresh the site when it answers. Is the error gone, and did the fix break anything else?
 
-6. Run the site check. The agent's rules tell it to run the check before it says the site is done, so you may have seen it already. Run it yourself too, in a second terminal (the **+** on the terminal panel), from the top folder of your repository:
-
-   ```
-   python3 .devcontainer/site-check.py
-   ```
-
-   When the folder is ready to be public, its last lines include:
-
-   ```
-   OK: no key-like strings, no symlinks, no root-absolute links, index.html present.
-   ```
-
-   It fails, under the heading `NOT READY TO BE PUBLIC:`, on anything shaped like a key or token, a symlink, a link that starts with a single `/` (`//` is fine), or a missing `index.html`. It warns, on lines starting `WARNING:`, about things a person should look at: a script loaded from another website, a link to a missing page, a very large file, an `.edu` email address or a number shaped like a student ID. It prints file names, line numbers and short labels, never the text it matched, so its output is safe to show. If it fails, tell the agent: `Run the site check and fix every problem.` Then run it again yourself.
-
-   What it cannot tell you is whether a fact is true. That part stays with you.
-
-7. Close OpenClaw when you are done: `/exit`, or Ctrl+C. `openclaw chat` opens it again any time, and the site stays in `site/`.
+6. Close OpenClaw when you are done: `/exit`, or Ctrl+C. `openclaw chat` opens it again any time, and the site stays in `site/`.
 
 ## Checkpoint
 
@@ -155,7 +139,7 @@ OpenClaw connected to the workshop model, and a small site in `site/` at your si
 
 - The site address still shows the placeholder, "This site is empty for now". The agent has not written `site/index.html` yet, or the page needs a refresh. Open the `site` folder in the Explorer to see what is there. If it wrote its pages somewhere else, tell it: `Put the pages in site/ at the top of the repository.`
 - The address does not open, or the **Ports** tab shows port 8000 as **Private**. Right-click the port 8000 row, choose **Port Visibility**, then **Public**. Some organizations forbid public ports; then the site opens only for you, which is fine for today. If port 8000 is missing from the tab, run `bash .devcontainer/site-public.sh`, wait ten seconds, and look again. It prints nothing; `~/.osu-llm-workshop-site.log` records what it did.
-- The site check fails on a link that starts with `/`. Tell the agent: `Use relative links only. Fix every page.` Then run the check again.
+- The site is not published because its check failed on a link that starts with `/`. Tell the agent: `Use relative links only. Fix every page.`
 - The agent runs a command to start a web server. It does not need one: `site/` is already served on port 8000. Tell it: `Stop that server. site/ is already served.`
 - Nothing happens for a long time, or OpenClaw shows an error from the model such as 429, 503 or a timeout. The whole room is calling the same model at once. Wait a minute rather than typing the request again, which only adds to the queue. If it gave up, type `Continue.`
 - OpenClaw says it is not connected, or that its configuration was not accepted. Type `/exit`, then `bash setup.sh --openclaw`. The reason is in `~/.osu-llm-workshop-openclaw.log`.
