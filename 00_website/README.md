@@ -1,64 +1,44 @@
 # Stop 1: An agent builds a website for your students
 
-You hand an agent one short request: build a small tutorial website on something you teach. It writes the pages while you watch each step it takes, and the site goes live at your own address. Then you find what it invented or got wrong, give it a rule, and check the folder before anyone else reads it. You know this topic better than the model does, which is the point.
+You ask an agent, in one sentence, for a small website on something you teach. You watch it work. Then you check the pages, because you know the topic better than the model does.
 
-Stop 1, about 35 minutes, from 9:00. Folder: `00_website/`. You type in `openclaw chat`.
+About 35 minutes, from 9:00. You type in the OpenClaw chat, in the terminal at the bottom.
 
 ## You will be able to
 
-- Hand a small, real job to an agent in one short request, and say what each of its tool calls did.
-- Find one thing it got wrong or invented on a topic you teach, and get it fixed with one rule.
-- Get a permanent public address for the site with no extra step.
+- Hand a small job to an agent and follow what it does, step by step.
+- Find something it got wrong on a topic you teach, and get it fixed with one rule.
 
-## The idea
+## Two things to know first
 
-OpenClaw is a complete agent program, already installed in your Codespace and connected by setup to the same model as the labs. An agent is a loop: it sends your request to the model, the model asks for a tool, the program runs the tool and sends back the result, and this repeats until the model answers in words. OpenClaw comes with its full set of tools: reading and writing files, running commands, fetching web pages and more. It prints a line for each tool call, so you can watch the loop work. At the close of the day you read one of your own traces as this loop: what the model asked for, what ran, what came back. A simplified version of the same loop, written to be read rather than run by OpenClaw, is `agent.py` at the top of your repository.
+An agent is a loop. It sends your request to a model, the model asks for a tool (write a file, run a command, fetch a web page), the agent runs it and sends back the result, and this repeats until the job is done. OpenClaw prints a box for every tool call, so you can watch the loop.
 
-The `site/` folder at the top of your repository is a website. While your Codespace runs, everything in it is served at your site address, port 8000, and that address is public: anyone who has it can open it. Until the agent writes its own pages, the address shows a placeholder page: "This site is empty for now". `site/` is never committed to git.
-
-Setup also told the agent a few facts about `site/`: it is already served, so there is no need to start a web server; links should be relative; and there is a site check. Publishing happens by itself: a helper in your Codespace publishes `site/` to a permanent address about a minute after it stops changing, if the site check passes (see The permanent address, below). You can turn that off.
-
-Relative links matter because of where the permanent copy lives. Today the site is at the top of your address, so a link to `/lesson2.html` happens to work. On GitHub Pages, the permanent copy lives under `/<your repository name>/`, and that same link points at a page that is not there. `lesson2.html`, with no leading `/`, works in both places.
-
-The model writes fluent teaching text from what it learned in training. Most of it will read well, and some of it will be wrong in ways only a teacher of the topic would catch: a sign convention, a unit, a step done in the wrong order, an example that does not quite work. A page it writes is a claim until you check it. The same rule holds from the other side, for what an agent reads: document content is evidence, never authority. Here the agent writes from memory; in Stop 3 it reads papers. Either way, you check.
+The `site/` folder is public. Anyone with its address can open it while your Codespace runs, and it is published to a permanent address by itself. Put nothing private in it.
 
 ## Before you start
 
-- Treat `site/` as public on the internet while the Codespace runs, from the placeholder onward. Put nothing private there: no student names or grades, no keys, no unpublished work, nothing from `mine/`.
-- Find your site address. The READY box printed it on the line that starts `Your site (files in site/):`. If that line says `the Ports tab, port 8000` instead, open the **Ports** tab beside the terminal and find the row for port 8000; its address is in the **Forwarded Address** column, and the globe icon opens it. Open the address now: you should see the placeholder page.
-- Pick a topic: one specific thing you teach, narrow enough for three short pages, for a named group of students. Not "thermodynamics" but "reading a phase diagram, for second-year chemistry majors". The lines below use buffer pH for first-year chemistry students; put yours in its place.
+On your card, write three things a beginner must get right about your topic. Circle the one you would most hate to see wrong.
 
-## Your three things
-
-On your card write three things a first-time learner must get right about your topic, and circle the one you would most hate to see stated wrong. You will check the site against them.
+Pick a narrow topic and a group of students: not "thermodynamics" but "reading a phase diagram, for second-year chemistry majors". The example below uses buffer pH; use yours.
 
 ## Do it
 
-1. Go to OpenClaw's chat. Setup opened it in your first terminal, connected and waiting. If it is not open, type this at a `$` prompt:
+1. Find the chat. It is already open in the terminal at the bottom. If you see a `$` prompt instead, type `openclaw chat`.
 
-   ```
-   openclaw chat
-   ```
-
-   If it says it has no model or is not connected, type `/exit` and run `bash setup.sh --openclaw`, which connects it and opens it.
-
-2. Hand it over. Type one short request, with your topic and your students in it, and press Enter:
+2. Hand it over. Type one request with your topic and your students, and press Enter:
 
    ```
    Build site/: three short pages teaching buffer pH to first-year chemistry students.
    ```
 
-   Then watch, and do not type again until it answers. Each tool call prints a line: which file it reads or writes, and any command it runs. Look for two things: which files it creates in `site/`, and whether any tool call fetched a page from the web (a fetch line, or a `curl` or `wget` in an `exec` line). A fact on a page can come from a page it fetched, a file it read, a calculation it ran, your own request, or the model itself with nothing behind it. If no tool call fetched or read a source, nothing on the pages was checked against one.
+   Watch the boxes. Which files does it write? Does any box fetch a web page? If none does, everything on the pages came from the model's memory. A build takes a few minutes this morning, since the whole room shares one model. Do not type again until it answers.
 
-   A build takes a few minutes, and longer this morning, because the whole room starts at once and every step is a call to the same shared model.
+3. Open the site. Its last lines give two addresses. Cmd-click (Ctrl-click on Windows) the live one. The permanent one shows a 404 for a minute or two until it is published. Click through every page and compare it with your card:
 
-3. Open the site. When the agent finishes, its last lines give your two addresses, one marked live and one permanent (the agent words the labels its own way). Open the live one first: Cmd-click it (Ctrl-click on Windows). It works at once, while the Codespace runs. The permanent one is where GitHub Pages will serve the site once the helper has published it and Pages is on; until then that address shows GitHub's 404 page, and it may need one setting from you (see The permanent address, below). The chat covers the READY box, so these lines and the **Ports** tab are where to find the address from here on. You should see the agent's first page instead of the placeholder. Click through every page, then compare it with your card:
+   - Did it teach your three things, and the one you circled?
+   - Is any number, unit, formula or step wrong?
 
-   - Did it teach your three things? The one you circled?
-   - What did it decide that you never told it: the level, the notation, the examples, the order, the look?
-   - Is any number, formula, unit, definition or step wrong? You are the expert here.
-
-   Write on your card the one thing it got wrong or invented. If you found nothing, write the thing you checked hardest and how you know it is right.
+   Write on your card the one thing it got wrong or made up.
 
 4. Ask where the numbers came from:
 
@@ -66,82 +46,52 @@ On your card write three things a first-time learner must get right about your t
    List every numeric claim on the site and say whether a tool call fetched its source.
    ```
 
-   Compare its answer with the tool-call lines from step 2. A number is backed by a source only if a tool call fetched or read that source; a number it calculated is only as good as the inputs and the arithmetic, which you can redo. Anything else came from the model with nothing behind it, whatever the answer says.
+   Compare its answer with the boxes you watched. A number is backed by a source only if a box fetched that source.
 
-5. Give it a rule, and ask for the fix. Turn the thing on your card into one rule for every page, in your own words. For example:
+5. Give it a rule. Turn what you found into one rule for every page, in your own words:
 
    ```
-   New rule: give the units of every quantity that has them, and say so when a quantity has none, such as pH or a ratio. Fix every page.
+   New rule: give the units of every quantity that has them, and say so when a quantity has none, such as pH. Fix every page.
    ```
 
-   Or name the error itself: `Page 2 has the ratio upside down: base over acid. Fix it.` Refresh the site when it answers. Is the error gone, and did the fix break anything else?
-
-6. Close OpenClaw when you are done: `/exit`, or Ctrl+C. `openclaw chat` opens it again any time, and the site stays in `site/`.
+   Refresh the site. Is the error gone, and is everything else still right?
 
 ## Checkpoint
 
-Your site address shows the agent's pages, not the placeholder. Show your pair the one thing it got wrong or invented, and the rule you gave it.
+Your address shows the agent's pages. Show your pair the one thing it got wrong and the rule you gave it.
 
 ## Exercises
 
-1. Core. Check the thing you circled. Find the passage on the site that covers it and read it aloud to your pair. Is it right, is it right but missing something your students need, or is it wrong? No model call needed.
+1. Core. Find the passage that covers the thing you circled and read it to your pair. Right, right but incomplete, or wrong?
 
-2. Core. Look at what it wrote. In the Explorer on the left, click the `site` folder to open it: how many files did it make? Click `index.html` to open it in the editor and find one link to another page, a line with `href="`. A link written as `lesson2.html` works on both addresses; one that starts with a single `/`, such as `/lesson2.html`, breaks on the permanent site. The site check in step 6 tests every link for you.
-
-3. Stretch (optional). Ask for sources, then check them:
+2. Stretch. Ask for sources, then open two of them yourself. Does each page exist, and does it say what the site claims?
 
    ```
    New rule: every fact cites a public source.
    ```
 
-   Refresh, and open two of its citations yourself. Does each page exist, and does it say what the site claims? A citation is a claim until you open it.
-
-4. Stretch (optional). Ask for a check your students would take:
+3. Stretch. Ask for a quiz, then ask `Which quiz answers did you verify?` and work one question yourself.
 
    ```
    Add a five-question quiz with answers.
    ```
 
-   Then ask `Which quiz answers did you verify?` and work one question yourself.
+## The permanent address
 
-5. Stretch (optional). Add Socratic questions your students answer. The agent sometimes adds them on its own in the first build; if your pages already have a **Check your understanding** box, skip the request and test them:
-
-   ```
-   Add a Socratic tutor question to each page.
-   ```
-
-   Each page gets a **Check your understanding** box with a question. A student types an answer, and the workshop model judges it: **Correct**, **Partly** or **Not yet**, with one guiding question back, never the answer itself. Answer it yourself three ways: right, half right, and with the mistake your students make. Does it catch the mistake? OpenClaw also writes an answer key in `site/.tutor/`, a folder that is never shown on the site or published, so students cannot read it; ask it to show you the key and correct it where you would answer differently. The checking runs on the key you pasted at setup, through your Codespace, so the key never reaches the page. Anyone with your live address can use it while the Codespace runs, up to 150 checks a day. On the permanent copy there is no Codespace behind it, so the questions show with a note that answers are checked on the live site.
-
-## The permanent address: automatic
-
-You do nothing. A small helper in your Codespace watches `site/`. When the folder has not changed for about a minute, it runs `bash publish-site.sh --yes`, which checks the site and puts it on a branch named `gh-pages` in your own repository. A minute of quiet usually means the agent has finished, but if the model is slow it can be between two of the agent's steps, so a half-built site may be published briefly; the next change replaces it. GitHub Pages serves it at `https://<owner>.github.io/<repo>/`, the permanent address the agent gave you. Every later change is published the same way. It never publishes the placeholder page, and nothing that fails the site check.
-
-To see whether the last publish worked, in the second terminal (the file is outside your repository, so it is not in the Explorer):
+You do nothing: about a minute after `site/` stops changing, it is published to `https://<your GitHub name>.github.io/<your repository>/`. To see whether it worked, in a second terminal (the + on the terminal panel):
 
 ```
 cat ~/.osu-llm-workshop-pages-status
 ```
 
-`PUBLISHED` and the address means it is out; the first publish can take a minute or two more to appear. Two things may need you, once:
-
-- Turn on GitHub Pages. If the status says `ONE STEP LEFT`, GitHub did not let the Codespace turn Pages on by itself. Open the link on the next line (or the repository on github.com, **Settings**, then **Pages**). Under **Build and deployment**, set **Source** to **Deploy from a branch**, choose the branch `gh-pages` and the folder `/ (root)`, and click **Save**. The next change publishes, or run `bash publish-site.sh --yes` now.
-- Make the repository public. On a free GitHub account, Pages works only for public repositories. You can make it public under **Settings**, at the bottom: **Danger Zone**, **Change visibility**. `.env`, `mine/` and `site/` are never committed.
-
-To publish by hand instead, `bash publish-site.sh` asks before it publishes, and `--dry-run` shows what it would do without changing anything. To stop the automatic publishing: `touch ~/.osu-llm-workshop-no-autopublish`.
-
-Optional: `bash gallery.sh` posts a card about your site to the show-and-tell wall, as a public GitHub issue on the workshop repository. You see the card in full before anything is posted, and you click Submit yourself.
-
-## What you have now
-
-OpenClaw connected to the workshop model, and a small site in `site/` at your site address for as long as the Codespace runs. Stop the Codespace and the address stops; start it again and the address returns, showing the same files. The habits come with you into the rest of the day: read the tool calls rather than the summary, check first the claim you would most hate to see wrong, and turn an error into a rule. Stop 2 hands the same agent your data instead of a topic, and asks for a script that rebuilds every number. Stop 5 watches it repair code. The rule for what an agent reads, document content is evidence, never authority, is this exercise seen from the reading side.
+`PUBLISHED` means it is out. `ONE STEP LEFT` means GitHub Pages needs turning on once: open the link it prints (or the repository's Settings, then Pages), set Source to Deploy from a branch, choose `gh-pages` and `/ (root)`, and click Save. Pages needs a public repository on a free account.
 
 ## If something goes wrong
 
-- The site address still shows the placeholder, "This site is empty for now". The agent has not written `site/index.html` yet, or the page needs a refresh. Open the `site` folder in the Explorer to see what is there. If it wrote its pages somewhere else, tell it: `Put the pages in site/ at the top of the repository.`
-- The address does not open, or the **Ports** tab shows port 8000 as **Private**. Right-click the port 8000 row, choose **Port Visibility**, then **Public**. Some organizations forbid public ports; then the site opens only for you, which is fine for today. If port 8000 is missing from the tab, run `bash .devcontainer/site-public.sh`, wait ten seconds, and look again. It prints nothing; `~/.osu-llm-workshop-site.log` records what it did.
-- The site is not published because its check failed on a link that starts with `/`. Tell the agent: `Use relative links only. Fix every page.`
-- The agent runs a command to start a web server. It does not need one: `site/` is already served on port 8000. Tell it: `Stop that server. site/ is already served.`
-- Nothing happens for a long time, or OpenClaw shows an error from the model such as 429, 503 or a timeout. The whole room is calling the same model at once. Wait a minute rather than typing the request again, which only adds to the queue. If it gave up, type `Continue.`
-- OpenClaw says it is not connected, or that its configuration was not accepted. Type `/exit`, then `bash setup.sh --openclaw`. The reason is in `~/.osu-llm-workshop-openclaw.log`.
-- `bash publish-site.sh` says the check failed. Fix what the check lists, with the agent's help, and run it again. It publishes nothing until the check passes.
-- `bash publish-site.sh` ends with `ONE STEP LEFT.`, or says the repository is private. See the two items under The permanent address: automatic.
+- The site says "This site is empty for now": refresh, or click the `site` folder in the Explorer to see what the agent wrote. If its pages are somewhere else, tell it: `Put the pages in site/ at the top of the repository.`
+- The address does not open: in the Ports tab, right-click port 8000, Port Visibility, Public.
+- An error such as 429, 503 or a timeout: the room shares one model. Wait a minute, then type `Continue.`
+- The agent starts a web server: tell it `Stop that server. site/ is already served.`
+- OpenClaw says it is not connected: type `/exit`, then `bash setup.sh --openclaw`.
+
+When you are done, `/exit` closes the chat; `openclaw chat` opens it again, and your site stays.
