@@ -49,11 +49,7 @@ Open your Codespace, open a terminal if one is not already open, and type:
 
     bash setup.sh
 
-Type the word on your card (letter case does not matter) and press Enter. Setup recognizes what you typed and connects to the right place: the card's word connects you to the room's model, and your own OpenRouter key (it starts with `sk-or-`) or NVIDIA key (`nvapi-`) works too. With your own OpenRouter key, setup offers the tested models in `00_setup/models.txt`; Enter picks NVIDIA Nemotron 3 Ultra. Its READY box also shows your site address, on the line that starts `Your site (files in site/):`. Setup then connects OpenClaw, a complete agent program, to the same model, opens Stop 1's page in the editor, and opens OpenClaw's chat in the terminal. Before you type there, finish Stop 0: click the + on the terminal panel for a second terminal and run
-
-    python 00_setup/check.py
-
-which prints the model the endpoint serves and a one-word reply. Stick the green note on the back of your laptop lid. If you brought files, drag them onto `mine/` and run `python upload_check.py` in the same terminal. Then Stop 1, back in the chat: ask for a small tutorial website on something you teach. It ends with your site's live address and its permanent address.
+Type the word on your card (letter case does not matter) and press Enter. Setup recognizes what you typed and connects to the right place: the card's word connects you to the room's model, and your own OpenRouter key (it starts with `sk-or-`) or NVIDIA key (`nvapi-`) works too. With your own OpenRouter key, setup offers the tested models in `00_setup/models.txt`; Enter picks NVIDIA Nemotron 3 Ultra. Its READY box also shows your site address, on the line that starts `Your site (files in site/):`. Setup then connects OpenClaw, a complete agent program, to the same model, opens Stop 1's page in the editor, and opens OpenClaw's chat in the terminal. When you see `✅ OpenClaw is connected`, stick the green note on the back of your laptop lid. Then Stop 1, in the chat: ask for a small tutorial website on something you teach. It ends with your site's live address and its permanent address.
 
 ---
 
@@ -61,7 +57,7 @@ which prints the model the endpoint serves and a one-word reply. Stick the green
 
 | Time | Stop | Folder | Start with |
 |---|---|---|---|
-| 8:30 | 0, everyone green | `00_setup/` | `python 00_setup/check.py`, then `python upload_check.py` |
+| 8:30 | Setup: the word on the card | | `bash setup.sh` (starts by itself) |
 | 9:00 | 1, an agent that builds: a website for your students | `00_website/` | `openclaw chat` |
 | 9:35 | 2, your data, analyzed and reproducible, opening with a weak and a strong prompt | `02_data/` | `openclaw chat`, on the air-handler file |
 | 10:45 | Break | | |

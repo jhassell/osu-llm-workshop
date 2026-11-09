@@ -1,6 +1,6 @@
 # For helpers: the first ten minutes, then every stop
 
-Carry this on a laptop or a printout. Order matters: the common fixes for Stop 0 are first, then one section per stop. All day, most people who stall are stuck on one of four things: chat versus shell (OpenClaw's chat is not a `$` prompt), editor versus terminal, finding a file, and finding where the output went (`results/`, or the address of their site).
+Carry this on a laptop or a printout. Order matters: the common fixes for setup are first, then one section per stop. All day, most people who stall are stuck on one of four things: chat versus shell (OpenClaw's chat is not a `$` prompt), editor versus terminal, finding a file, and finding where the output went (`results/`, or the address of their site).
 
 1. No terminal, or a terminal with only a `$`. Click in it, type `bash setup.sh`, Enter. If there is no terminal panel at all: the menu at the top left, Terminal, New Terminal.
 2. The key prompt is waiting. What they type shows on screen, so a typo in the word is visible before Enter. Type or paste once, press Enter once. If someone typed `bash setup.sh` into the key prompt, setup says so and asks again.

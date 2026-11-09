@@ -930,7 +930,6 @@ openclaw_open() {
   env -u WORKSHOP_AUTOSTARTED -u WORKSHOP_FORCE -u WORKSHOP_NO_PROMPT openclaw chat
   echo
   echo "OpenClaw has closed. To open it again:   openclaw chat"
-  echo "Module 0's check, if you skipped it:     python 00_setup/check.py"
   echo "The first exercise:                      00_website/README.md"
   [ -z "${CODESPACE_NAME:-}" ] || echo "Your site:                               $(site_address)"
   echo "After the website, Stop 2:                02_data/README.md"
@@ -951,8 +950,7 @@ exercise_readme() {   # open the exercise's page in the editor when there is one
 exercise_show() {
   exercise_readme
   echo
-  echo " First, finish Module 0:    python 00_setup/check.py"
-  echo " Then the first exercise:   openclaw chat"
+  echo " The first exercise:        openclaw chat"
   [ -z "${CODESPACE_NAME:-}" ] || echo " Your site:                 $(site_address)"
   echo " After the website, Stop 2:  02_data/README.md"
   if [ "${1:-0}" = 1 ]; then

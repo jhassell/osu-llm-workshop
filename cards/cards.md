@@ -4,17 +4,13 @@ One card per stop, printed two to a page and handed out at 8:30. Each card has w
 
 ---
 
-## Stop 0, everyone green
+## Setup
 
 Workshop word, for the key prompt: OpeningDayToken (letter case does not matter)
 
-Checkpoint: which machine produced each of the first two lines, and what does the third prove?
+Green note up when setup says ✅ OpenClaw is connected. Pink note up for a helper.
 
-First line:                          Second line:
-
-Into mine/: nothing you would not show the model service. No student records, nothing under an IRB protocol, no unpublished results you are not free to share.
-
-Early finisher: what one row of the data is, and one number in it I could check by hand:
+Into mine/, later in the day: nothing you would not show the model service. No student records, nothing under an IRB protocol, no unpublished results you are not free to share.
 
 ---
 

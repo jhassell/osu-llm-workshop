@@ -1,4 +1,4 @@
-"""Stop 0: is what you brought ready for the day? Checks every file in mine/.
+"""Is what you brought ready for the day? Checks every file in mine/.
 
     python upload_check.py
 
