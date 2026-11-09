@@ -11,7 +11,8 @@ separators. There are no county estimates for 2024. Dropped:
 1284 rows that split a county into irrigated and non-irrigated (published only to
 2009; the all-practices rows already cover them) and 688 rows with county
 code 998 ("OTHER (COMBINED) COUNTIES" within a district, "OTHER COUNTIES" statewide from
-2020), which pool counties NASS did not publish separately. After reshaping, 1380 county-years have a yield, from 75 counties;
+2020), which pool counties NASS did not publish separately. 336 rows are both, so 1636
+rows are dropped in all, not the sum of the two. After reshaping, 1380 county-years have a yield, from 75 counties;
 the number of counties published per year ranges from 38 to 75, and fewer are published after 2007.
 As a consistency check, production divided by harvested acres reproduces the published
 yield to within its rounding (0.1 bushel, or a whole bushel where NASS published whole

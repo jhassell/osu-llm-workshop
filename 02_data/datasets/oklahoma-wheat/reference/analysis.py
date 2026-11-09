@@ -43,7 +43,10 @@ print("CV_% filled in:", int((raw["CV_%"] != "").sum()), "of", n_rows)
 
 # ---------------------------------------------------------------- exclusions and reshape
 keep = (raw["PRODN_PRACTICE_DESC"] == "ALL PRODUCTION PRACTICES") & ~combined & raw["SHORT_DESC"].isin(STATS)
-n_practice = int((raw["PRODN_PRACTICE_DESC"] != "ALL PRODUCTION PRACTICES").sum())
+practice = raw["PRODN_PRACTICE_DESC"] != "ALL PRODUCTION PRACTICES"
+n_practice = int(practice.sum())
+n_both = int((practice & combined).sum())            # rows that are both: counted once in the total
+n_excluded = int((practice | combined).sum())
 d = raw[keep].copy()
 d["value"] = pd.to_numeric(d["VALUE"].str.replace(",", "", regex=False))  # "10,289,000" -> 10289000
 d["stat"] = d["SHORT_DESC"].map(STATS)
@@ -55,7 +58,9 @@ cy = cy.dropna(subset=["yield_bu_ac"])
 n_cy, n_counties = len(cy), cy["county"].nunique()
 per_year = cy.groupby("year")["county"].nunique()
 print(f"county-years with a yield={n_cy}, counties={n_counties}, counties per year {per_year.min()}-{per_year.max()}")
-print(f"dropped: {n_practice} irrigated/non-irrigated rows, {int(combined.sum())} combined-county rows")
+print(f"dropped: {n_practice} irrigated/non-irrigated rows and {int(combined.sum())} combined-county rows; "
+      f"{n_both} rows are both, so {n_excluded} rows are dropped in all")
+print("counties published per year:", per_year.to_dict())
 
 # ---------------------------------------------------------------- numbers
 both = cy.dropna(subset=["production_bu", "harvested_ac"])
@@ -71,13 +76,16 @@ state["weighted_yield"] = state["production"] / state["harvested"]
 state["median_county"] = cy.groupby("year")["yield_bu_ac"].median()
 state["harvested_share"] = state["harvested"] / state["planted"]
 print("by year:")
-print(state[["weighted_yield", "median_county", "harvested_share"]].round(2).to_string())
+print(state.assign(counties=per_year)[["counties", "weighted_yield", "median_county", "harvested_share"]].round(2).to_string())
 best, worst = state["weighted_yield"].idxmax(), state["weighted_yield"].idxmin()
 first_years = state.loc[state.index <= 2004, "weighted_yield"].mean()
 last_years = state.loc[state.index >= 2021, "weighted_yield"].mean()
 share_mean = state["harvested_share"].mean()
 print(f"best year {best} ({state.loc[best, 'weighted_yield']:.1f}), worst {worst} ({state.loc[worst, 'weighted_yield']:.1f})")
 print(f"mean of 2000-2004 = {first_years:.1f}; mean of 2021-2025 (2024 absent) = {last_years:.1f}")
+print(f"counties published 2000-2004: {per_year.loc[:2004].min()} to {per_year.loc[:2004].max()}; "
+      f"2021-2025: {per_year.loc[2021:].min()} to {per_year.loc[2021:].max()}")
+print(f"mean harvested share of planted acres, over the years: {share_mean:.0%}")
 
 hand_year = 2025
 hand = cy.loc[cy["year"] == hand_year, "yield_bu_ac"]
@@ -135,7 +143,8 @@ separators. There are no county estimates for {', '.join(map(str, absent_years))
 {n_practice} rows that split a county into irrigated and non-irrigated (published only to
 2009; the all-practices rows already cover them) and {int(combined.sum())} rows with county
 code 998 ("OTHER (COMBINED) COUNTIES" within a district, "OTHER COUNTIES" statewide from
-2020), which pool counties NASS did not publish separately. After reshaping, {n_cy} county-years have a yield, from {n_counties} counties;
+2020), which pool counties NASS did not publish separately. {n_both} rows are both, so {n_excluded}
+rows are dropped in all, not the sum of the two. After reshaping, {n_cy} county-years have a yield, from {n_counties} counties;
 the number of counties published per year ranges from {per_year.min()} to {per_year.max()}, and fewer are published after 2007.
 As a consistency check, production divided by harvested acres reproduces the published
 yield to within its rounding (0.1 bushel, or a whole bushel where NASS published whole

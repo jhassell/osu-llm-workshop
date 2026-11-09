@@ -5,9 +5,9 @@
 
 For each chart: see.py --extract, then compare.py against the truth CSV.
 Prints one line per run (points read; for the worst series, mean error as a
-percent of the axis range and median relative error; for error bars, the worst
-percent of range; seconds, cost, provider) and a final line with
-totals. Exits with status 1 if any run failed to give a table pandas can read.
+percent of the true data's span and median relative error; for error bars, the
+worst percent of span; extra or repeated x values; seconds, cost, with +? when
+an attempt's cost was not reported; provider) and a final line with totals. Exits with status 1 if any run failed to give a table pandas can read.
 """
 import sys
 import time
@@ -21,14 +21,21 @@ llm = see.llm
 
 
 def summary(table):
-    """Points read, then the worst series and the worst error bars, from one error table."""
+    """Points read, then the worst series and the worst error bars, then the
+    x axis's extra and repeated points, from one error table."""
+    x = table[table["kind"] == "x axis"].iloc[0]
+    table = table[table["kind"] != "x axis"]
     read = sum(int(m.split("/")[0]) for m in table["matched"])
     total = sum(int(m.split("/")[1]) for m in table["matched"])
-    bars = table["column"].map(compare.is_error)
+    bars = table["kind"] == "error bar"
     text = (f"{read:>3}/{total:<3} points  series: worst {table[~bars]['pct_range'].max():4.1f}% of range, "
             f"median rel {table[~bars]['median_rel'].max():4.1f}%")
     if bars.any():
         text += f"  error bars: worst {table[bars]['pct_range'].max():4.1f}% of range"
+    if x["max_err"] == x["max_err"] and x["max_err"] > 0:          # not NaN, not zero
+        text += f"  x off by up to {x['max_err']:g}"
+    if x["extra"] or x["duplicates"]:
+        text += f"  x: {x['extra']} extra, {x['duplicates']} repeated"
     return text
 
 
@@ -46,7 +53,8 @@ def main():
                 csv_path = None
                 print(f"   {err}")
             cost = llm.TOTAL["cost"] - spent_before
-            where = f"{see.INFO.get('seconds', 0):5.1f} s  ${cost:.4f}  {see.INFO.get('provider')}"
+            unknown = "+?" if see.INFO.get("cost_unknown") else ""
+            where = f"{see.INFO.get('seconds', 0):5.1f} s  ${cost:.4f}{unknown}  {see.INFO.get('provider')}"
             if csv_path is None:
                 failures += 1
                 print(f"{label}  FAILED: no usable table                         {where}")
@@ -54,7 +62,7 @@ def main():
             table = compare.compare(chart, csv_path, quiet=True)
             how = compare.pair_columns(compare.pd.read_csv(chart.with_suffix(".csv")),
                                        compare.pd.read_csv(csv_path))[1]
-            print(f"{label}  {summary(table)}  {where}" + ("  (columns by position)" if how == "by position" else ""))
+            print(f"{label}  {summary(table)}  {where}" + (f"  (columns {how})" if how != "by name" else ""))
             if runs > 1:   # keep each run's files so they can be compared afterwards
                 for name in (f"{chart.stem}.csv", f"{chart.stem}-errors.csv", f"{chart.stem}-compare.png",
                              f"{chart.stem}.reply.txt"):

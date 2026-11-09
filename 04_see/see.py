@@ -123,35 +123,54 @@ def see(image_path, question):
     spent_before = llm.TOTAL["cost"]          # so a retried call reports both attempts' cost
     problem = ""
     max_tokens = MAX_TOKENS
+    unknown = 0                               # attempts whose cost nobody reported
+    INFO.clear()
     for attempt in (1, 2):
         try:
             response = _one_request(messages, max_tokens)
         except Exception as err:
+            unknown += 1                      # an abandoned or failed request may still be billed
             problem = f"{type(err).__name__}: {str(err)[:160]}"
             print(f"(attempt {attempt}: {problem})")
             continue
         llm._record(response)              # tokens and cost into llm.LAST and llm.TOTAL
+        if not isinstance(llm.LAST.get("cost"), (int, float)):
+            unknown += 1
         choice = response.choices[0]
         text = choice.message.content or ""
         # Some providers return the thinking inline. It is not the answer.
         text = re.sub(r"<think>.*?(</think>\s*|$)", "", text, flags=re.S).strip()
         INFO.update({"provider": (response.model_extra or {}).get("provider"),
                      "seconds": round(time.time() - start, 1), "attempts": attempt,
-                     "cost": llm.TOTAL["cost"] - spent_before})
+                     "cost": llm.TOTAL["cost"] - spent_before, "cost_unknown": unknown})
         if text and choice.finish_reason != "length":
             return text
         problem = "the model used its whole allowance thinking" if not text else "the answer was cut off"
         print(f"(attempt {attempt}: {problem})")
         max_tokens = 32000                 # more room for the second try (the most some providers allow)
-    INFO.update({"provider": None, "seconds": round(time.time() - start, 1), "attempts": 2})
+    INFO.update({"provider": None, "seconds": round(time.time() - start, 1), "attempts": 2,
+                 "cost": llm.TOTAL["cost"] - spent_before, "cost_unknown": unknown})
     raise RuntimeError(f"No answer after two tries ({problem}). Run it again in a minute.")
+
+
+def cost_text():
+    """The dollars for the last call, saying plainly when some of it is unknown:
+    an abandoned request, or a provider that reported no cost, may still be billed."""
+    cost, unknown = INFO.get("cost"), INFO.get("cost_unknown", 0)
+    if not isinstance(cost, (int, float)):
+        return "cost not reported"
+    if unknown and cost == 0:
+        return "cost not reported"
+    if unknown:
+        return f"${cost:.4f} reported, plus {unknown} attempt(s) whose cost is unknown"
+    return f"${cost:.4f}"
 
 
 def cost_line():
     """One line saying what the last call took: provider, time, tokens, dollars.
-    The dollars cover every attempt of that call, not only the one that answered."""
-    cost = INFO.get("cost", llm.LAST.get("cost"))
-    dollars = f"${cost:.4f}" if isinstance(cost, (int, float)) else "cost not reported"
+    The dollars cover every attempt of that call that reported a cost, and the
+    line says when an attempt's cost is unknown."""
+    dollars = cost_text()
     return (f"[{VISION_MODEL} via {INFO.get('provider')}, {INFO.get('seconds')} s, "
             f"attempt {INFO.get('attempts')}, {llm.LAST.get('prompt_tokens', 0):,} tokens in, "
             f"{llm.LAST.get('completion_tokens', 0):,} out (mostly thinking), {dollars}]")
@@ -189,9 +208,20 @@ def csv_from_reply(text):
     else:
         raise ValueError("no header row followed by rows of numbers")
     data = []
-    for row in rows[h + 1:]:
+    rest = rows[h + 1:]
+    for n, row in enumerate(rest):
         if len(row) != width or not _numeric_row(row):
-            break                          # the table has ended; what follows is prose
+            # Either the table has ended and prose follows, or a row is broken
+            # (an extra comma, a missing cell) with more data after it. Stopping
+            # quietly would drop those rows, so a broken row is an error.
+            later = [r for r in rest[n + 1:] if len(r) == width and _numeric_row(r)]
+            looks_like_data = len(row) >= 2 and _numeric_row(row)
+            if later or looks_like_data:
+                raise ValueError(
+                    f"table row {n + 1} has {len(row)} cells where the header has {width}: "
+                    f"{','.join(row)[:80]!r}. Reading on would drop {len(later)} later row(s), "
+                    "so the whole table is refused")
+            break
         data.append([row[0].strip()] + [_number(c) for c in row[1:]])
     df = pd.DataFrame(data, columns=[c.strip() for c in header])
     first = pd.to_numeric(df.iloc[:, 0], errors="coerce")
@@ -203,7 +233,10 @@ def csv_from_reply(text):
 def extract(image_path, note="", quiet=False):
     """Ask for the plotted data as CSV and save it to results/seen/<stem>.csv.
     Returns the CSV path, or None when the reply was not a usable table (the
-    reply is saved as <stem>.reply.txt either way, so you can read it)."""
+    reply is saved as <stem>.reply.txt either way, so you can read it). When
+    the reply is not usable, any CSV, comparison and error table left from an
+    earlier run of the same chart are removed, so an old table cannot pass for
+    this run's."""
     stem = Path(image_path).stem
     SEEN.mkdir(parents=True, exist_ok=True)
     prompt = EXTRACT_PROMPT + (f"\n\nAlso: {note}" if note else "")
@@ -213,8 +246,14 @@ def extract(image_path, note="", quiet=False):
     try:
         df = csv_from_reply(reply)
     except Exception as err:
+        stale = [p for p in (SEEN / f"{stem}.csv", SEEN / f"{stem}-compare.png", SEEN / f"{stem}-errors.csv")
+                 if p.exists()]
+        for p in stale:
+            p.unlink()
         print(f"The reply is not a table pandas can read ({err}). No CSV saved; "
-              f"the reply is in {raw_path.relative_to(llm.ROOT)}")
+              f"the reply is in {raw_path.relative_to(llm.ROOT)}"
+              + (f". Removed the earlier {', '.join(p.name for p in stale)} so it cannot be mistaken for this run's."
+                 if stale else ""))
         return None
     csv_path = SEEN / f"{stem}.csv"
     df.to_csv(csv_path, index=False)
@@ -234,12 +273,15 @@ def main():
         raise SystemExit(f"No such image: {image}")
     try:
         if args[1] == "--extract":
-            extract(image, " ".join(args[2:]))
+            saved = extract(image, " ".join(args[2:]))
         else:
+            saved = True
             print(see(image, " ".join(args[1:])))
     except RuntimeError as err:
-        raise SystemExit(str(err))         # one sentence for the room, not a traceback
+        raise SystemExit(f"{err} [{cost_text()}]")    # one sentence for the room, not a traceback
     print(cost_line())
+    if saved is None:
+        sys.exit(1)                        # no usable table: a failure, not a quiet success
 
 
 if __name__ == "__main__":

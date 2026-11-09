@@ -3,8 +3,10 @@
     python 00_setup/check.py
 
 Without a key it says "Codespace ready; endpoint check pending." and stops,
-and that is the pre-work's success signal. With a key it prints two lines: the
-model the labs will use, and the model's reply, joined onto one line. An empty reply is tried once more with a larger token budget
+and that is the pre-work's success signal. With a key it prints three lines: the
+model the labs will use, the model's reply (joined onto one line), and whether
+OpenClaw is connected to the same endpoint and model. All three must be good
+before the green note goes up. An empty reply is tried once more with a larger token budget
 (a model that thinks before it answers can spend the first budget thinking); if
 it is still empty the check says so and exits non-zero. Standard library only,
 so it works before anything is installed.
@@ -75,3 +77,23 @@ except urllib.error.HTTPError as err:
 except Exception as err:  # network, DNS, timeout
     print(f"not reachable: {err}")
     sys.exit(1)
+
+
+def openclaw_line():
+    """Is OpenClaw set up for this endpoint and model? Reads its config; no request is made."""
+    path = Path.home() / ".openclaw" / "openclaw.json"
+    try:
+        cfg = json.loads(path.read_text())
+    except (OSError, ValueError):
+        return False, "openclaw: not connected. Type:  bash setup.sh --openclaw"
+    provider = ((cfg.get("models") or {}).get("providers") or {}).get("workshop") or {}
+    primary = (((cfg.get("agents") or {}).get("defaults") or {}).get("model") or {}).get("primary", "")
+    want = os.environ.get("LLM_MODEL") or model
+    if provider.get("baseUrl", "").rstrip("/") != BASE or primary != f"workshop/{want}":
+        return False, f"openclaw: connected to a different endpoint or model ({primary or 'none'}). Type:  bash setup.sh --openclaw"
+    return True, f"openclaw: connected to {want}"
+
+
+ok, line = openclaw_line()
+print(line)
+sys.exit(0 if ok else 1)

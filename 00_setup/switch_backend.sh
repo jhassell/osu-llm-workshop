@@ -83,18 +83,27 @@ if [ "$CURRENT" = openrouter ] || [ "$CURRENT" = cimarron ]; then
 fi
 
 echo "Moving from $CURRENT to $TARGET..."
+# The endpoint and model asked for are passed to setup explicitly, and any
+# Codespaces secrets (LLM_BASE_URL, LLM_API_KEY, LLM_MODEL) are left out of its
+# environment, so neither a failed saved key nor a secret can land the switch
+# anywhere but the target.
+if [ "$TARGET" = openrouter ]; then
+  T_URL="$OPENROUTER_BASE_URL"
+  T_MODEL="$(sed -n '/^[^#[:space:]]/{s/|.*//p;q;}' "$ROOT/00_setup/models.txt" 2>/dev/null)"
+else
+  T_URL="$CIM_URL"; T_MODEL="$CIM_MODEL"
+fi
 SAVED="$ROOT/.env.$TARGET"
+ARGS=(--base-url "$T_URL")
 if [ -f "$SAVED" ] && [ -n "$(env_value "$SAVED" LLM_API_KEY)" ]; then
   # Settings kept from an earlier visit. setup checks the key still works; if it
-  # does not, setup asks for the word again.
+  # does not, setup asks for the word again, for this same endpoint.
   ( umask 077; cp -p "$SAVED" "$ENV_FILE" ) && chmod 600 "$ENV_FILE"
-  WORKSHOP_SWITCHING=1 exec bash "$ROOT/setup.sh"
+  M="$(env_value "$SAVED" LLM_MODEL)"; M="${M:-$T_MODEL}"
+  [ -z "$M" ] || ARGS+=(--model "$M")
+else
+  echo "Type the word on the card when asked."
+  ARGS=(--reset-key "${ARGS[@]}")
+  [ -z "$T_MODEL" ] || ARGS+=(--model "$T_MODEL")
 fi
-echo "Type the word on the card when asked."
-if [ "$TARGET" = openrouter ]; then
-  WORKSHOP_SWITCHING=1 exec bash "$ROOT/setup.sh" --reset-key
-fi
-if [ -n "$CIM_MODEL" ]; then
-  WORKSHOP_SWITCHING=1 exec bash "$ROOT/setup.sh" --reset-key --base-url "$CIM_URL" --model "$CIM_MODEL"
-fi
-WORKSHOP_SWITCHING=1 exec bash "$ROOT/setup.sh" --reset-key --base-url "$CIM_URL"
+WORKSHOP_SWITCHING=1 exec env -u LLM_API_KEY -u LLM_BASE_URL -u LLM_MODEL bash "$ROOT/setup.sh" "${ARGS[@]}"

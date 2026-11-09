@@ -61,7 +61,10 @@ SAME_TITLE = 0.85     # how alike two titles must be, 0 to 1, to count as the sa
 
 HERE = Path(__file__).resolve().parent
 LABS = HERE.parent
-CACHE = HERE / "cache"
+CACHE = HERE / "cache"   # the answers shipped with the workshop (offline topics); read, never written
+# New live answers are saved outside the repository, so searching does not show up as
+# changed files in git. OSU_LIT_CACHE moves it.
+LOCAL_CACHE = Path(os.environ.get("OSU_LIT_CACHE") or Path.home() / ".cache" / "osu-llm-workshop" / "lit")
 RESULTS = LABS / "results"
 
 # The sort names you can pass to search(), and what OpenAlex calls them.
@@ -138,10 +141,15 @@ _WORKSHOP_KEY = [None]     # the online copy's key, fetched at most once per run
 
 # ---------------------------------------------------------------- the network and the cache
 
-def _cache_file(url):
+def _cache_file(url, folder=None):
     """Where the saved answer for a URL lives. The key is a hash of the URL
     with mailto removed, so changing MAILTO does not orphan the saved answers."""
-    return CACHE / (hashlib.sha256(_without_mailto(url).encode()).hexdigest()[:20] + ".json")
+    return (folder or LOCAL_CACHE) / (hashlib.sha256(_without_mailto(url).encode()).hexdigest()[:20] + ".json")
+
+
+def cache_files():
+    """Every saved answer: this Codespace's own first, then the shipped ones."""
+    return sorted(LOCAL_CACHE.glob("*.json")) + sorted(CACHE.glob("*.json"))
 
 
 def _without_mailto(url):
@@ -164,7 +172,7 @@ def _save(url, status, data):
                                    for a in work.get("authorships") or []]
     entry = {"url": _without_mailto(url), "fetched_utc": now_utc(), "status": status, "body": data}
     try:
-        CACHE.mkdir(parents=True, exist_ok=True)
+        LOCAL_CACHE.mkdir(parents=True, exist_ok=True)
         _cache_file(url).write_text(json.dumps(entry, indent=1, ensure_ascii=False))
     except OSError:
         pass                                             # a cache we cannot write is no reason to fail
@@ -172,10 +180,12 @@ def _save(url, status, data):
 
 def _load(url):
     """The saved answer for a URL, or None."""
-    try:
-        return json.loads(_cache_file(url).read_text())
-    except (OSError, ValueError):
-        return None
+    for folder in (LOCAL_CACHE, CACHE):
+        try:
+            return json.loads(_cache_file(url, folder).read_text())
+        except (OSError, ValueError):
+            continue
+    return None
 
 
 def _open(url, headers):
@@ -377,7 +387,7 @@ def _abstract(inverted):
 def cached_topics():
     """The search queries that have a saved answer, so they work with no network."""
     topics = []
-    for path in sorted(CACHE.glob("*.json")):
+    for path in cache_files():
         try:
             url = json.loads(path.read_text())["url"]
         except (OSError, ValueError, KeyError):

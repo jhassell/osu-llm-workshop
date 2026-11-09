@@ -10,6 +10,7 @@
 #   bash setup.sh --base-url URL    point the labs at a different endpoint
 #   bash setup.sh --model NAME      pick a model by name
 #   bash setup.sh --choose-model    with an OpenRouter key, pick from the list of models again
+#                                   (or: bash 00_setup/choose_model.sh)
 #   bash setup.sh --openclaw        connect OpenClaw to the same model and open it
 #
 # Everything the labs need is two values, written to .env in this folder:
@@ -20,7 +21,7 @@
 # The key decides the endpoint. Paste any of these at the prompt:
 #   the OSU workshop key   (from the card)        goes to the OSU workshop endpoint
 #   an OpenRouter key      (starts with sk-or-)   goes to OpenRouter, and you pick
-#                                                 one of six tested models (Enter: Nemotron Ultra)
+#                                                 a model from 00_setup/models.txt (Enter: Nemotron Ultra)
 #   an NVIDIA key          (starts with nvapi-)   goes to NVIDIA's hosted endpoint
 # A key is only ever sent to the endpoint it belongs to. --base-url, or a
 # Codespaces secret LLM_BASE_URL, overrides this and uses that endpoint instead.
@@ -68,7 +69,8 @@ OPENROUTER_BASE_URL="https://openrouter.ai/api/v1"
 # every old module (7 of 7) and the website exercise for less than Super, because
 # its providers bill the cached prompt OpenClaw resends at a fifth of the price.
 OPENROUTER_MODEL="nvidia/nemotron-3-ultra-550b-a55b"
-# The models offered when someone pastes an OpenRouter key: id|what the person
+# The models offered when someone pastes an OpenRouter key, used only when
+# 00_setup/models.txt is missing (that file is the list): id|what the person
 # sees. The first is the default (Enter). Each was run through Module 3's
 # extraction and Module 4's tool-calling agent on 2026-10-31 and passed both
 # (Gemini 3.8 Flash replaced 3.7 Flash the same evening, after the same test).
@@ -91,6 +93,20 @@ NVIDIA_MODEL="nvidia/nemotron-3-ultra-550b-a55b"
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENV_FILE="$ROOT/.env"
+# The offered list lives in 00_setup/models.txt, shared with 00_setup/choose_model.sh;
+# the array above is the fallback when that file is missing. Its first line must
+# be the workshop model, since Enter picks it.
+if [ -f "$ROOT/00_setup/models.txt" ]; then
+  MODELS_FROM_FILE=()
+  while IFS= read -r line || [ -n "$line" ]; do
+    case "$line" in ''|'#'*) continue ;; esac
+    MODELS_FROM_FILE+=("$line")
+  done <"$ROOT/00_setup/models.txt"
+  if [ ${#MODELS_FROM_FILE[@]} -gt 0 ] && [ "${MODELS_FROM_FILE[0]%%|*}" = "$OPENROUTER_MODEL" ]; then
+    OPENROUTER_CHOICES=("${MODELS_FROM_FILE[@]}")
+  fi
+  unset MODELS_FROM_FILE line
+fi
 
 # Everything the exit trap touches is defined here, before anything can fail,
 # so `set -u` can never trip inside the trap.
@@ -325,10 +341,10 @@ site_address() {   # the public address of site/, or where to find it
 # ------------------------------------------------------------- 1. tooling
 # Everything that does not need your key happens first, so a container problem
 # surfaces before you are asked for a key.
-if ! python3 -c 'import openai, pydantic, pypdf, docx' 2>/dev/null; then
+if ! python3 -c 'import openai, pydantic, pypdf, docx, pandas, numpy, matplotlib, scipy, statsmodels, seaborn' 2>/dev/null; then
   echo "Installing Python libraries (this only happens once)..."
   pip install --user --quiet -r "$ROOT/requirements.txt" >/tmp/python-install.log 2>&1 || true
-  python3 -c 'import openai, pydantic, pypdf, docx' 2>/dev/null \
+  python3 -c 'import openai, pydantic, pypdf, docx, pandas, numpy, matplotlib, scipy, statsmodels, seaborn' 2>/dev/null \
     || die "The Python libraries could not be installed." \
            "Read the last lines of /tmp/python-install.log. Then stop and start the Codespace, or rebuild it (Ctrl+Shift+P, Codespaces: Rebuild Container); both keep your files."
 fi
@@ -658,7 +674,7 @@ fi
 choose_openrouter_model() {
   local i n=${#OPENROUTER_CHOICES[@]} pick id current="$MODEL"
   echo
-  echo "Which model? OpenRouter offers many; these six were tested with this workshop."
+  echo "Which model? OpenRouter offers many; these $n were tested with this workshop."
   for ((i = 0; i < n; i++)); do
     id="${OPENROUTER_CHOICES[$i]%%|*}"
     printf '  %d  %s\n     %s%s\n' "$((i + 1))" "${OPENROUTER_CHOICES[$i]#*|}" "$id" \
@@ -844,7 +860,7 @@ The site can ask students questions and have this workshop's model judge each an
 3. Stop there. Do not start a server and do not run publish-site.sh: the site is already live, and it is published to its permanent address automatically within a minute of your last change.
 4. End your reply with the two addresses from the section below, exactly as given:
    Live now: the live address
-   Permanent (in a minute or two): the permanent address
+   Permanent (once published, a minute or more): the permanent address
 IDEOF
   # The site's real addresses, so OpenClaw never has to guess one. In a test on
   # 2026-10-31 it was asked for the address and invented one that did not
@@ -886,6 +902,7 @@ IDEOF
   chmod 700 "$HOME/.openclaw" 2>/dev/null
   chmod 600 "$HOME/.openclaw"/openclaw.json* 2>/dev/null
   dots_stop ok
+  echo "✅ OpenClaw is connected to $MODEL."
   return 0
 }
 

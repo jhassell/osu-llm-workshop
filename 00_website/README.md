@@ -12,11 +12,11 @@ Stop 1, about 35 minutes, from 9:00. Folder: `00_website/`. You type in `opencla
 
 ## The idea
 
-OpenClaw is a complete agent program, already installed in your Codespace and connected by setup to the same model as the labs. An agent is a loop: it sends your request to the model, the model asks for a tool, the program runs the tool and sends back the result, and this repeats until the model answers in words. OpenClaw comes with its full set of tools: reading and writing files, running commands, fetching web pages and more. It prints a line for each tool call, so you can watch the loop work. At the close of the day you read one of your own traces as this loop: what the model asked for, what ran, what came back. The loop itself, about forty lines, is `agent.py`.
+OpenClaw is a complete agent program, already installed in your Codespace and connected by setup to the same model as the labs. An agent is a loop: it sends your request to the model, the model asks for a tool, the program runs the tool and sends back the result, and this repeats until the model answers in words. OpenClaw comes with its full set of tools: reading and writing files, running commands, fetching web pages and more. It prints a line for each tool call, so you can watch the loop work. At the close of the day you read one of your own traces as this loop: what the model asked for, what ran, what came back. A simplified version of the same loop, written to be read rather than run by OpenClaw, is `agent.py` at the top of your repository.
 
 The `site/` folder at the top of your repository is a website. While your Codespace runs, everything in it is served at your site address, port 8000, and that address is public: anyone who has it can open it. Until the agent writes its own pages, the address shows a placeholder page: "This site is empty for now". `site/` is never committed to git.
 
-Setup also told the agent a few facts about `site/`: it is already served, so there is no need to start a web server; links should be relative; there is a site check; and how to publish. Publishing is your call: ask the agent to publish the site, or run the script yourself.
+Setup also told the agent a few facts about `site/`: it is already served, so there is no need to start a web server; links should be relative; and there is a site check. Publishing happens by itself: a helper in your Codespace publishes `site/` to a permanent address about a minute after it stops changing, if the site check passes (see The permanent address, below). You can turn that off.
 
 Relative links matter because of where the permanent copy lives. Today the site is at the top of your address, so a link to `/lesson2.html` happens to work. On GitHub Pages, the permanent copy lives under `/<your repository name>/`, and that same link points at a page that is not there. `lesson2.html`, with no leading `/`, works in both places.
 
@@ -28,9 +28,9 @@ The model writes fluent teaching text from what it learned in training. Most of 
 - Find your site address. The READY box printed it on the line that starts `Your site (files in site/):`. If that line says `the Ports tab, port 8000` instead, open the **Ports** tab beside the terminal and find the row for port 8000; its address is in the **Forwarded Address** column, and the globe icon opens it. Open the address now: you should see the placeholder page.
 - Pick a topic: one specific thing you teach, narrow enough for three short pages, for a named group of students. Not "thermodynamics" but "reading a phase diagram, for second-year chemistry majors". The lines below use buffer pH for first-year chemistry students; put yours in its place.
 
-## Predict first
+## Your three things
 
-Picture the site before you type anything. On your card write three things a first-time learner must get right about your topic, and circle the one you would most hate to see stated wrong. Then predict: which of the three will the agent get wrong, leave out, or state without a source?
+On your card write three things a first-time learner must get right about your topic, and circle the one you would most hate to see stated wrong. You will check the site against them.
 
 ## Do it
 
@@ -48,11 +48,11 @@ Picture the site before you type anything. On your card write three things a fir
    Build site/: three short pages teaching buffer pH to first-year chemistry students.
    ```
 
-   Then watch, and do not type again until it answers. Each tool call prints a line: which file it reads or writes, and any command it runs. Look for two things: which files it creates in `site/`, and whether any tool call fetched a page from the web (a fetch line, or a `curl` or `wget` in an `exec` line). If none did, everything on the pages came from the model's memory.
+   Then watch, and do not type again until it answers. Each tool call prints a line: which file it reads or writes, and any command it runs. Look for two things: which files it creates in `site/`, and whether any tool call fetched a page from the web (a fetch line, or a `curl` or `wget` in an `exec` line). A fact on a page can come from a page it fetched, a file it read, a calculation it ran, your own request, or the model itself with nothing behind it. If no tool call fetched or read a source, nothing on the pages was checked against one.
 
    A build takes a few minutes, and longer this morning, because the whole room starts at once and every step is a call to the same shared model.
 
-3. Open the site. When the agent finishes, its last two lines give your addresses. `Live now:` works at once, while the Codespace runs. `Permanent (in a minute or two):` is your site on GitHub Pages, published automatically about a minute after the agent's last change. Cmd-click either one (Ctrl-click on Windows). The chat covers the READY box, so these lines and the **Ports** tab are where to find the address from here on. You should see the agent's first page instead of the placeholder. Click through every page, then compare it with your card:
+3. Open the site. When the agent finishes, its last lines give your two addresses, one marked live and one permanent (the agent words the labels its own way). Open the live one first: Cmd-click it (Ctrl-click on Windows). It works at once, while the Codespace runs. The permanent one is where GitHub Pages will serve the site once the helper has published it and Pages is on; until then that address shows GitHub's 404 page, and it may need one setting from you (see The permanent address, below). The chat covers the READY box, so these lines and the **Ports** tab are where to find the address from here on. You should see the agent's first page instead of the placeholder. Click through every page, then compare it with your card:
 
    - Did it teach your three things? The one you circled?
    - What did it decide that you never told it: the level, the notation, the examples, the order, the look?
@@ -66,12 +66,12 @@ Picture the site before you type anything. On your card write three things a fir
    List every numeric claim on the site and say whether a tool call fetched its source.
    ```
 
-   Compare its answer with the tool-call lines from step 2. If no tool call fetched a source, every number came from memory, whatever the answer says.
+   Compare its answer with the tool-call lines from step 2. A number is backed by a source only if a tool call fetched or read that source; a number it calculated is only as good as the inputs and the arithmetic, which you can redo. Anything else came from the model with nothing behind it, whatever the answer says.
 
 5. Give it a rule, and ask for the fix. Turn the thing on your card into one rule for every page, in your own words. For example:
 
    ```
-   New rule: show units on every number. Fix every page.
+   New rule: give the units of every quantity that has them, and say so when a quantity has none, such as pH or a ratio. Fix every page.
    ```
 
    Or name the error itself: `Page 2 has the ratio upside down: base over acid. Fix it.` Refresh the site when it answers. Is the error gone, and did the fix break anything else?
@@ -102,14 +102,7 @@ Your site address shows the agent's pages, not the placeholder. Show your pair t
 
 1. Core. Check the thing you circled. Find the passage on the site that covers it and read it aloud to your pair. Is it right, is it right but missing something your students need, or is it wrong? No model call needed.
 
-2. Core. Look at what it wrote. In the second terminal:
-
-   ```
-   ls site
-   grep -nE '(href|src)="/[^/]' site/*.html
-   ```
-
-   Look for: how many files it made, and whether the `grep` prints anything. Every line it prints is a link that will break on the permanent site; the site check in step 6 is the full test. Open `site/index.html` in the editor and find one link to another page.
+2. Core. Look at what it wrote. In the Explorer on the left, click the `site` folder to open it: how many files did it make? Click `index.html` to open it in the editor and find one link to another page, a line with `href="`. A link written as `lesson2.html` works on both addresses; one that starts with a single `/`, such as `/lesson2.html`, breaks on the permanent site. The site check in step 6 tests every link for you.
 
 3. Stretch (optional). Ask for sources, then check them:
 
@@ -127,7 +120,7 @@ Your site address shows the agent's pages, not the placeholder. Show your pair t
 
    Then ask `Which quiz answers did you verify?` and work one question yourself.
 
-5. Stretch (optional). Add Socratic questions your students answer:
+5. Stretch (optional). Add Socratic questions your students answer. The agent sometimes adds them on its own in the first build; if your pages already have a **Check your understanding** box, skip the request and test them:
 
    ```
    Add a Socratic tutor question to each page.
@@ -137,9 +130,9 @@ Your site address shows the agent's pages, not the placeholder. Show your pair t
 
 ## The permanent address: automatic
 
-You do nothing. A small helper in your Codespace watches `site/`. About a minute after the agent's last change, it runs `bash publish-site.sh --yes`, which checks the site and puts it on a branch named `gh-pages` in your own repository. GitHub Pages serves it at `https://<owner>.github.io/<repo>/`, the permanent address the agent gave you. Every later change is published the same way. It never publishes the placeholder page.
+You do nothing. A small helper in your Codespace watches `site/`. When the folder has not changed for about a minute, it runs `bash publish-site.sh --yes`, which checks the site and puts it on a branch named `gh-pages` in your own repository. A minute of quiet usually means the agent has finished, but if the model is slow it can be between two of the agent's steps, so a half-built site may be published briefly; the next change replaces it. GitHub Pages serves it at `https://<owner>.github.io/<repo>/`, the permanent address the agent gave you. Every later change is published the same way. It never publishes the placeholder page, and nothing that fails the site check.
 
-To see whether the last publish worked:
+To see whether the last publish worked, in the second terminal (the file is outside your repository, so it is not in the Explorer):
 
 ```
 cat ~/.osu-llm-workshop-pages-status
@@ -160,7 +153,7 @@ OpenClaw connected to the workshop model, and a small site in `site/` at your si
 
 ## If something goes wrong
 
-- The site address still shows the placeholder, "This site is empty for now". The agent has not written `site/index.html` yet, or the page needs a refresh. `ls site` shows what is there. If it wrote its pages somewhere else, tell it: `Put the pages in site/ at the top of the repository.`
+- The site address still shows the placeholder, "This site is empty for now". The agent has not written `site/index.html` yet, or the page needs a refresh. Open the `site` folder in the Explorer to see what is there. If it wrote its pages somewhere else, tell it: `Put the pages in site/ at the top of the repository.`
 - The address does not open, or the **Ports** tab shows port 8000 as **Private**. Right-click the port 8000 row, choose **Port Visibility**, then **Public**. Some organizations forbid public ports; then the site opens only for you, which is fine for today. If port 8000 is missing from the tab, run `bash .devcontainer/site-public.sh`, wait ten seconds, and look again. It prints nothing; `~/.osu-llm-workshop-site.log` records what it did.
 - The site check fails on a link that starts with `/`. Tell the agent: `Use relative links only. Fix every page.` Then run the check again.
 - The agent runs a command to start a web server. It does not need one: `site/` is already served on port 8000. Tell it: `Stop that server. site/ is already served.`

@@ -41,6 +41,7 @@ no_measures = raw[raw[MEASURES].isna().all(axis=1)]
 print("rows with no body measurements:", ", ".join(no_measures["Individual ID"] + " (" + no_measures["species"] + ")"))
 n_sex_missing = int(raw["Sex"].isna().sum())
 n_incomplete_clutch = int((raw["Clutch Completion"] == "No").sum())
+print(f"sex missing: {n_sex_missing} birds; from nests never seen with a full clutch: {n_incomplete_clutch} birds")
 counts = raw["species"].value_counts().sort_index()
 print("birds per species:", counts.to_dict())
 

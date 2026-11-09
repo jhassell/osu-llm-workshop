@@ -5,8 +5,11 @@
 # Started detached by .devcontainer/site-public.sh (which autostart.sh and
 # setup.sh start). One copy runs per Codespace. Every few seconds it looks at
 # site/. When the files have changed since the last publish, have stopped
-# changing for about ten seconds, and are no longer the placeholder page, it
-# runs bash publish-site.sh --yes, which checks the site first. A failed check
+# changing for about a minute (QUIET_CHECKS x 5 s), and are no longer the
+# placeholder page, it runs bash publish-site.sh --yes, which checks the site
+# first. A minute of quiet usually means the agent has finished, but a slow
+# model can leave a minute between two of its steps, so a half-built site can
+# be published; the next change is published the same way and replaces it. A failed check
 # or a refused publish is tried again when site/ changes, or after five minutes.
 #
 # The result of the last attempt is in ~/.osu-llm-workshop-pages-status, the
@@ -58,6 +61,7 @@ is_placeholder() {
   grep -q 'This site is empty for now' "$site/index.html" 2>/dev/null
 }
 
+QUIET_CHECKS=12   # 12 checks 5 seconds apart: about a minute without changes
 done_fp=""        # what was last attempted
 done_at=0
 last_fp=""
@@ -67,7 +71,7 @@ while :; do
   [ -e "$off" ] && continue
   fp="$(fingerprint)"
   if [ "$fp" = "$last_fp" ]; then same=$((same + 1)); else same=0; last_fp="$fp"; fi
-  [ "$same" -ge 2 ] || continue                       # unchanged for about ten seconds
+  [ "$same" -ge "$QUIET_CHECKS" ] || continue         # unchanged for about a minute
   [ "$fp" != none ] && [ -f "$site/index.html" ] || continue
   is_placeholder && continue
   now="$(date +%s)"

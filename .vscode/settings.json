@@ -9,6 +9,13 @@
   // Every file opens in its own tab, instead of a temporary "preview" tab that
   // the next single click replaces.
   "workbench.editor.enablePreview": false,
+  // Markdown opens formatted when clicked, so a page reads like a page; the two
+  // prompt files people fill in (*-mine.md) open as text so they can be edited.
+  // Tested in a Codespace, November 8.
+  "workbench.editorAssociations": {
+    "*.md": "vscode.markdown.preview.editor",
+    "*-mine.md": "default"
+  },
   // The labs run in the terminal, so the terminal panel opens full-height
   // whenever it is OPENED. It does not enlarge the terminal a new Codespace
   // shows on first load: use the square button just left of the X.

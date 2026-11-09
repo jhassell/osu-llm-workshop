@@ -18,7 +18,7 @@ MINE = ROOT / "mine"
 MB = 1024 * 1024
 
 FALLBACK = {
-    "data": "Stop 2 has three datasets ready: 02_data/datasets/",
+    "data": "Stop 2 has four datasets ready: 02_data/datasets/",
     "paper": "Stop 3 has three open-access papers ready: corpus/papers/",
     "image": "Stop 4 has six charts ready, with the data behind them: 04_see/charts/",
 }

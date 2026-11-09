@@ -1,6 +1,6 @@
-# Prediction cards
+# Cards
 
-One card per stop, printed two to a page and handed out at 8:30. Each card has the prediction for that stop, a line for the answer, the checkpoint, and what you write during the build. Nobody collects the cards; they are for the person holding them and the pair conversation. The two minute papers are torn off and handed in. A wrong prediction costs nothing.
+One card per stop, printed two to a page and handed out at 8:30. Each card has what you write during the stop and its checkpoint. Nobody collects the cards; they are for the person holding them and the pair conversation. The two minute papers are torn off and handed in.
 
 ---
 
@@ -8,11 +8,7 @@ One card per stop, printed two to a page and handed out at 8:30. Each card has t
 
 Workshop word, for the key prompt: OpeningDayToken (letter case does not matter)
 
-Prediction: when the check runs, what will its second line say?
-
-My answer:
-
-Checkpoint: which machine produced each of the two lines?
+Checkpoint: which machine produced each of the first two lines, and what does the third prove?
 
 First line:                          Second line:
 
@@ -24,15 +20,13 @@ Early finisher: what one row of the data is, and one number in it I could check 
 
 ## Stop 1, a website for your students
 
-Prediction: three things a first-time learner must get right about your topic. Circle the one you would most hate to see stated wrong.
+Your three things: what a first-time learner must get right about your topic. Circle the one you would most hate to see stated wrong.
 
 1.
 
 2.
 
 3.
-
-Which of the three will the agent get wrong, leave out, or state without a source?
 
 Checkpoint, from the build: the one thing the agent got wrong or invented, and the rule I gave it:
 
@@ -64,15 +58,17 @@ Checkpoint: results/analysis.py reproduces the report.
 
 ---
 
-## Stop 3, three papers to an evidence table
+## Stop 3, a research question answered from papers you can check
 
-Prediction: of three papers an index returns for my topic, how many will have a DOI that checks out?   0   1   2   3
+Failures on the first check:          Times the agent ran the check:
 
-The field a model is most likely to get wrong (circle one): question / method / sample / finding
+What made it search, and what it searched for:
 
-From the build: the field where the quote does not settle the claim, and why:
+One row I checked myself: is the quote on its page, and does it say what the row says?
 
-Checkpoint: three DOIs resolve to the right papers; one quote found in the text.
+One part of the explanation, and the rows behind it:
+
+Checkpoint: one row checked by hand, the agent's explanation and its rows, one thing I would test next.
 
 At 12:10, after the minute paper: circle the Stop 6 recipe I will build after lunch (if unsure, the first).
 
@@ -92,9 +88,7 @@ The muddiest point:
 
 From memory, the command that rebuilds this morning's analysis:
 
-Prediction: the model will read better (circle one): the bar chart / the dense scatter
-
-On the harder one it will (circle one): say it is unsure / return a full table anyway
+On the dense scatter, did it say it was unsure, or return a full table anyway?
 
 Checkpoint, one sentence: I would trust this for these charts, and not for these:
 
@@ -103,10 +97,6 @@ Checkpoint, one sentence: I would trust this for these charts, and not for these
 ## Stop 5, the agent repairs research code
 
 If Cimarron is up: bash 00_setup/switch_backend.sh cimarron at the start, bash 00_setup/switch_backend.sh openrouter at the end.
-
-Prediction: how many separate problems does the script have?
-
-Which one will the agent find last?
 
 For each changed line, what was wrong:
 
@@ -130,11 +120,13 @@ My recipe (circled on the Stop 3 card):
 
 What I will change in the starter:
 
-The transfer test, at 3:15, run without the agent. Circle what it did.
+The transfer test, at 3:15: swap tools with your partner and run theirs from its header comment alone, without the agent and without their help. Circle what it did.
 
-An input it had not seen:     right answer / wrong answer / honest "not stated" or error / crash
+My own input:                 right answer / wrong answer / honest "not stated" or error / crash
 
-The bad input:                right answer / wrong answer / honest "not stated" or error / crash
+Their bad input:              right answer / wrong answer / honest "not stated" or error / crash
+
+Where the header comment left me stuck:
 
 Checkpoint: show your pair the bad input and what your tool did with it.
 

@@ -1,6 +1,6 @@
 # penguins_raw.csv: data dictionary
 
-344 rows, 17 columns. One row is one adult penguin sampled at its nest in one breeding season (2007 to 2009), near Palmer Station, Antarctica. Missing values are empty fields, read as NaN by pandas. Column names are exactly as in the file, units included where the file has them.
+344 rows, 17 columns. One row is one adult penguin sampled at its nest in one breeding season (2007 to 2009), near Palmer Station, Antarctica. Missing values are written as the letters NA (336 of them across the file), which pandas reads as missing (NaN) by default; a text editor shows them as NA, not as empty fields. Column names are exactly as in the file, units included where the file has them.
 
 - studyName: sampling season, PAL0708, PAL0809 or PAL0910 (the 2007-08, 2008-09 and 2009-10 austral summers). No missing values.
 - Sample Number: running sample number within a species across all three seasons (Adelie 1 to 152, Chinstrap 1 to 68, Gentoo 1 to 124). Integer, no units. No missing values.
@@ -18,6 +18,6 @@
 - Sex: MALE or FEMALE, from molecular sexing of a blood sample. 11 missing (primers did not amplify or no blood).
 - Delta 15 N (o/oo): nitrogen stable isotope ratio 15N/14N of red blood cells, parts per thousand (per mil) relative to atmospheric N2. Higher means feeding higher in the food web. 14 missing.
 - Delta 13 C (o/oo): carbon stable isotope ratio 13C/12C of red blood cells, per mil relative to Vienna PeeDee Belemnite. 13 missing.
-- Comments: free text from the field or lab, such as "Nest never observed with full clutch." or "Sexing primers did not amplify." Empty for 290 rows.
+- Comments: free text from the field or lab, such as "Nest never observed with full clutch." or "Sexing primers did not amplify." NA (missing) for 290 rows.
 
 Warts kept on purpose: units live in the column names, names contain spaces and parentheses, species is a long string rather than a short code, and the missing values are not all in the same rows.

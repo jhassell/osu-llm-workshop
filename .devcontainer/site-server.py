@@ -9,7 +9,8 @@ would publish whatever it points at, including .env (the labs key) and
 site-public.sh makes public.
 
 Every request is refused unless the real path of what it asks for is inside the
-served folder. Names that start with a dot (.env, .git) are refused too, and
+served folder and nothing on the way to it is a symlink, including the
+index.html a folder request ends at. Names that start with a dot (.env, .git) are refused too, and
 a folder without index.html gets 404, never a listing of its names. The
 folder itself must be a real folder, not a symlink. site-check.py fails on a
 symlink under site/, so this server and publish-site.sh agree about what the
@@ -257,6 +258,39 @@ def inside(path):
     return real == ROOT or real.startswith(ROOT + os.sep)
 
 
+def no_symlink_below_root(path):
+    """True if no part of path, from just below ROOT down to path itself, is a
+    symlink. path is the unresolved file-system path the handler built."""
+    rel = os.path.relpath(os.path.abspath(path), ROOT)
+    if rel == os.curdir:
+        return True
+    if rel.startswith(os.pardir):
+        return False
+    here = ROOT
+    for part in rel.split(os.sep):
+        here = os.path.join(here, part)
+        if os.path.islink(here):
+            return False
+    return True
+
+
+def safe_target(path, index_pages=("index.html", "index.htm")):
+    """True if what the handler would actually open for path is a real file or
+    folder inside ROOT, reached through no symlink. For a folder this includes
+    the index page the parent class would pick, which is chosen only after the
+    folder itself has been checked; a symlinked index.html would otherwise
+    serve whatever it points at."""
+    if not inside(path) or not no_symlink_below_root(path):
+        return False
+    if os.path.isdir(path):
+        for name in index_pages:
+            candidate = os.path.join(path, name)
+            if os.path.lexists(candidate):
+                if os.path.islink(candidate) or not inside(candidate):
+                    return False
+    return True
+
+
 def hidden(url_path):
     """True if any part of the URL path starts with a dot (.env, .git/...)."""
     path = urllib.parse.unquote(url_path.split("?", 1)[0].split("#", 1)[0])
@@ -331,7 +365,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def send_head(self):
         # The one hook both GET and HEAD go through, and it runs before the
         # parent's directory redirect and folder listing.
-        if hidden(self.path) or not inside(self.translate_path(self.path)):
+        if hidden(self.path) or not safe_target(self.translate_path(self.path), getattr(self, "index_pages", ("index.html", "index.htm"))):
             self.send_error(404, "File not found")
             return None
         return super().send_head()

@@ -10,6 +10,7 @@ PASS or FAIL and exits 0 or 1. It never changes analysis.py.
 
 To check a different script, give its path: python 05_repair/check_expected.py my_copy.py
 """
+import math
 import subprocess
 import sys
 from pathlib import Path
@@ -51,13 +52,26 @@ def parse(stdout):
         fail("the output format changed: expected a header line 'species n bill_length_mm ...' "
              "and then one line per species (EXPECTED.md says what the check reads)")
     found = {}
-    for line in lines:
+    start = next(i for i, l in enumerate(lines) if l.split()[:1] == ["species"])
+    for line in lines[start + 1:]:
         parts = line.split()
-        if parts and parts[0] in EXPECTED and len(parts) == len(header):
-            try:
-                found[parts[0]] = {h: float(v) for h, v in zip(header[1:], parts[1:])}
-            except ValueError:
+        if len(parts) != len(header):
+            continue
+        name = parts[0]
+        try:
+            values = {h: float(v) for h, v in zip(header[1:], parts[1:])}
+        except ValueError:
+            if name in EXPECTED:
                 fail(f"could not read the numbers in: {line.strip()}")
+            continue                      # not a table row
+        if name not in EXPECTED:
+            fail(f"the table has a row for an unexpected species '{name}': {line.strip()}")
+        if name in found:
+            fail(f"the table has two rows for {name}; each species must appear once")
+        bad = [h for h, v in values.items() if not math.isfinite(v)]
+        if bad:
+            fail(f"{name}: {', '.join(bad)} is not a finite number ({line.strip()})")
+        found[name] = values
     if not found:
         fail("the output format changed: no line per species under the header "
              "(EXPECTED.md says what the check reads)")

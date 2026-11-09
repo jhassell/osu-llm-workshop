@@ -2,9 +2,9 @@
 # Behind? Restore one stop's files from the repository, then start there.
 #
 #   bash catchup.sh s2      restores 02_data/ (and so on for s3, s4, s5, s6)
-#   bash catchup.sh s6      also, if results/ has no Stop 2 report yet, copies in
-#                           a finished one from a shipped dataset, so the page
-#                           recipe has something to build from
+#   bash catchup.sh s6      also, if results/ has no Stop 2 analysis yet, puts in
+#                           results/analysis.py, which reruns a shipped dataset's
+#                           finished analysis, so the page recipe has one to build from
 #
 # The old six modules, now in followon/old-modules/, restore the same way:
 #   bash catchup.sh m4      restores followon/old-modules/04_tool/, and copies in
@@ -22,7 +22,7 @@ OLD=followon/old-modules
 TABLE=0
 case "${1:-}" in
   s2) DIR=02_data;  NEEDS="" ;;
-  s3) DIR=03_lit;   NEEDS="03_table" ;;
+  s3) DIR=03_lit;   NEEDS="" ;;
   s4) DIR=04_see;   NEEDS="" ;;
   s5) DIR=05_repair; NEEDS="" ;;
   s6) DIR=06_build; NEEDS="03_lit/pdfask.py 03_lit/lit.py" ;;
@@ -73,17 +73,19 @@ then
   echo "Saved table copied to 03_table/records.jsonl."
 fi
 
-# Stop 6's page recipe builds from Stop 2's report and figures. If there are
-# none yet, borrow the finished ones from the penguins dataset.
-if [ "${1:-}" = s6 ] && [ ! -s results/report.md ]; then
-  REF=02_data/datasets/penguins/reference
-  if [ -n "$REF" ] && [ -s "$REF/report.md" ]; then
-    mkdir -p results/figures
-    cp "$REF/report.md" results/report.md
-    cp "$REF"/figures/* results/figures/ 2>/dev/null || true
-    # Its printed output, so the page recipe can check the report's numbers.
-    python3 "$REF/analysis.py" > results/analysis-output.txt 2>&1 || true
-    echo "No Stop 2 report in results/ yet: copied the finished one from $REF/."
+# Stop 6's page recipe builds from Stop 2's analysis: results/analysis.py, its
+# report and its figures. With none yet, install an analysis that reruns the
+# finished penguins one (06_build/page/from_reference.py) and run it once.
+if [ "${1:-}" = s6 ] && [ ! -s results/analysis.py ]; then
+  if [ -s results/report.md ]; then
+    echo "results/report.md is there but results/analysis.py is not: finish Stop 2's prompt three (02_data/reproduce.md) first,"
+    echo "or move results/report.md aside and run bash catchup.sh s6 again to use the finished penguins analysis."
+  else
+    mkdir -p results
+    cp 06_build/page/from_reference.py results/analysis.py
+    python3 results/analysis.py > results/analysis-output.txt 2>/dev/null || true
+    echo "No Stop 2 analysis in results/ yet: results/analysis.py now reruns the finished penguins analysis,"
+    echo "and its report, figures and printed output are in results/."
   fi
 fi
 echo "$DIR restored from the repository. Your .env, mine/ and records.py are untouched."

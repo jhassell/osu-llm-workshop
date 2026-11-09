@@ -2,16 +2,25 @@
 
     python 06_build/table/build_table.py corpus/papers
     python 06_build/table/build_table.py mine 06_build/table/fields.json
+    python 06_build/table/build_table.py 06_build/table/bad --out results/build-bad
+        the bad input, written beside your good table instead of over it
 
 The columns are yours: edit fields.json, one line per column, the sentence the
 model reads to fill it. Every value comes back with a sentence quoted from the
 document and the page it is on, and the program checks that the quote is really
-there, exactly as Stop 3 did. PDFs, .txt and .md files are read; anything else
+there, the same check Stop 3 ran on every value. PDFs, .txt and .md files are read; anything else
 is listed and skipped.
 
-Writes results/build/table.csv (open it in the editor; the CSV viewer colours
-the columns) and results/build/table.jsonl with every quote. A document that
-fails is a row with an error, never dropped.
+Writes results/build/table.csv (click it in the Explorer; the CSV viewer colours
+the columns) and results/build/table.jsonl, or into the folder --out names. For
+each column the CSV has the value, the quote it rests on, the page where the
+program found that quote, and a check:
+    yes          the quote is in the document word for word (on that page)
+    NO           a quote was given but is not in the document
+    not stated   the document does not say, and the model said so
+    UNSUPPORTED  the model gave a value but no quote to back it: treat it as unchecked
+Found means the sentence is there, not that it supports the value: read one row.
+A document that fails is a row with an error, never dropped.
 """
 import csv
 import json
@@ -48,12 +57,34 @@ def pages_of(path):
     return [path.read_text(errors="replace")]
 
 
+NOT_STATED = {"", "not stated", "not stated.", "none", "n/a", "na", "unknown"}
+
+
+def check(value, quote, pages):
+    """(status, page) for one value: see the module comment for the four statuses."""
+    if not quote.strip():
+        return ("not stated" if value.strip().lower() in NOT_STATED else "UNSUPPORTED"), ""
+    hit = find_quote(quote, pages)
+    if hit > 0:
+        return "yes", hit
+    if hit == -1:
+        return "yes", "across a page break"
+    return "NO", ""
+
+
 def main():
+    import argparse
+    ap = argparse.ArgumentParser(description="A folder of documents becomes a table with your columns.")
+    ap.add_argument("folder", help="the folder of PDFs, .txt or .md files")
+    ap.add_argument("fields", nargs="?", default=str(HERE / "fields.json"), help="your columns (default 06_build/table/fields.json)")
+    ap.add_argument("--out", default=str(OUT), help="where table.csv and table.jsonl go (default results/build)")
     if len(sys.argv) < 2:
         raise SystemExit(__doc__)
-    folder = Path(sys.argv[1])
+    opts = ap.parse_args()
+    out = Path(opts.out) if Path(opts.out).is_absolute() else Path.cwd() / opts.out
+    folder = Path(opts.folder)
     folder = folder if folder.is_absolute() else Path.cwd() / folder
-    fields_file = Path(sys.argv[2]) if len(sys.argv) > 2 else HERE / "fields.json"
+    fields_file = Path(opts.fields)
     fields = {k: v for k, v in json.loads(fields_file.read_text()).items() if not k.startswith("_")}
     Row = row_model(fields)
     rules = ("You fill one row of a table for one document. Its text has === page N === markers. "
@@ -67,7 +98,7 @@ def main():
             print(f"skipped {p.name}: not a PDF, .txt or .md")
     if not usable:
         raise SystemExit(f"No PDF, .txt or .md files in {folder}.")
-    OUT.mkdir(parents=True, exist_ok=True)
+    out.mkdir(parents=True, exist_ok=True)
     rows = []
     for path in usable:
         print(f"{path.name} ...", flush=True)
@@ -80,26 +111,30 @@ def main():
             rec = llm.ask_json(f"Document: {path.name}\n{text}", Row, system=rules)
             for name in fields:
                 ev = getattr(rec, name)
-                hit = find_quote(ev.quote, pages) if ev.quote.strip() else 0
+                status, page = check(ev.value, ev.quote, pages)
                 row[name] = ev.value
                 row[f"{name}_quote"] = ev.quote
-                row[f"{name}_found"] = "yes" if hit else ("not stated" if not ev.quote.strip() else "NO")
+                row[f"{name}_page"] = page
+                row[f"{name}_found"] = status
             row["cut"] = cut
         except Exception as err:
             row["error"] = f"{type(err).__name__}: {str(err).splitlines()[0][:150] if str(err) else ''}"
             print(f"   {row['error']}")
         rows.append(row)
-    with open(OUT / "table.jsonl", "w") as f:
+    with open(out / "table.jsonl", "w") as f:
         for r in rows:
             f.write(json.dumps(r) + "\n")
-    columns = ["file"] + list(fields) + [f"{n}_found" for n in fields] + ["error"]
-    with open(OUT / "table.csv", "w", newline="") as f:
+    columns = ["file"] + [c for n in fields for c in (n, f"{n}_quote", f"{n}_page", f"{n}_found")] + ["error"]
+    with open(out / "table.csv", "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=columns, extrasaction="ignore")
         w.writeheader()
         w.writerows(rows)
     found = sum(r.get(f"{n}_found") == "yes" for r in rows for n in fields)
     asked = sum(r.get(f"{n}_found") in ("yes", "NO") for r in rows for n in fields)
-    print(f"\n{len(rows)} rows -> results/build/table.csv; {found} of {asked} quotes found word for word.")
+    unsupported = sum(r.get(f"{n}_found") == "UNSUPPORTED" for r in rows for n in fields)
+    shown = out.relative_to(ROOT) if ROOT in out.parents else out
+    print(f"\n{len(rows)} rows -> {shown}/table.csv; {found} of {asked} quotes found word for word"
+          + (f"; {unsupported} value(s) with no quote at all, marked UNSUPPORTED." if unsupported else "."))
     print(f"{llm.TOTAL['calls']} model calls" + (f", about ${llm.TOTAL['cost']:.4f}" if llm.TOTAL["cost"] else ""))
 
 

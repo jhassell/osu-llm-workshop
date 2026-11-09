@@ -16,6 +16,7 @@ Carry this on a laptop or a printout. Order matters: the common fixes for Stop 0
 8. After `bash setup.sh --model <name>`, the check still names the old model. The labs and the check read only `.env`, so look at the model line in setup's last box; if setup reported an error, the model name is wrong for this endpoint. A Codespaces secret `LLM_MODEL` only matters to setup, and `--model` overrides it.
 9. Someone pasted their own NVIDIA key and setup says "does not know that address or model" with HTTP 404 even though the model list loaded. The key was accepted; NVIDIA opens only some hosted models to a personal account. Setup's message names a model that works; `bash setup.sh --reset-key --model <that name>`. For other models they must ask help@build.nvidia.com to enable Public API Endpoints on their account, which is not a same-day fix.
 10. Setup opens OpenClaw's chat straight after READY. Someone who typed the check into the chat: the chat is not a shell. Open a second terminal with the **+** and run `python 00_setup/check.py` there; the chat stays open for Stop 1. Pressing Enter (choice 1) also connects OpenClaw, without opening it. If setup said OpenClaw could not be connected, or OpenClaw later says it is not connected or its configuration was not accepted, `bash setup.sh --openclaw` writes it again and opens it; the reason is in `~/.osu-llm-workshop-openclaw.log`. The check does not need OpenClaw, so the check comes first either way; Stops 1, 2, 3, 5 and 6 do need it.
+   - After the key is accepted, setup says `OpenClaw is not connected yet`. The check does not need OpenClaw, so run the check first. Then `bash setup.sh --openclaw`, which tries again and opens OpenClaw; the reason it failed is in `~/.osu-llm-workshop-openclaw.log`.
 11. Trust Folder dialog never clicked. The terminal cannot start until it is. It is a blue button in the editor area, easy to miss behind a tab.
 12. Codespace stuck on "Setting up your codespace" for more than five minutes. Go to github.com/codespaces, stop it, start it again. If that fails, delete it and create a new one from their repository; it builds in three minutes.
 13. No GitHub account, or the template step was skipped. Pair them with a neighbor for the morning. A helper creates the repository and Codespace with them at the break.
@@ -41,16 +42,16 @@ Carry this on a laptop or a printout. Order matters: the common fixes for Stop 0
 26. Empty figures, or every point in one place. The outcome column was read as text. `Which columns did you read as numbers?`
 27. The report has a number the script never printed, or the hand check disagrees with the report. That is the lesson working, not a fault. `Which line of output does each number in the report come from?` For a row-count difference, find in the tool calls where rows were dropped and why.
 28. The chat gets slow and forgets what it did. The context is full. `/new`, then `Read results/analysis.py and results/report.md, then continue.`
-29. Can't find the output. Everything is in `results/` (the report: right-click `results/report.md`, Open Preview). `results/` is never committed; that is on purpose.
+29. Can't find the output. Everything is in `results/` (the report: click `results/report.md`). `results/` is never committed; that is on purpose.
 
-## Stop 3: papers and the evidence table
+## Stop 3: a research question from papers
 
 30. The agent answers with references without running anything. They came from memory. `Run 03_lit/lit.py; do not write references yourself.` If it edits `lit.py` or writes its own search code: `git checkout 03_lit/lit.py`, then `Use 03_lit/lit.py as it is.`
 31. OpenAlex limits. Without a key, OpenAlex gives a small daily budget per network address, and Codespaces share a few addresses, so the room runs out together. When the room's OpenAlex key is in `workshop-endpoint.txt` (or someone's own in `.env` as `OPENALEX_API_KEY=`), `lit.py` uses it; that limit is the instructor's to watch. When a search says it used a saved answer, or that OpenAlex did not answer: `python 03_lit/lit.py --topics` lists the topics that always work offline; use one, and try theirs later. Crossref, which checks the DOIs, is not limited.
 32. A DOI comes back `missing` with a note that another agency registered it. It is real (Zenodo, arXiv, DataCite), just not checkable in Crossref. `missing` with no note is often a typo, sometimes an invented DOI.
-33. `pdfask.py` says a PDF has almost no text: a scan. Another paper, or the shipped ones in `corpus/papers/`. A long paper is read only for about its first 120,000 characters (roughly 20,000 words); they should say so in their table.
-34. Opening the evidence table: right-click `results/evidence-table.html`, Download, open it on the laptop. The text the model read is in `results/papers/`.
-35. "Found" means the sentence is in the paper, not that it supports the value. If someone reads every found as proof, ask them to read one aloud next to its value.
+33. `pages.py` says a PDF has almost no text: a scan. Nothing in it can be read or checked. Another paper, or the shipped ones (`03_lit/question.md`). A paper whose text comes out jumbled (two columns, tables) makes quotes fail: copy them from `pages.py` output for that page, or flag the row and say so.
+34. Seeing what the agent read: click `results/papers/<paper>.txt`. The table is `results/values.csv`; `python 03_lit/check_values.py` prints every row's check, and `results/check-log.txt` the tally of every run. If the agent stops with rows failing: `Run python 03_lit/check_values.py and fix or flag every failing row.`
+35. PASS means the quote is on that page and holds the number, not that it supports the row's reading. FLAGGED means a check failed and the agent gave a reason: read the failure beside the reason, since agents sometimes flag with a reason that is not the real one. If someone reads every PASS as proof, ask them to read one quote aloud next to its row.
 
 ## Stop 4: a chart back into data
 
@@ -58,7 +59,7 @@ Carry this on a laptop or a printout. Order matters: the common fixes for Stop 0
 37. `python results/analysis.py` fails at the start of the stop. They may have no Stop 2 script; that is fine, go straight to the charts.
 38. A call takes more than a minute, or says it ran past the deadline and is trying again. The model thinks at length and the room is asking at once. Let the retry run.
 39. "The reply is not a table pandas can read". Open the `.reply.txt` beside where the CSV would be: the model described instead of tabulating. Run `--extract` again, or `--extract "one row per x value"`.
-40. `compare.py` says it matched columns by position, or a series shows `0/12 matched`. The model named or dropped a series; check the order in the printed table, or run `--extract` again.
+40. `compare.py` leaves a column unpaired, or a series shows `0/12 matched`. The model renamed or dropped a series (often a comma in a legend name); read the printed pairing, or run `--extract` again. A replot that looks wrong only because of its scale: `--yscale log`.
 
 ## Stop 5: code repair
 

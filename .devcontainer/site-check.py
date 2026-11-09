@@ -42,7 +42,9 @@ from html.parser import HTMLParser
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 HTML_SUFFIXES = (".html", ".htm")
 CSS_SUFFIXES = (".css",)
-READ_LIMIT = 8 * 1024 * 1024   # scan at most this much of one file
+READ_LIMIT = 8 * 1024 * 1024   # links and personal data: this much of one file
+CHUNK = 4 * 1024 * 1024        # keys: the whole file, this much at a time
+OVERLAP = 4096                 # carried between chunks, so a key on a boundary is still seen
 HEAD_BYTES = 8192              # this much decides text or binary
 BIG_FILE = 5 * 1024 * 1024
 
@@ -147,6 +149,40 @@ def line_of(text, index):
     return text.count("\n", 0, index) + 1
 
 
+def scan_secrets(path, keys):
+    """[(line, label)] for the first key-shaped string and the first real key in
+    the whole file, read in chunks so a large file is checked to its end."""
+    found = {}
+    start_line = 1          # line number where `text` begins
+    tail = ""
+    try:
+        fh = open(path, "rb")
+    except OSError:
+        return []
+    with fh:
+        while len(found) < 2:
+            data = fh.read(CHUNK)
+            if not data:
+                break
+            text = tail + data.decode("utf-8", "ignore")
+            if "pattern" not in found:
+                for rx, what in SECRETS:
+                    m = rx.search(text)
+                    if m:
+                        found["pattern"] = (start_line + text.count("\n", 0, m.start()), f"looks like {what}")
+                        break
+            if "key" not in found:
+                for k in keys:
+                    i = text.find(k)
+                    if i >= 0:
+                        found["key"] = (start_line + text.count("\n", 0, i), "contains the key this Codespace uses")
+                        break
+            keep = text[-OVERLAP:] if len(text) > OVERLAP else text
+            start_line += text[: len(text) - len(keep)].count("\n")
+            tail = keep
+    return [found[k] for k in ("pattern", "key") if k in found]
+
+
 def check(site):
     """Returns (files, problems, warnings); files is None if there is no folder."""
     problems, warnings = [], []
@@ -184,16 +220,15 @@ def check(site):
         raw = read_text(f)
         if raw is None:
             continue           # binary or unreadable: nothing to scan
-        for rx, what in SECRETS:
-            m = rx.search(raw)
-            if m:
-                problems.append(f"{name} line {line_of(raw, m.start())}: looks like {what}")
-                break          # one is enough to stop; the person looks at the file
-        for k in keys:
-            i = raw.find(k)
-            if i >= 0:
-                problems.append(f"{name} line {line_of(raw, i)}: contains the key this Codespace uses")
-                break
+        # Keys: the whole file. One of each kind is enough to stop; the person looks at the file.
+        for line, what in scan_secrets(f, keys):
+            problems.append(f"{name} line {line}: {what}")
+        try:
+            if f.stat().st_size > READ_LIMIT:
+                warnings.append(f"{name}: over 8 MB. It was checked for keys to the end, "
+                                "but only its first 8 MB for links and personal data.")
+        except OSError:
+            pass
 
         css = []
         suffix = f.suffix.lower()
