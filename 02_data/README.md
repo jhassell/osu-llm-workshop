@@ -60,7 +60,7 @@ On your card, write four lines:
 5. Tell the agent what you found. Back in the chat, say it in your own words and add one instruction, for example:
 
    ```
-   My check shows the outdoor temperature on 2017-09-30 and 2017-10-01 is about 12, against 44 to 70 on every other day. Read 02_data/revise.md and do what it says.
+   Sep 30 and Oct 1 look wrong in my check. Read 02_data/revise.md and do what it says.
    ```
 
    If everything matched, say so: `My check agrees with your numbers. Read 02_data/revise.md and do what it says.`
@@ -68,7 +68,7 @@ On your card, write four lines:
    Read its answer before you accept it. It may explain your number away, as a cold snap for example. You know the subject, so push back in one line with your reason:
 
    ```
-   Chicago is never 12 F at the end of September, and the change starts and stops at midnight. Treat it as a unit change and test that.
+   Chicago is never 12 F in late September, and it changes at midnight. Test a unit change.
    ```
 
 6. Make it reproducible. In the chat:
