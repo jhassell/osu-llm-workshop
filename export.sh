@@ -8,7 +8,7 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT"
-[ -d results ] && [ -n "$(ls -A results 2>/dev/null)" ] || { echo "results/ is empty: nothing to pack yet."; exit 1; }
+[ -d results ] && [ -n "$(ls -A results 2>/dev/null | grep -vx README.md)" ] || { echo "results/ is empty: nothing to pack yet."; exit 1; }
 OUT="results-$(date +%Y-%m-%d-%H%M).zip"
 python3 - "$OUT" <<'PY'
 import sys, zipfile, pathlib

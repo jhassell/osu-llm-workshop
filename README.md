@@ -63,7 +63,7 @@ which prints the model the endpoint serves and a one-word reply. Stick the green
 |---|---|---|---|
 | 8:30 | 0, everyone green | `00_setup/` | `python 00_setup/check.py`, then `python upload_check.py` |
 | 9:00 | 1, an agent that builds: a website for your students | `00_website/` | `openclaw chat` |
-| 9:35 | 2, your data, analyzed and reproducible, opening with a weak and a strong prompt | `02_data/` | `openclaw chat`, on your CSV or a shipped dataset |
+| 9:35 | 2, your data, analyzed and reproducible, opening with a weak and a strong prompt | `02_data/` | `openclaw chat`, on the air-handler file |
 | 10:45 | Break | | |
 | 11:00 | 3, a research question answered from papers you can check, ending with the minute paper and your Stop 6 choice | `03_lit/` | `openclaw chat`: `Read 03_lit/question.md and do what it says.` |
 | 12:15 | Lunch | | |

@@ -1,7 +1,7 @@
-Read [WHAT YOU KNOW ABOUT THE COLUMNS: a dictionary file in mine/, or write it here: what each column means and its units], then investigate mine/[YOUR FILE].csv before analyzing it.
+Read [WHAT YOU KNOW ABOUT THE COLUMNS: a dictionary file in mine/, or write it here: what each column means and its units], then investigate mine/[YOUR FILE].csv. One row is [ONE ROW IS A WHAT].
 
-One row is [ONE ROW IS A WHAT: your first line].
+Later we will compare [WHAT IS MEASURED, WITH ITS UNIT] against [WHAT YOU COMPARE IT WITH]. Before that, check the data. Choose your own checks, run them, and follow up anything suspicious.
 
-Find every problem you can: in its structure, its units, its values, and whether the equipment or process behaved as described. For each problem, show the code you ran and what it printed, the rows affected, and your decision (fix, flag, or leave alone) with a reason. Write results/findings.md. Do not change the raw file and do not drop rows silently.
+Write results/findings.md, in the results folder at the top of the repository (not in 02_data/), most important problem first. For each problem: the code you ran, what it printed, the rows affected (which ones, and where they are), and what you propose to do about it (fix, flag, or leave alone), with a reason. Keep what you observed separate from how you explain it.
 
-Then, treating the data as you decided, make the three plots that best show [YOUR OUTCOME, WITH ITS UNIT] against [YOUR COMPARISON]. Something other than that comparison could explain a difference: [YOUR FOURTH LINE: one other thing that could explain it]. Show whether it does. Save the plots in results/figures/ and write results/report.md. Every number must come from the script's printed output.
+Do not change the raw file. Do not clean the data or make plots yet: stop when findings.md is written, and tell me in a few lines what you found. When I have checked the findings, I will ask you for results/analysis.py, a script that applies the fixes, makes the plot and writes results/report.md from the numbers it computes.

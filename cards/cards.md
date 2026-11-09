@@ -34,27 +34,13 @@ Checkpoint, from the build: the one thing the agent got wrong or invented, and t
 
 ## Stop 2, your data, analyzed and reproducible
 
-Four lines, before any prompt, in my own words:
+One problem the agent found, and its evidence:
 
-One row is a:
+What my check (python 02_data/check.py) showed that the findings did not:
 
-The outcome, with its unit:
+What I told the agent, and what it did:
 
-The comparison:
-
-One other thing that could explain a difference:
-
-My hand check, before the debrief:
-
-Row count, mine:                     Row count, the report's:
-
-My number:                           The report's number:
-
-Rows the agent dropped, and why:
-
-Explain to your partner in sixty seconds how you checked it.
-
-Checkpoint: results/analysis.py reproduces the report.
+Checkpoint: python results/analysis.py rebuilds the report.
 
 ---
 

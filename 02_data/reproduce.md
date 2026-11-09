@@ -1,9 +1,8 @@
-Turn everything into results/analysis.py, one script that rebuilds the whole analysis from the raw file:
+Now write results/analysis.py, in the results folder at the top of the repository (not in 02_data/), one script that does the whole analysis from the raw file, 02_data/datasets/hvac-ahu/ahu_trend_2017-09-25_to_2017-10-08.csv.
 
-- It reads the raw CSV, applies each fix in results/findings.md, and prints what each fix changed (rows before and after, values converted).
-- It makes every figure in results/figures/.
-- It writes results/report.md itself, every number in it filled in from a value the script computed, never typed in. Delete the report you wrote by hand and let the script make it.
-- It prints every number the report contains, so a reader can trace each one to a line of output.
-- It never prints that anything matches unless the script actually compared the two values.
+- It reads the raw file and never changes it. It applies the fixes in results/findings.md and prints what each one changed (rows before and after, values converted). What findings.md says to flag, it flags and leaves in place.
+- For the rows where the supply fan runs, it computes each day's median of SA_TEMP minus SA_TEMPSPT (degrees F) and each day's median outdoor air temperature, and prints them as a table.
+- It saves one plot, results/figures/tracking.png: that daily difference across the two weeks, with the outdoor temperature shown too. On mild days the economizer cools with outdoor air and mechanical cooling is locked out, so supply air can drift from its setpoint because of the weather alone. Compare days with similar outdoor temperatures before blaming the equipment.
+- It writes results/report.md itself, every number filled in from a value the script computed, never typed in: what was fixed, the table, the plot, and which days point to an equipment problem rather than the weather, with the evidence. It prints every number the report contains, so each one can be traced to a line of output.
 
-Run it. Then run it a second time and confirm the output is identical and results/report.md was rewritten from scratch.
+Run it, and fix it until it runs cleanly. Then tell me in a few lines what the report says.
