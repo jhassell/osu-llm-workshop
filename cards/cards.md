@@ -70,7 +70,9 @@ The muddiest point:
 
 From memory, the command that rebuilds this morning's analysis:
 
-On the dense scatter, did it say it was unsure, or return a full table anyway?
+On the penguin bars, is an error of about one percent of the span good enough for what I would use these numbers for?
+
+On the dense chart (dense_overlap), where does the model's curve follow the points, and where does it draw a line of its own?
 
 Checkpoint, one sentence: I would trust this for these charts, and not for these:
 
@@ -110,7 +112,7 @@ Their bad input:              right answer / wrong answer / honest "not stated" 
 
 Where the header comment left me stuck:
 
-Checkpoint: show your pair the bad input and what your tool did with it.
+Checkpoint: tell your pair what their tool did on your input and on its bad input, and where its comment left you stuck.
 
 ---
 
@@ -123,6 +125,8 @@ The two lines that put my own key in .env (06_build/README.md, After today):
 LLM_BASE_URL=
 
 LLM_API_KEY=  (your key, in .env only, never on this card)
+
+From Thursday the word on the Setup card no longer works. With your own key: bash setup.sh --reset-key, and paste it.
 
 ---
 
