@@ -24,7 +24,7 @@ python 06_build/table/build_table.py corpus/papers
 
 - Your columns are in `06_build/table/fields.json`: a name and one sentence each. The table is `results/build/table.csv`.
 - Bad input: `python 06_build/table/build_table.py 06_build/table/bad --out results/build-bad`
-- Unseen input at 3:15: `python 06_build/table/build_table.py 06_build/table/interviews 06_build/table/fields-interviews.json` (three invented interviews).
+- Unseen input at 3:15: `python 06_build/table/build_table.py 06_build/table/interviews --out results/build-unseen` (three invented interviews, with your partner's columns). A column that does not fit an interview should say `not stated`, not invent a value.
 
 ### 2. Your Stop 2 analysis as a web page
 
