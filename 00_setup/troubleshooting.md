@@ -66,6 +66,7 @@ Carry this on a laptop or a printout. Order matters: the common fixes for setup 
 
 41. At the start, if Cimarron is up: `bash 00_setup/switch_backend.sh cimarron`, then `/exit` and `openclaw chat` so the chat uses it. At the end: `bash 00_setup/switch_backend.sh openrouter`, then `/exit` and `openclaw chat` again. If Cimarron is not up, nobody switches. On Cimarron the context is smaller; a chat that slows or fails on length: `/new` and the same request again.
 42. The agent edits `check_expected.py` or `EXPECTED.md` to make the check pass. That is what this stop is about. `git checkout HEAD -- 05_repair/check_expected.py 05_repair/EXPECTED.md` (HEAD undoes a staged edit too), then `Do not change the check or the expected numbers. Fix analysis.py.`
+   - `git log --oneline -3` shows a commit the participant did not make: the agent committed its edits, so `git diff HEAD` cannot see them. Compare with GitHub instead: `git diff origin/main -- 05_repair/check_expected.py 05_repair/EXPECTED.md`, and restore with `git checkout origin/main -- 05_repair/check_expected.py 05_repair/EXPECTED.md`. (This moved here from the participant page, which is now short.)
 43. It installs an older pandas to make the old call work. `Use the installed pandas; change the code.` Then `pip install pandas==3.1.0` puts the workshop's version back.
 44. It stops once the script runs, without the check: `Now run python 05_repair/check_expected.py.` To start over: `bash catchup.sh s5` restores the broken script, with their version backed up in `mine/`.
 

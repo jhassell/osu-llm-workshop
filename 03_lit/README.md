@@ -1,6 +1,6 @@
 # Stop 3: A research question, answered from papers you can check
 
-You give the agent a research question and three papers. It pulls out every value the papers report, each with the sentence and page it came from. A checking program confirms every quote, and the agent fixes what the check rejects. Then it works out why the studies disagree, and decides for itself when it is done.
+You give the agent a research question and a few papers: three that come with the workshop, or your own. It pulls out every value the papers report, each with the sentence and page it came from. A checking program confirms every quote, and the agent fixes what the check rejects. Then it works out why the studies disagree, and decides for itself when it is done.
 
 About 75 minutes, from 11:00. You type in the OpenClaw chat and run one command in a second terminal.
 
@@ -20,9 +20,17 @@ What the check's words mean:
 - FLAGGED: the row failed a check and the agent says why it cannot be fixed.
 - verified: the DOI exists and its title and first author match.
 
-## The papers
+## Choose your papers
 
-Three open-access papers on cover crops and soil carbon, in `corpus/papers/`. A cover crop is grown between cash crops to protect the soil, and the papers ask how much carbon it adds. Some report a stock (carbon under an area of land, in Mg C/ha) and some a concentration (carbon in a mass of soil, in g/kg or percent); the two cannot be compared without a conversion.
+Bringing papers is optional. Pick one:
+
+- The shipped papers. Three open-access papers on cover crops and soil carbon, in `corpus/papers/`, with the question already written in `03_lit/question.md`. A cover crop is grown between cash crops to protect the soil, and the papers ask how much carbon it adds. Some report a stock (carbon under an area of land, in Mg C/ha) and some a concentration (carbon in a mass of soil, in g/kg or percent); the two cannot be compared without a conversion.
+- Your own papers. Two or three PDFs that report the same kind of quantity (a yield, an efficiency, an error rate, a temperature). They must be PDFs you can select text in, not scans. Set them up now:
+  1. Drag the PDFs from your laptop onto the `mine` folder in the Explorer.
+  2. In the second terminal, run `python upload_check.py`. Each paper should say `ready`. If one does not, leave it out.
+  3. Click `03_lit/question-mine.md`. Replace each [BRACKET] with the quantity your papers report, its unit, and the conditions you care about. Save with Cmd-S (Ctrl-S).
+
+  If this takes more than five minutes, start with the shipped papers and come back to yours as Extension 2.
 
 ## Do it
 
@@ -32,6 +40,12 @@ Three open-access papers on cover crops and soil carbon, in `corpus/papers/`. A 
 
    ```
    Read 03_lit/question.md and do what it says.
+   ```
+
+   With your own papers, type this instead:
+
+   ```
+   Read 03_lit/question-mine.md and do what it says.
    ```
 
 3. Watch the loop. It takes several minutes. `pages.py` is the agent reading a paper. `check_values.py` prints PASS, FAIL or FLAGGED for every row: count the failures, then watch what it does about them. `lit.py` is a search: what did it search for, and why?
@@ -53,7 +67,7 @@ Show your pair one row you checked yourself, and one part of the agent's explana
 ## Extensions
 
 1. Push back. In the chat: `Your explanation leaves <a row> unexplained. Test another idea against the rows.` Does it test, or only argue?
-2. Your own papers. Drag two or three PDFs onto `mine/`, click `03_lit/question-mine.md`, fill in the brackets, save, and send `Read 03_lit/question-mine.md and do what it says.`
+2. Your own papers, if you started with the shipped ones: follow the three setup steps under Choose your papers, type `/new`, and send `Read 03_lit/question-mine.md and do what it says.`
 3. The same papers through a fixed program, with no decisions, in the second terminal: `python 03_lit/pdfask.py corpus/papers/*.pdf`. What did the agent do that this did not?
 4. Ten papers on a topic of yours: `python 03_lit/lit.py "<topic>" --n 10 --sort cited`.
 
@@ -64,4 +78,4 @@ Show your pair one row you checked yourself, and one part of the agent's explana
 - The model is slow or down: a saved run is in `03_lit/saved/`. Click `03_lit/saved/README.md` first, then do steps 4 and 5 on `03_lit/saved/values.csv` and `03_lit/saved/answer.md`. To see its check: `python 03_lit/check_values.py 03_lit/saved/values.csv`.
 - The agent edits the tools or writes its own search: tell it `Use the 03_lit tools as they are.` A helper can restore them.
 - A PDF of yours has "almost no text": it is a scan, and cannot be read here. Use the shipped papers.
-- The chat gets slow: type `/new`, then `Read 03_lit/question.md and the files in results/, then continue.`
+- The chat gets slow: type `/new`, then `Read 03_lit/question.md and the files in results/, then continue.` (with your own papers, `question-mine.md`).

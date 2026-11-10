@@ -1,6 +1,6 @@
 # Building with LLMs: a one-day hands-on workshop
 
-What an AI agent can do for a researcher, shown one capability at a time, on your own files or on a real public example. Oklahoma State University, Digital Scholarship Center, Edmon Low Library, Wednesday, November 11, 2026. Instructor: John Hassell, OU Polytechnic Institute.
+What an AI agent can do for a researcher, shown one capability at a time. The morning runs on shared public examples, so the room can compare results; your own papers are welcome in Stop 3, and the afternoon is built on your own material. Oklahoma State University, Digital Scholarship Center, Edmon Low Library, Wednesday, November 11, 2026. Instructor: John Hassell, OU Polytechnic Institute.
 
 The day is a short setup and a tour of six stops. At each one the agent works in a folder: it runs code on your files, leaves files you can open, and leaves a program that runs again next week. Every stop ends with something in your repository and the same checkpoint: show the file, explain one choice that mattered, and show one check you made yourself. By the close you leave with:
 
@@ -31,7 +31,7 @@ You need a free GitHub account and a laptop with a current browser.
 
    That line is the whole goal of the pre-work. If you only see a line ending in `$`, type `bash setup.sh` and press Enter.
 
-5. **Optional: bring your own material.** Every stop works on a shipped public example if you bring nothing, but the day is better with your own. Drag them onto the `mine/` folder in the file tree, now or when a stop uses them, then run `python upload_check.py` in the terminal: it says whether each one is ready.
+5. **Optional: bring your own material.** Nothing is required: every stop works on a shipped public example. Where your own material fits: your papers in Stop 3, a chart in Stop 4, and anything of yours in Stop 6, the afternoon build; a CSV of your own is an extension in Stop 2. Drag them onto the `mine/` folder in the file tree, now or when a stop uses them, then run `python upload_check.py` in the terminal: it says whether each one is ready.
 
    - One small CSV from your work (a few thousand rows is plenty), with a line about what each column means and its units. If it lives in Excel, save a copy as CSV.
    - Two or three short research papers as PDFs you can select text in, not scans.
