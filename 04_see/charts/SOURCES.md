@@ -17,7 +17,7 @@ Column names follow the convention the extraction prompt asks for: the first col
 
 Measured on November 6, 2026 with `python 04_see/smoke_test.py --runs 3` and then twice more (Nemotron 3.5 Super VL on OpenRouter; every call was served by DeepInfra under default routing). Each chart took 4 to 39 seconds and cost $0.0014 to $0.009. "Range" is the span of the true values on that axis.
 
-- `penguin_bars`: the easiest. Every bar and error bar read, means within about 0.5 percent of the range (about 30 g), error bars within 1 percent.
+- `penguin_bars`: the easiest. Every bar and error bar read, means within about 1 percent of the range (0.6 to 1.1 percent in the saved and replayed runs, 30 to 60 g), error bars within 1 percent.
 - `calibration_scatter`: every point and error bar read in the final runs, within about 1 percent of the range. In one earlier run it snapped the points at 2.5 and 5 µM to 2 and 4 and added a ninth point that is not there; the overlay shows it at once.
 - `co2_line`: all 52 points, within 2 percent of the range (about 1 ppm). Before the prompt said "no commas in column names", two of three runs copied the legend label "Mauna Loa, Hawaii" with its comma, which split the header and lost a whole series. A good story for the room: one character in a legend broke the table.
 - `growth_log`: every point, and the right decade every time; the median error is about 9 percent of the true value. On a log axis read the relative error, not the percent of range, which the largest values swamp.

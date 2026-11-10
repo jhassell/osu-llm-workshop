@@ -33,12 +33,12 @@ Pick a narrow topic and a group of students: not "thermodynamics" but "reading a
 
    Watch the boxes. Which files does it write? Does any box fetch a web page? If none does, everything on the pages came from the model's memory. A build takes a few minutes this morning, since the whole room shares one model. Do not type again until it answers.
 
-3. Open the site. Its last lines give two addresses. Cmd-click (Ctrl-click on Windows) the live one. The permanent one shows a 404 for a minute or two until it is published. Click through every page and compare it with your card:
+3. Open the site. Its last lines give two addresses. Cmd-click (Ctrl-click on Windows) the live one. The permanent one shows a 404 until it is published, usually a minute or two (see The permanent address, below, if it stays that way). Click through every page and compare it with your card:
 
    - Did it teach your three things, and the one you circled?
    - Is any number, unit, formula or step wrong?
 
-   Write on your card the one thing it got wrong or made up.
+   Write on your card the one thing it got wrong or made up. If you find nothing wrong, write the claim you checked hardest and how you know it is right.
 
 4. Ask where the numbers came from:
 
@@ -58,7 +58,7 @@ Pick a narrow topic and a group of students: not "thermodynamics" but "reading a
 
 ## Checkpoint
 
-Your address shows the agent's pages. Show your pair the one thing it got wrong and the rule you gave it.
+Your address shows the agent's pages. Show your pair the one thing it got wrong and the rule you gave it, or the claim you checked and how you checked it.
 
 ## Exercises
 
@@ -84,7 +84,7 @@ You do nothing: about a minute after `site/` stops changing, it is published to 
 cat ~/.osu-llm-workshop-pages-status
 ```
 
-`PUBLISHED` means it is out. `ONE STEP LEFT` means GitHub Pages needs turning on once: open the link it prints (or the repository's Settings, then Pages), set Source to Deploy from a branch, choose `gh-pages` and `/ (root)`, and click Save. Pages needs a public repository on a free account.
+`PUBLISHED` means it is out. `NOT PUBLISHED` gives the reason on the same line; ask a helper. `ONE STEP LEFT` means GitHub Pages needs turning on once: open the link it prints (or the repository's Settings, then Pages), set Source to Deploy from a branch, choose `gh-pages` and `/ (root)`, and click Save. Pages needs a public repository on a free account.
 
 ## If something goes wrong
 

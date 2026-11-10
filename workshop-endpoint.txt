@@ -22,4 +22,4 @@ OSU_KEY_URL=https://osu-llm-workshop-key.netlify.app
 # Stop 3's searches (keyless use allows about 100 searches a day per network
 # address, and Codespaces share addresses). OpenAlex caps a free key at $1 a
 # day, about 1,000 searches, which is the damage cap since this file is public.
-OPENALEX_API_KEY=
+OPENALEX_API_KEY=i8sfLkQL7yfyjbBTf3kwW3

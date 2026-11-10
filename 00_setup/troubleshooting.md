@@ -16,8 +16,8 @@ Carry this on a laptop or a printout. Order matters: the common fixes for setup 
 7. `not reachable` with HTTP 429 or 503. The endpoint is busy. Wait thirty seconds and run the check again. If it persists, tell the instructor.
 8. After `bash setup.sh --model <name>`, the check still names the old model. The labs and the check read only `.env`, so look at the model line in setup's last box; if setup reported an error, the model name is wrong for this endpoint. A Codespaces secret `LLM_MODEL` only matters to setup, and `--model` overrides it.
 9. Someone pasted their own NVIDIA key and setup says "does not know that address or model" with HTTP 404 even though the model list loaded. The key was accepted; NVIDIA opens only some hosted models to a personal account. Setup's message names a model that works; `bash setup.sh --reset-key --model <that name>`. For other models they must ask help@build.nvidia.com to enable Public API Endpoints on their account, which is not a same-day fix.
-10. Setup opens OpenClaw's chat straight after READY. Someone who typed the check into the chat: the chat is not a shell. Open a second terminal with the **+** and run `python 00_setup/check.py` there; the chat stays open for Stop 1. Pressing Enter (choice 1) also connects OpenClaw, without opening it. If setup said OpenClaw could not be connected, or OpenClaw later says it is not connected or its configuration was not accepted, `bash setup.sh --openclaw` writes it again and opens it; the reason is in `~/.osu-llm-workshop-openclaw.log`. The check does not need OpenClaw, so the check comes first either way; Stops 1, 2, 3, 5 and 6 do need it.
-   - After the key is accepted, setup says `OpenClaw is not connected yet`. The check does not need OpenClaw, so run the check first. Then `bash setup.sh --openclaw`, which tries again and opens OpenClaw; the reason it failed is in `~/.osu-llm-workshop-openclaw.log`.
+10. Setup opens OpenClaw's chat straight after READY, and its line `✅ OpenClaw is connected to <model>` is the participant's signal: green note up, then Stop 1. There is no check command for participants. Someone who typed a shell command into the chat: the chat is not a shell; open a second terminal with the **+**. If setup said OpenClaw could not be connected, or OpenClaw later says it is not connected or its configuration was not accepted, `bash setup.sh --openclaw` in a second terminal writes it again and opens it; the reason is in `~/.osu-llm-workshop-openclaw.log`. Stops 1, 2, 3, 5 and 6 need OpenClaw.
+   - Your own diagnostic, when a seat is stuck: `python 00_setup/check.py` in a second terminal prints three lines (the endpoint and model, a one-word reply from the model, and whether OpenClaw is connected to the same model). It exits with an error if any of the three is wrong, including OpenClaw not being connected.
 11. Trust Folder dialog never clicked. The terminal cannot start until it is. It is a blue button in the editor area, easy to miss behind a tab.
 12. Codespace stuck on "Setting up your codespace" for more than five minutes. Go to github.com/codespaces, stop it, start it again. If that fails, delete it and create a new one from their repository; it builds in three minutes.
 13. No GitHub account, or the template step was skipped. Pair them with a neighbor for the morning. A helper creates the repository and Codespace with them at the break.
@@ -42,8 +42,8 @@ Carry this on a laptop or a printout. Order matters: the common fixes for setup 
 25. Their CSV will not load: an encoding error, one column instead of many, a header on line 3. They tell the agent what they know (`the file is separated by semicolons`, `the header is on line 3`). Three minutes, then a shipped dataset (`ls 02_data/datasets`).
 26. Empty figures, or every point in one place. The outcome column was read as text. `Which columns did you read as numbers?`
 27. The report has a number the script never printed, or the hand check disagrees with the report. That is the lesson working, not a fault. `Which line of output does each number in the report come from?` For a row-count difference, find in the tool calls where rows were dropped and why.
-28. The chat gets slow and forgets what it did. The context is full. `/new`, then `Read results/analysis.py and results/report.md, then continue.`
-29. Can't find the output. Everything is in `results/` (the report: click `results/report.md`). `results/` is never committed; that is on purpose.
+28. The chat gets slow and forgets what it did. The context is full (each stop now starts with `/new` to prevent this; check they did it). `/new`, then `Read results/findings.md and results/analysis.py, then continue.`
+29. Can't find the output. Everything is in `results/` (the report: click `results/report.md`). No `results/findings.md` after step 1: look at the chat. If the line went to a `$` prompt, `openclaw chat` and send it again; if the agent only answered in words, `Write results/findings.md now.`; if it wrote `02_data/findings.md`, `Move it to results/findings.md.` If the agent explains the two Celsius days away as cold weather, they state the conclusion and the reason in one line (the README's step 3). `results/` is never committed; that is on purpose.
 
 ## Stop 3: a research question from papers
 
@@ -65,7 +65,7 @@ Carry this on a laptop or a printout. Order matters: the common fixes for setup 
 ## Stop 5: code repair
 
 41. At the start, if Cimarron is up: `bash 00_setup/switch_backend.sh cimarron`, then `/exit` and `openclaw chat` so the chat uses it. At the end: `bash 00_setup/switch_backend.sh openrouter`, then `/exit` and `openclaw chat` again. If Cimarron is not up, nobody switches. On Cimarron the context is smaller; a chat that slows or fails on length: `/new` and the same request again.
-42. The agent edits `check_expected.py` or `EXPECTED.md` to make the check pass. That is what this stop is about. `git checkout 05_repair/check_expected.py 05_repair/EXPECTED.md`, then `Do not change the check or the expected numbers. Fix analysis.py.`
+42. The agent edits `check_expected.py` or `EXPECTED.md` to make the check pass. That is what this stop is about. `git checkout HEAD -- 05_repair/check_expected.py 05_repair/EXPECTED.md` (HEAD undoes a staged edit too), then `Do not change the check or the expected numbers. Fix analysis.py.`
 43. It installs an older pandas to make the old call work. `Use the installed pandas; change the code.` Then `pip install pandas==3.1.0` puts the workshop's version back.
 44. It stops once the script runs, without the check: `Now run python 05_repair/check_expected.py.` To start over: `bash catchup.sh s5` restores the broken script, with their version backed up in `mine/`.
 
@@ -73,14 +73,14 @@ Carry this on a laptop or a printout. Order matters: the common fixes for setup 
 
 45. The starter fails before anything is changed. `python 00_setup/check.py` first: if the model is not reachable, nothing else will work.
 46. The agent rewrote more than they asked. `git diff 06_build/` shows it; `git checkout 06_build/<file>` puts one file back.
-47. The page recipe says the report names a missing figure, or a number is not in the script's output. Either a number was typed by hand or the output file is old: `python results/analysis.py > results/analysis-output.txt`, then again. No Stop 2 report at all: `bash catchup.sh s6` copies in a finished one.
+47. The page recipe says the report names a missing figure, or a number is not in the script's output. Either a number was typed by hand or the output file is old: `python results/analysis.py > results/analysis-output.txt`, then again. No Stop 2 report at all: `cp 06_build/page/from_reference.py results/analysis.py` gives a finished one without touching their tool.
 48. Their documents are scans. Build on the shipped papers; keep the scans for later.
 49. Running out of time. Commit what runs (`git add 06_build && git commit -m "my tool"`) and write the next step as a comment at the top of the file.
 
 ## Any stop, and the close
 
 50. Behind: `bash catchup.sh s2` to `s6` restores that stop's files; it copies theirs to `mine/catchup-backup-<date-time>/` first and never touches `.env`, and touches `results/` only to add a missing Stop 2 report for `s6`.
-51. OpenClaw slow, or 429, 503 or a timeout. Wait a minute; retyping only adds to the queue. If it gave up: `Continue.`
+51. OpenClaw slow, or 429, 503 or a timeout. Wait a minute; retyping only adds to the queue. If it gave up: `Continue.` If it says 402, or that the key has run out of credits: the account needs money, so tell the instructor. Once it is topped up, OpenClaw still holds off by itself for a while (under fifteen minutes when tested); then `/exit` and `openclaw chat`.
 52. Showing the room: they look at the file first, copy it into `site/share/` (public on their site at once, so only what could go on a conference slide), then `bash gallery.sh`, which shows the whole card before anything is posted.
 53. `bash export.sh` says `results/ is empty`. Nothing has been made yet. Otherwise it writes `results-<date>.zip` at the top of the repository: right-click it, Download. Everyone does this at the close, before stopping the Codespace.
 

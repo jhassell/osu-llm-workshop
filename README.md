@@ -2,7 +2,7 @@
 
 What an AI agent can do for a researcher, shown one capability at a time, on your own files or on a real public example. Oklahoma State University, Digital Scholarship Center, Edmon Low Library, Wednesday, November 11, 2026. Instructor: John Hassell, OU Polytechnic Institute.
 
-The day is a tour of seven stops. At each one the agent works in a folder: it runs code on your files, leaves files you can open, and leaves a program that runs again next week. Every stop ends with something in your repository and the same checkpoint: show the file, explain one choice that mattered, and show one check you made yourself. By the close you leave with:
+The day is a short setup and a tour of six stops. At each one the agent works in a folder: it runs code on your files, leaves files you can open, and leaves a program that runs again next week. Every stop ends with something in your repository and the same checkpoint: show the file, explain one choice that mattered, and show one check you made yourself. By the close you leave with:
 
 1. A small tutorial website on something you teach, live and at a permanent address.
 2. A script that rebuilds every figure and number of an analysis from the raw file, and an answer to a research question from your own papers: every value they report, with a quote and a page a program has confirmed, every searched paper's DOI checked, and the rows behind each part of the explanation.
@@ -31,7 +31,7 @@ You need a free GitHub account and a laptop with a current browser.
 
    That line is the whole goal of the pre-work. If you only see a line ending in `$`, type `bash setup.sh` and press Enter.
 
-5. **Optional: bring your own material.** Every stop works on a shipped public example if you bring nothing, but the day is better with your own. Keep these on your laptop; on the morning you drag them onto the `mine/` folder in the file tree and run `python upload_check.py`, which says whether each one is ready.
+5. **Optional: bring your own material.** Every stop works on a shipped public example if you bring nothing, but the day is better with your own. Drag them onto the `mine/` folder in the file tree, now or when a stop uses them, then run `python upload_check.py` in the terminal: it says whether each one is ready.
 
    - One small CSV from your work (a few thousand rows is plenty), with a line about what each column means and its units. If it lives in Excel, save a copy as CSV.
    - Two or three short research papers as PDFs you can select text in, not scans.
@@ -49,7 +49,7 @@ Open your Codespace, open a terminal if one is not already open, and type:
 
     bash setup.sh
 
-Type the word on your card (letter case does not matter) and press Enter. Setup recognizes what you typed and connects to the right place: the card's word connects you to the room's model, and your own OpenRouter key (it starts with `sk-or-`) or NVIDIA key (`nvapi-`) works too. With your own OpenRouter key, setup offers the tested models in `00_setup/models.txt`; Enter picks NVIDIA Nemotron 3 Ultra. Its READY box also shows your site address, on the line that starts `Your site (files in site/):`. Setup then connects OpenClaw, a complete agent program, to the same model, opens Stop 1's page in the editor, and opens OpenClaw's chat in the terminal. When you see `✅ OpenClaw is connected`, stick the green note on the back of your laptop lid. Then Stop 1, in the chat: ask for a small tutorial website on something you teach. It ends with your site's live address and its permanent address.
+Type the word on your card (letter case does not matter) and press Enter. Setup recognizes what you typed and connects to the right place: the card's word connects you to the room's model, and your own OpenRouter key (it starts with `sk-or-`) or NVIDIA key (`nvapi-`) works too. With your own OpenRouter key, setup offers the short list of models in `00_setup/models.txt`; Enter picks NVIDIA Nemotron 3 Ultra. Its READY box also shows your site address, on the line that starts `Your site (files in site/):`. Setup then connects OpenClaw, a complete agent program, to the same model, opens Stop 1's page in the editor, and opens OpenClaw's chat in the terminal. When you see `✅ OpenClaw is connected`, stick the green note on the back of your laptop lid. Then Stop 1, in the chat: ask for a small tutorial website on something you teach. It ends with your site's live address and its permanent address.
 
 ---
 
@@ -70,7 +70,7 @@ Type the word on your card (letter case does not matter) and press Enter. Setup 
 | 4:00 | Show and tell: your tool on your pair's file, then nominations | | `bash gallery.sh`, optional |
 | 4:25 | Close: one trace read as a loop, Cimarron and accounts, export for everyone | | `bash export.sh` |
 
-Each stop's README is the lesson, laid out the same way every time: what you will be able to do, the idea, the steps, a checkpoint, extensions, what carries forward, and what to do if something goes wrong.
+Each stop's README is the lesson: what you will be able to do, the steps, a checkpoint, extensions, and what to do if something goes wrong.
 
 The room's model is NVIDIA Nemotron 3 Ultra (`nvidia/nemotron-3-ultra-550b-a55b`), reached through OpenRouter. Stop 4 reads images, so it uses NVIDIA Nemotron 3.5 Super VL, also on OpenRouter.
 
@@ -120,16 +120,16 @@ Every lab talks to one endpoint through two values in `.env`, `LLM_BASE_URL` and
 | "The workshop endpoint is not set up yet" | If you pasted your own OpenRouter or NVIDIA key, copy the whole key again: its first characters tell setup where it goes. If you typed the word from the card, tell a helper. |
 | Setup says it has already started in another terminal | Switch to the first terminal: the list at the right edge of the panel. |
 | `No endpoint or key yet` when running a lab | `bash setup.sh`, then the word from the card. |
-| `not reachable` from the check | Tell a helper. The instructor can switch the room to a different endpoint with one script. |
+| A lab or the agent says the model is `not reachable` | Tell a helper. The instructor can switch the room to a different endpoint with one script. |
 | HTTP 404 with your own NVIDIA key | The key is fine; NVIDIA opens only some models to a personal account. Use the model setup suggests, or ask help@build.nvidia.com to enable Public API Endpoints. |
 | `upload_check.py` says `NOT READY` | It says why: an Excel file (save it as CSV), a scanned PDF, an iPhone photo (export it as JPEG). Give it three minutes, then use the shipped example it names and come back to yours in Stop 6. |
-| Your site address shows "This site is empty for now" | The agent has not written `site/index.html` yet, or the page needs a refresh. `ls site` shows what is there. |
+| Your site address shows "This site is empty for now" | The agent has not written `site/index.html` yet, or the page needs a refresh. Click the `site` folder in the Explorer to see what is there. |
 | The site address does not open, or the **Ports** tab shows port 8000 **Private** | Right-click the port 8000 row, **Port Visibility**, **Public**. If port 8000 is missing, type `bash .devcontainer/site-public.sh` and look again after ten seconds. |
-| `python3 .devcontainer/site-check.py` fails | Tell the agent: `Run the site check and fix every problem.` A link that starts with `/` must become relative. |
+| Your site is not published because its check failed | Tell the agent: `Run the site check and fix every problem.` A link that starts with `/` must become relative. |
 | `cat ~/.osu-llm-workshop-pages-status` or `bash publish-site.sh` says `ONE STEP LEFT` | Once: the repository's **Settings**, **Pages**, **Deploy from a branch**, branch `gh-pages`, folder `/ (root)`, **Save**. The next change publishes, or run `bash publish-site.sh --yes`. |
 | The site never reaches its permanent address, or `bash publish-site.sh` says the repository is private | A free GitHub account serves Pages only from a public repository. Make it public under **Settings**, or skip publishing and download the `site` folder instead. |
 | OpenClaw is slow, or shows 429, 503 or a timeout | The whole room calls the same model. Wait a minute rather than typing the request again; if it gave up, type `Continue.` |
-| The chat gets slow and forgets what it did | Type `/new`, then ask it to read the files it made and continue. |
+| The chat gets slow and forgets what it did | Each stop starts with `/new` for this reason. Mid-stop: type `/new`, then ask it to read the files it made and continue. |
 | "Stop 4 needs OpenRouter" | `bash 00_setup/switch_backend.sh openrouter`, then run the command again. |
 | You moved to Cimarron and OpenClaw still uses the old endpoint | A chat that was already open keeps it. Type `/exit`, then `openclaw chat`. |
 | Stop 3 says it used a saved answer, or OpenAlex did not answer | The room shares OpenAlex's limit on free searches. `python 03_lit/lit.py --topics` lists topics that always work; try yours again later. |

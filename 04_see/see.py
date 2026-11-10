@@ -62,7 +62,12 @@ def image_data_url(image_path):
     from PIL import Image                 # imported here so --help works without Pillow
     path = Path(image_path)
     data = path.read_bytes()
-    with Image.open(io.BytesIO(data)) as img:
+    try:
+        img_file = Image.open(io.BytesIO(data))
+    except Exception:
+        raise RuntimeError(f"{path.name} is not a picture Python can open: it is empty, cut short, "
+                           "or not an image. Export it again as PNG or JPEG.")
+    with img_file as img:
         kind = img.format
         if kind in ("PNG", "JPEG") and len(data) <= MAX_BYTES:
             mime = "image/png" if kind == "PNG" else "image/jpeg"
@@ -136,6 +141,11 @@ def see(image_path, question):
         llm._record(response)              # tokens and cost into llm.LAST and llm.TOTAL
         if not isinstance(llm.LAST.get("cost"), (int, float)):
             unknown += 1
+        if not response.choices:           # the service answered with an error instead, e.g. an image it cannot read
+            err = (response.model_extra or {}).get("error") or {}
+            reason = err.get("message", "no reason given") if isinstance(err, dict) else str(err)
+            raise RuntimeError(f"The model service would not read this image ({reason[:120]}). "
+                               "Is it a real PNG or JPEG? Export it again and retry.")
         choice = response.choices[0]
         text = choice.message.content or ""
         # Some providers return the thinking inline. It is not the answer.
@@ -192,6 +202,17 @@ def _numeric_row(cells):
         return False
 
 
+def _has_number(cells):
+    """True when at least one of the cells is a number."""
+    for c in cells:
+        try:
+            if _number(str(c)) is not None:
+                return True
+        except ValueError:
+            pass
+    return False
+
+
 def csv_from_reply(text):
     """The CSV table inside a reply, as a pandas DataFrame, or raise ValueError.
     Models wrap tables in code fences and add a sentence before or after, so
@@ -216,11 +237,19 @@ def csv_from_reply(text):
             # quietly would drop those rows, so a broken row is an error.
             later = [r for r in rest[n + 1:] if len(r) == width and _numeric_row(r)]
             looks_like_data = len(row) >= 2 and _numeric_row(row)
+            # A last row as wide as the table with a number in it is a data row
+            # with an unreadable cell ("12,unreadable"), not a closing sentence.
+            half_read = len(row) == width and (_has_number(row[1:]) or (data and _has_number(row[:1])
+                                                                        and all(_has_number([d[0]]) for d in data)))
             if later or looks_like_data:
                 raise ValueError(
                     f"table row {n + 1} has {len(row)} cells where the header has {width}: "
                     f"{','.join(row)[:80]!r}. Reading on would drop {len(later)} later row(s), "
                     "so the whole table is refused")
+            if half_read:
+                raise ValueError(
+                    f"table row {n + 1} has a cell that is not a number: {','.join(row)[:80]!r}. "
+                    "Dropping it would leave a table that looks complete, so the whole table is refused")
             break
         data.append([row[0].strip()] + [_number(c) for c in row[1:]])
     df = pd.DataFrame(data, columns=[c.strip() for c in header])
@@ -233,23 +262,30 @@ def csv_from_reply(text):
 def extract(image_path, note="", quiet=False):
     """Ask for the plotted data as CSV and save it to results/seen/<stem>.csv.
     Returns the CSV path, or None when the reply was not a usable table (the
-    reply is saved as <stem>.reply.txt either way, so you can read it). When
-    the reply is not usable, any CSV, comparison and error table left from an
-    earlier run of the same chart are removed, so an old table cannot pass for
-    this run's."""
+    reply is saved as <stem>.reply.txt either way, so you can read it). The
+    CSV, reply, comparison and error table left from an earlier run of the same
+    chart are removed before the model is asked, so when this run fails, for
+    any reason, an old table cannot pass for this run's."""
     stem = Path(image_path).stem
     SEEN.mkdir(parents=True, exist_ok=True)
     prompt = EXTRACT_PROMPT + (f"\n\nAlso: {note}" if note else "")
-    reply = see(image_path, prompt)
     raw_path = SEEN / f"{stem}.reply.txt"
+    stale = [p for p in (SEEN / f"{stem}.csv", raw_path, SEEN / f"{stem}-compare.png", SEEN / f"{stem}-errors.csv")
+             if p.exists()]
+    for p in stale:
+        p.unlink()
+    try:
+        reply = see(image_path, prompt)
+    except RuntimeError as err:
+        if stale:
+            raise RuntimeError(f"{err} Removed the earlier {', '.join(p.name for p in stale)}, "
+                               "so it cannot be mistaken for this run's.") from None
+        raise
     raw_path.write_text(reply + "\n")
     try:
         df = csv_from_reply(reply)
     except Exception as err:
-        stale = [p for p in (SEEN / f"{stem}.csv", SEEN / f"{stem}-compare.png", SEEN / f"{stem}-errors.csv")
-                 if p.exists()]
-        for p in stale:
-            p.unlink()
+        stale = [p for p in stale if p != raw_path]
         print(f"The reply is not a table pandas can read ({err}). No CSV saved; "
               f"the reply is in {raw_path.relative_to(llm.ROOT)}"
               + (f". Removed the earlier {', '.join(p.name for p in stale)} so it cannot be mistaken for this run's."

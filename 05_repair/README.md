@@ -2,12 +2,7 @@
 
 `05_repair/analysis.py` is a short analysis that once reproduced a published table: the number of penguins of each species and their mean bill, flipper and body measurements, as printed in the palmerpenguins documentation. It no longer runs. You hand it to the agent with one request and watch it run the script, read the error, fix it, run it again, and keep going until an independent check says the numbers match the published ones. Then you find out whether you understood what it changed.
 
-About 45 minutes, from 1:25, including two demonstrations from the front. Folder: `05_repair/`. Two places to type, and every step below says which:
-
-- In the OpenClaw chat: the terminal where `openclaw chat` is running, at its prompt. Requests to the agent go here. `/exit` closes the chat and leaves you at the `$` prompt; `openclaw chat` opens it again.
-- In a second terminal: click the **+** at the top right of the terminal panel to open one, and type at its `$` prompt. Commands you run yourself go here, so the agent never runs them for you.
-
-To read a file, click it in the Explorer on the left.
+About 45 minutes, from 1:25, including two demonstrations from the front. Folder: `05_repair/`. Requests to the agent go in the OpenClaw chat; commands you run yourself go in a second terminal (the **+** on the terminal panel), so the agent never runs them for you. Every step says which. To read a file, click it in the Explorer.
 
 ## You will be able to
 
@@ -33,7 +28,7 @@ Its last line names what went wrong. Click `05_repair/analysis.py` in the Explor
 
 ## Before you start: step three, Cimarron, if it is up
 
-This is the day's third step: a chat box, an agent in your folder, an agent on your campus cluster. If the instructor says Cimarron is up, move to it for this stop (the labs and OpenClaw follow; the first move asks for the card word). In a second terminal:
+This is the day's third step: a chat box, an agent in your folder, an agent on your campus cluster. Do this section only if the instructor tells the whole room that Cimarron is up and to move together; otherwise skip to Do it, and watch Cimarron in the demonstration at the end. Moving takes the labs and OpenClaw with it, and the first move asks for the card word. In a second terminal:
 
 ```
 bash 00_setup/switch_backend.sh cimarron
@@ -41,13 +36,13 @@ bash 00_setup/switch_backend.sh cimarron
 
 It worked only if you see both: the box ending with READY and an endpoint that is not openrouter.ai, and after it the line saying OpenClaw is connected (`OpenClaw is connected to ...`). Then, in the OpenClaw chat, type `/exit`, and at the `$` prompt that comes back type `openclaw chat`: a chat that was already open keeps the old endpoint.
 
-If either line is missing, or the move stops with an error, do not carry on where you are: move back explicitly, in the second terminal, `bash 00_setup/switch_backend.sh openrouter`, wait for the same two lines (READY with openrouter.ai, then OpenClaw is connected), then `/exit` and `openclaw chat` in the chat terminal, and tell a helper.
+If either line is missing, or the move stops with an error, do not carry on where you are: move back explicitly, in the second terminal, `bash 00_setup/switch_backend.sh openrouter`. Either answer means you are back: the same two lines (READY with openrouter.ai, then OpenClaw is connected), or `Already on openrouter. Nothing changed.`, which says the move never happened. Then `/exit` and `openclaw chat` in the chat terminal, and tell a helper.
 
 The model's work now happens on OSU hardware in Stillwater instead of at a commercial provider. Your files still sit in your GitHub Codespace, so the rule about what to bring has not changed: no unpublished results you are not free to share, no student records, nothing under an IRB protocol. At the end of the stop, `bash 00_setup/switch_backend.sh openrouter` moves you back (then `/exit` and `openclaw chat` again), because Stop 6 may need the vision model and the larger context. If Cimarron is not up, skip this; the instructor shows it from the front.
 
 ## Do it
 
-1. Hand it over. In the OpenClaw chat:
+1. Hand it over. In the OpenClaw chat, type `/new` and press Enter to start fresh (the agent drops the papers it read this morning). Then:
 
    ```
    Run python 05_repair/analysis.py, reproduce the failure, fix the code, then run
@@ -94,14 +89,9 @@ The model's work now happens on OSU hardware in Stillwater instead of at a comme
 2. A script of yours with a known problem, from `mine/`. Give the agent the same request, with your own check: a number you know is right.
 3. Ask the agent to write a test for the quiet fault, so that if anyone adds that filter again the test fails.
 
-## The last ten minutes: two demonstrations
+## The last ten minutes, from the front
 
-- Model choice. One checkable task given to five models, names hidden until the room has judged the answers. The same question twice to one model, to show that answers vary.
-- Cimarron. The same labs against OSU's Cimarron cluster, if its endpoint is up, or a model running on the laptop with the network off. What a NIM is, what changes (the model's work happens on OSU hardware in Stillwater; your files are still in GitHub's Codespace), and how to get an account. If Cimarron is up, `bash 00_setup/switch_backend.sh cimarron` in a second terminal moves you to it again later today, and `openrouter` brings you back; after either, `/exit` and `openclaw chat` in the chat terminal.
-
-## What you have now
-
-A repaired script that reproduces a published table, and a check that says so. The habit: give the agent a check it cannot edit, and read the diff before you believe the summary.
+Two demonstrations: one checkable task given to five models, names hidden until the room has judged the answers; and the same labs against OSU's Cimarron cluster. The check you just used is how you would try a smaller open model on your own work: give it the same task and the same check, and measure what it costs and how often it passes, not assume.
 
 ## If something goes wrong
 

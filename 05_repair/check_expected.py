@@ -51,11 +51,16 @@ def parse(stdout):
     if header is None or len(header) < 6:
         fail("the output format changed: expected a header line 'species n bill_length_mm ...' "
              "and then one line per species (EXPECTED.md says what the check reads)")
+    repeated = sorted({h for h in header if header.count(h) > 1})
+    if repeated:
+        fail(f"the header names a column twice ({', '.join(repeated)}); each column must appear once")
     found = {}
     start = next(i for i, l in enumerate(lines) if l.split()[:1] == ["species"])
     for line in lines[start + 1:]:
         parts = line.split()
         if len(parts) != len(header):
+            if parts and parts[0] in EXPECTED:
+                fail(f"the row for {parts[0]} has {len(parts)} fields and the header has {len(header)}: {line.strip()}")
             continue
         name = parts[0]
         try:

@@ -18,13 +18,13 @@ Open a second terminal now with the + at the top right of the terminal panel. Th
 
 ## Do it
 
-1. Investigate. Click `02_data/investigate.md` to read what you are asking for. Then, in the chat, type:
+1. Investigate. Start a fresh chat first: in the chat, type `/new` and press Enter. The agent drops what it read in the last stop, which keeps it quick. Then click `02_data/investigate.md` to read what the exercise is and what you are asking for. Then, in the chat, type:
 
    ```
    Read 02_data/investigate.md and do what it says.
    ```
 
-   It takes about two minutes. Watch the boxes: each `exec` is Python it wrote and runs. Then click `results/findings.md`. Is there evidence for each problem?
+   It takes about two minutes. Watch the boxes: each `exec` is a command the agent runs, usually Python it wrote. Then click `results/findings.md`. Is there evidence for each problem?
 
 2. Check it yourself. In the second terminal:
 
@@ -52,7 +52,7 @@ Open a second terminal now with the + at the top right of the terminal panel. Th
    python results/analysis.py
    ```
 
-   Click `results/report.md` and `results/figures/tracking.png`. Every number in the report came from the script, and the script runs without the agent.
+   Click `results/report.md` and `results/figures/tracking.png`. The script runs without the agent. Now check it: pick one number in the report and find it in what the script printed. If it is not there, tell the agent: `Which line of output does each number in the report come from? Fix the script so every one is printed.`
 
 ## Checkpoint
 

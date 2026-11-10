@@ -24,7 +24,7 @@ Your three things: what a first-time learner must get right about your topic. Ci
 
 3.
 
-Checkpoint, from the build: the one thing the agent got wrong or invented, and the rule I gave it:
+Checkpoint, from the build: the one thing the agent got wrong or invented, and the rule I gave it (or the claim I checked hardest, and how):
 
 ---
 
@@ -106,13 +106,13 @@ What I will change in the starter:
 
 The transfer test, at 3:15: swap tools with your partner and run theirs from its header comment alone, without the agent and without their help. Circle what it did.
 
-My own input:                 right answer / wrong answer / honest "not stated" or error / crash
+The unseen input:             right answer / wrong answer / honest "not stated" or error / crash
 
-Their bad input:              right answer / wrong answer / honest "not stated" or error / crash
+The bad input:                right answer / wrong answer / honest "not stated" or error / crash
 
 Where the header comment left me stuck:
 
-Checkpoint: tell your pair what their tool did on your input and on its bad input, and where its comment left you stuck.
+Checkpoint: tell your pair what their tool did on the unseen input and on the bad input, and where its comment left you stuck.
 
 ---
 
@@ -126,7 +126,7 @@ LLM_BASE_URL=
 
 LLM_API_KEY=  (your key, in .env only, never on this card)
 
-From Thursday the word on the Setup card no longer works. With your own key: bash setup.sh --reset-key, and paste it.
+After 5:00 today the word on the Setup card no longer works. With your own key: bash setup.sh --reset-key, and paste it.
 
 ---
 

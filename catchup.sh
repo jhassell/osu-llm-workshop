@@ -46,8 +46,8 @@ done
 echo "Your current files are copied to $BACKUP/ first."
 
 # shellcheck disable=SC2086
-git checkout -- "$DIR" $NEEDS llm.py agent.py docs.py 2>/dev/null \
-  || git checkout HEAD -- "$DIR" $NEEDS llm.py agent.py docs.py
+# From HEAD, not the index, so an edit the agent staged with git add is undone too.
+git checkout HEAD -- "$DIR" $NEEDS llm.py agent.py docs.py
 
 # The table the old afternoon modules search. A row is usable when it has a
 # doc_id and recorded no error (the same rule the Module 4 search uses). With no

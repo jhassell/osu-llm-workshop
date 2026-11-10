@@ -121,7 +121,7 @@ def _openalex_key():
         for line in path.read_text(errors="replace").splitlines():
             if line.strip().startswith("OPENALEX_API_KEY="):
                 key = line.split("=", 1)[1].strip().strip('"').strip("'")
-    if not key and _WORKSHOP_KEY[0] is None:
+    if not key and _WORKSHOP_KEY[0] is None and not OFFLINE:
         # A copy made before the instructor added the room's key reads the
         # current workshop-endpoint.txt from the template, once per run.
         _WORKSHOP_KEY[0] = ""

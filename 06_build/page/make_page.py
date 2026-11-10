@@ -41,8 +41,9 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 RES = ROOT / "results"
 IMAGE = (".png", ".jpg", ".jpeg", ".svg")
 # A number: digits with optional thousands commas and decimals, and an optional
-# exponent, so 1.200e+03 is one number, not two.
-NUMBER = r"(?<![\w.])\d[\d,]*(?:\.\d+)?(?:[eE][-+]?\d+)?(?![\w])"
+# exponent, so 1.200e+03 is one number, not two. A decimal written without its
+# leading zero (.123) counts too.
+NUMBER = r"(?<![\w.])(?:\d[\d,]*(?:\.\d+)?|\.\d+)(?:[eE][-+]?\d+)?(?![\w])"
 
 
 def markdown_to_html(md):
@@ -145,7 +146,9 @@ def main():
 
     report_path = src / "report.md"
     if not report_path.exists():
-        raise SystemExit(f"No report.md in {src}: run Stop 2 first, or bash catchup.sh s6.")
+        raise SystemExit(f"No report.md in {src}: run Stop 2 first, or use the finished penguins analysis: "
+                         "cp 06_build/page/from_reference.py results/analysis.py, then "
+                         "python results/analysis.py > results/analysis-output.txt")
     report = report_path.read_text()
     problems = [f"the report names {n}, which does not exist" for n in figures_named(report)
                 if not (src / n).exists()]

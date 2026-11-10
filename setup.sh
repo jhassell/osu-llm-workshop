@@ -364,6 +364,8 @@ write_env() {   # $1 = base url, $2 = key (may be empty), $3 = model (may be emp
       if [ -n "$1" ]; then echo "LLM_BASE_URL=$1"; else echo "# LLM_BASE_URL=   (bash setup.sh fills this in from the key you paste)"; fi
       if [ -n "$2" ]; then echo "LLM_API_KEY=$2"; else echo "# LLM_API_KEY=   (paste the workshop key here, or run: bash setup.sh)"; fi
       if [ -n "$3" ]; then echo "LLM_MODEL=$3"; fi
+      # Keep any other setting already saved (an OpenAlex key, for example).
+      if [ -f "$ENV_FILE" ]; then grep -vE '^[[:space:]]*(#|$)|^[[:space:]]*(LLM_BASE_URL|LLM_API_KEY|LLM_MODEL)=' "$ENV_FILE" || true; fi
     } >"$ENV_FILE.new" ) && mv -f "$ENV_FILE.new" "$ENV_FILE" && chmod 600 "$ENV_FILE"
 }
 
@@ -447,6 +449,13 @@ exchange_word() {
              return 0 ;;
   esac
   [ -z "$OSU_BASE_URL" ] || return 0
+  if [ "$word" = "$WORKSHOP_WORD" ]; then
+    # The right word, but no key came back: the lookup is down, or the day is over.
+    echo "That is the workshop word, but its key could not be fetched."
+    echo "During the workshop: tell a helper. After 5:00 on Wednesday, November 11, the workshop key is gone:"
+    echo "paste your own OpenRouter key (sk-or-..., from openrouter.ai/keys) or NVIDIA key (nvapi-...)."
+    return 1
+  fi
   echo "That word is not the workshop word. Check the spelling on the card (letter case does not matter),"
   echo "or paste your own OpenRouter key (sk-or-...) or NVIDIA key (nvapi-...)."
   return 1
@@ -717,7 +726,7 @@ fi
 choose_openrouter_model() {
   local i n=${#OPENROUTER_CHOICES[@]} pick id current="$MODEL"
   echo
-  echo "Which model? OpenRouter offers many; these $n were tested with this workshop."
+  echo "Which model? OpenRouter offers many; these $n are the workshop's short list."
   for ((i = 0; i < n; i++)); do
     id="${OPENROUTER_CHOICES[$i]%%|*}"
     printf '  %d  %s\n     %s%s\n' "$((i + 1))" "${OPENROUTER_CHOICES[$i]#*|}" "$id" \

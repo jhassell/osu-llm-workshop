@@ -24,10 +24,15 @@ The model does not run in your Codespace, which has no GPU. It runs on a server 
 
 ## Moving to Cimarron and back
 
-The day runs in three steps: a chat box, an agent in your folder, an agent on your campus cluster. This switch is the third step. OSU's Cimarron cluster can serve the same family of models on campus GPUs. If Cimarron is up, one command moves your Codespace there between stops, and one moves it back:
+The day runs in three steps: a chat box, an agent in your folder, an agent on your campus cluster. This switch is the third step. OSU's Cimarron cluster can serve the same family of models on campus GPUs. If Cimarron is up, one command moves your Codespace there between stops, and one moves it back. Both go in a second terminal (the + on the terminal panel), not in the chat. To move there:
 
 ```
 bash 00_setup/switch_backend.sh cimarron
+```
+
+To move back:
+
+```
 bash 00_setup/switch_backend.sh openrouter
 ```
 
@@ -37,10 +42,10 @@ On Cimarron the model's work, reading your prompt and the file contents the agen
 
 ## Choosing the model on OpenRouter
 
-On OpenRouter you can trade Nemotron for one of the most capable agentic models from other labs, for a stop or for the day:
+On OpenRouter you can trade Nemotron for a model from another lab, for a stop or for the day. In a second terminal:
 
 ```
 bash 00_setup/choose_model.sh
 ```
 
-It lists NVIDIA Nemotron 3 Ultra first (Enter keeps it) and four others from the strongest agent benchmarks, chosen to stay under $3 for a person's whole day. That cost is provisional: it is an estimate from published prices until each model has been run through the day's replays. `bash 00_setup/choose_model.sh 3` picks number 3 without asking, and `--list` shows the list and which one you are on. The labs use the new model from their next run; OpenClaw is reconnected too, but an open chat keeps the old model until you close it (`/exit`) and type `openclaw chat`. Stop 4 reads images with Nemotron VL whatever you choose. On Cimarron there is one model, so the script tells you to move back to OpenRouter first.
+It lists NVIDIA Nemotron 3 Ultra first (Enter keeps it) and four others, chosen to stay under $3 for a person's whole day. That cost is provisional: it is an estimate from published prices until each model has been run through the day's replays. `bash 00_setup/choose_model.sh 3` picks number 3 without asking, and `--list` shows the list and which one you are on. The labs use the new model from their next run; OpenClaw is reconnected too, but an open chat keeps the old model until you close it (`/exit`) and type `openclaw chat`. Stop 4 reads images with Nemotron VL whatever you choose. On Cimarron there is one model, so the script tells you to move back to OpenRouter first.

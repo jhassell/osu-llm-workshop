@@ -41,7 +41,9 @@ and one line per row with its verdict and reason, so the log shows how the rows
 changed from one check to the next. The papers used through doi: rows are
 written to results/sources.bib, each with its DOI check and retraction line, and
 each one's abstract to results/papers/<doi>.txt, so it can be read like a PDF's
-text. Exit status 1 while any row fails unflagged.
+text. A file outside results/ (the saved run, say) is checked and printed only:
+nothing in results/ is written. A table with no rows, or with columns other than
+the eleven, is refused. Exit status 1 while any row fails unflagged.
 """
 import csv
 import datetime as dt
@@ -62,8 +64,12 @@ STATUSES = ("ok", "flagged")
 # A number: optional sign, digits with an optional decimal part, optional exponent.
 # A sign counts only when it does not follow a letter, digit or point, so "10-20"
 # is a range of two numbers, "ha-1" is a unit, and "-14.86" or "(−0.32)" is one
-# negative number.
-NUMBER = re.compile(r"(?<![\w.])[-+]?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?|\d+(?:\.\d+)?(?:[eE][-+]?\d+)?")
+# negative number. A decimal written without its zero (".5", "-.5", "0-.5") is
+# read as the decimal it is, not as 5.
+NUMBER = re.compile(r"(?<![\w.])[-+]?(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][-+]?\d+)?"
+                    r"|(?<![\w.])\.\d+(?:[eE][-+]?\d+)?"
+                    r"|\d+(?:\.\d+)?(?:[eE][-+]?\d+)?")
+LIVE = True          # False when checking a file outside results/: nothing in results/ is then written
 _pdf_cache = {}
 _doi_cache = {}
 _doi_records = {}
@@ -72,7 +78,7 @@ _doi_records = {}
 def numbers(text):
     """The numbers in a piece of text, as floats with their signs:
     "1,250" -> [1250.0], "−0.32" -> [-0.32], "10–20" -> [10.0, 20.0],
-    "1.2e-3" -> [0.0012]."""
+    "1.2e-3" -> [0.0012], ".5" -> [0.5], "-.5" -> [-0.5]."""
     text = normal(text or "")
     text = re.sub(r"(?<=\d),(?=\d{3}\b)", "", text)          # thousands separators
     out = []
@@ -169,7 +175,7 @@ def doi_record(doi):
             v = lit.verify(doi, rec.get("title"), rec.get("authors"))
             _doi_cache[doi] = (rec.get("abstract"), v["state"], v["reason"])
             _doi_records[doi] = dict(rec, verification=v)
-            if rec.get("abstract"):
+            if rec.get("abstract") and LIVE:
                 papers = ROOT / "results" / "papers"
                 papers.mkdir(parents=True, exist_ok=True)
                 (papers / f"{doi_slug(doi)}.txt").write_text(
@@ -289,6 +295,22 @@ def main(argv):
     if absent:
         print(f"{path} is missing column(s): {', '.join(absent)}. The header must be:\n  " + ",".join(COLUMNS))
         return 1
+    unknown = [h for h in header if h not in COLUMNS]
+    twice = sorted({h for h in header if header.count(h) > 1})
+    if unknown or twice:
+        print(f"{path} has " + " and ".join(
+            ([f"column(s) the table does not have: {', '.join(unknown)}"] if unknown else [])
+            + ([f"column(s) named twice: {', '.join(twice)}"] if twice else []))
+            + ". The header must be exactly:\n  " + ",".join(COLUMNS))
+        return 1
+    if not rows:
+        print(f"{path} has a header and no rows: nothing was checked. Add one row per reported value.")
+        return 1
+    global LIVE
+    try:
+        path.resolve().relative_to((ROOT / "results").resolve())
+    except ValueError:
+        LIVE = False      # a saved or other file: check and print, but leave results/ as the live run left it
 
     counts = {"pass": 0, "flagged": 0, "fail": 0}
     lines, verdicts = [], []
@@ -321,9 +343,16 @@ def main(argv):
                   if counts["fail"] else "Every row passes or is flagged with a reason."))
     print("\n".join(lines))
     print(summary)
+    bib = ROOT / "results" / "sources.bib"
+    uses_doi = any((r.get("source") or "").strip().lower().startswith("doi:") for r in rows)
+    if not LIVE:
+        print("This file is not in results/, so results/sources.bib and results/check-log.txt were left as they are.")
+        return 1 if counts["fail"] else 0
+    if not uses_doi and bib.exists():
+        bib.unlink()          # the table no longer uses a searched paper: an old list would describe other rows
+        print("No doi: rows in this table, so the old results/sources.bib was removed.")
     if _doi_records:
         import lit
-        bib = ROOT / "results" / "sources.bib"
         bib.parent.mkdir(parents=True, exist_ok=True)
         bib.write_text("% The papers found by search that values.csv uses as sources (doi: rows),\n"
                        "% written by 03_lit/check_values.py from OpenAlex and Crossref records, not by a model.\n\n"

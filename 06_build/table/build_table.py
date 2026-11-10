@@ -20,6 +20,8 @@ program found that quote, and a check:
     not stated   the document does not say, and the model said so
     UNSUPPORTED  the model gave a value but no quote to back it: treat it as unchecked
 Found means the sentence is there, not that it supports the value: read one row.
+A document longer than 120,000 characters is read only from its start: the read
+column says so, and its check says "not stated in the part read".
 A document that fails is a row with an error, never dropped.
 """
 import csv
@@ -117,6 +119,15 @@ def main():
                 row[f"{name}_page"] = page
                 row[f"{name}_found"] = status
             row["cut"] = cut
+            if cut:                          # the model saw only the start of a long document
+                row["read"] = f"first {len(text):,} characters only"
+                print(f"   long document: only the first {len(text):,} characters were read; "
+                      "'not stated' here means not in that part")
+                for name in fields:
+                    if row[f"{name}_found"] == "not stated":
+                        row[f"{name}_found"] = "not stated in the part read"
+            else:
+                row["read"] = "all"
         except Exception as err:
             row["error"] = f"{type(err).__name__}: {str(err).splitlines()[0][:150] if str(err) else ''}"
             print(f"   {row['error']}")
@@ -124,7 +135,7 @@ def main():
     with open(out / "table.jsonl", "w") as f:
         for r in rows:
             f.write(json.dumps(r) + "\n")
-    columns = ["file"] + [c for n in fields for c in (n, f"{n}_quote", f"{n}_page", f"{n}_found")] + ["error"]
+    columns = ["file"] + [c for n in fields for c in (n, f"{n}_quote", f"{n}_page", f"{n}_found")] + ["read", "error"]
     with open(out / "table.csv", "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=columns, extrasaction="ignore")
         w.writeheader()
@@ -135,6 +146,9 @@ def main():
     shown = out.relative_to(ROOT) if ROOT in out.parents else out
     print(f"\n{len(rows)} rows -> {shown}/table.csv; {found} of {asked} quotes found word for word"
           + (f"; {unsupported} value(s) with no quote at all, marked UNSUPPORTED." if unsupported else "."))
+    long_ones = [r["file"] for r in rows if r.get("cut")]
+    if long_ones:
+        print(f"Read only in part (too long): {', '.join(long_ones)}. See the read column.")
     print(f"{llm.TOTAL['calls']} model calls" + (f", about ${llm.TOTAL['cost']:.4f}" if llm.TOTAL["cost"] else ""))
 
 

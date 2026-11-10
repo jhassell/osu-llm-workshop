@@ -68,6 +68,27 @@ def key_of(column):
     return re.sub(r"[^a-z0-9]", "", re.sub(r"\([^()]*\)", "", str(column).lower()))
 
 
+_ERROR_WORDS = {"err", "error", "sd", "se", "sem", "std", "uncertainty"}
+
+
+def words_of(column):
+    """The words of a column name, without units, capitals or the error word:
+    'Female err (g)' gives {'female'}."""
+    return set(re.findall(r"[a-z0-9]+", re.sub(r"\([^()]*\)", "", str(column).lower()))) - _ERROR_WORDS
+
+
+def near_name(a, b):
+    """True when two names are close enough to pair: one's words are all among
+    the other's ('male' and 'male mass'), or one name begins with the other
+    ('temp' and 'temperature', three letters or more). 'male' inside 'female'
+    is not a match."""
+    wa, wb = words_of(a), words_of(b)
+    if wa and wb and (wa <= wb or wb <= wa):
+        return True
+    ka, kb = key_of(a), key_of(b)
+    return min(len(ka), len(kb)) >= 3 and (ka.startswith(kb) or kb.startswith(ka))   # 'A' does not begin 'Adelie' closely enough
+
+
 def is_error(column):
     """True for an error-bar column, such as 'control err (mg/L)'."""
     return bool(re.search(r"\b(err|error|sd|se|sem|std|uncertainty)\b", str(column).lower()))
@@ -97,7 +118,9 @@ def pair_columns(truth, seen):
     "partly by order" (some pairs were made by order) or "incomplete" (some
     truth columns found no partner). Matching runs in three passes, and a match
     made in one pass is never undone by a later one:
-      1. by name, one to one, an error column only with an error column;
+      1. by name, one to one, an error column only with an error column:
+         every exact name first, then names that share whole words or begin
+         alike (so 'male' never takes 'female');
       2. an unmatched error column takes the error column that follows its
          matched series in the extracted table;
       3. by order, separately for series and for error columns, but only when
@@ -106,16 +129,19 @@ def pair_columns(truth, seen):
     t_cols, s_cols = list(truth.columns[1:]), list(seen.columns[1:])
     match, used, ordered = {}, set(), False
 
-    for t in t_cols:                                        # pass 1: names
+    for t in t_cols:                                        # pass 1a: exact names, all of them first
         same = [s for s in s_cols if key_of(s) == key_of(t) and is_error(s) == is_error(t) and s not in used]
-        near = [s for s in s_cols if is_error(s) == is_error(t) and s not in used and key_of(s)
-                and (key_of(t) in key_of(s) or key_of(s) in key_of(t))]
-        # Among near names, the closest in length wins ("male" prefers "male mass" to "female mass").
-        near.sort(key=lambda s: abs(len(key_of(s)) - len(key_of(t))))
-        found = (same or near or [None])[0]
-        if found is not None:
-            match[t] = found
-            used.add(found)
+        if same:
+            match[t] = same[0]
+            used.add(same[0])
+    for t in t_cols:                                        # pass 1b: near names, whole words or a shared beginning
+        if t in match:
+            continue
+        near = [s for s in s_cols if is_error(s) == is_error(t) and s not in used and near_name(s, t)]
+        near.sort(key=lambda s: abs(len(key_of(s)) - len(key_of(t))))   # the closest in length wins
+        if near:
+            match[t] = near[0]
+            used.add(near[0])
 
     def attach_errors():                                    # pass 2: error bars follow their series
         t_series_of = {e: s for s, e in series_and_errors(truth) if e}
@@ -186,15 +212,29 @@ def plot_table(ax, df, style, label_prefix="", xscale=None, yscale=None):
             continue
         cols = [c for c, _ in pairs if (unit_of(c) == first_unit) == on_left]
         target.set_ylabel(", ".join(sorted({unit_of(c) for c in cols})))
-        values = pd.concat([pd.to_numeric(df[c], errors="coerce") for c in cols]).dropna()
         if yscale:
             target.set_yscale(yscale)
-        elif len(values) and (values > 0).all() and values.max() / values.min() > 1000:
+        elif _auto_log(df, cols):
             target.set_yscale("log")       # spans more than three decades: a guess at what the chart did
     if xscale and numeric_x(df):
         ax.set_xscale(xscale)
     ax.set_xlabel(str(df.columns[0]))
     return ax, other
+
+
+def _auto_log(df, cols):
+    """True when these columns' values are all positive and span more than three decades."""
+    if not cols:
+        return False
+    values = pd.concat([pd.to_numeric(df[c], errors="coerce") for c in cols]).dropna()
+    return bool(len(values) and (values > 0).all() and values.max() / values.min() > 1000)
+
+
+def _y_axes(df):
+    """The series on the left y axis and on the right one, grouped as plot_table draws them."""
+    series = [c for c, _ in series_and_errors(df)]
+    first_unit = unit_of(series[0]) if series else ""
+    return ([c for c in series if unit_of(c) == first_unit], [c for c in series if unit_of(c) != first_unit])
 
 
 def scales_used(df, xscale=None, yscale=None):
@@ -203,9 +243,14 @@ def scales_used(df, xscale=None, yscale=None):
     if yscale:
         y = f"y axis {yscale} (as asked)"
     else:
-        values = pd.concat([pd.to_numeric(df[c], errors="coerce") for c, _ in series_and_errors(df)]).dropna()
-        auto_log = len(values) and (values > 0).all() and values.max() / values.min() > 1000
-        y = "y axis logarithmic (values span more than three decades)" if auto_log else "y axis linear"
+        left, right = _y_axes(df)
+        said = {True: "logarithmic (values span more than three decades)", False: "linear"}
+        if not right:
+            y = f"y axis {said[_auto_log(df, left)]}"
+        elif _auto_log(df, left) == _auto_log(df, right):
+            y = f"both y axes {said[_auto_log(df, left)]}"
+        else:
+            y = f"left y axis {said[_auto_log(df, left)]}, right y axis {said[_auto_log(df, right)]}"
     x = f"x axis {xscale} (as asked)" if xscale else "x axis linear"
     return f"Replot drawn with {x}, {y}. If the original uses other scales, rerun with --xscale or --yscale (log or linear)."
 
@@ -250,10 +295,13 @@ def _overlay(ax, twin, seen, truth):
 
 
 def _category_positions(truth, seen):
-    """Where each extracted category sits on the truth chart (by name, else by order)."""
-    names = [key_of(c) for c in truth.iloc[:, 0].astype(str)]
-    places = [names.index(key_of(c)) if key_of(c) in names else np.nan for c in seen.iloc[:, 0].astype(str)]
-    return places if not all(np.isnan(places)) else list(range(len(seen)))
+    """Where each extracted category sits on the truth chart, by name. A
+    category the chart does not have gets no place, so it is not drawn."""
+    places = [np.nan] * len(seen)
+    for t_index, s_index in enumerate(match_rows(truth, seen)):
+        if s_index is not None:
+            places[s_index] = t_index
+    return places
 
 
 def _legend(ax, twin):
@@ -272,7 +320,10 @@ def match_rows(truth, seen):
     """For each truth row, the index of the extracted row at the same x, or None.
     Numbers: the nearest extracted x within 45 percent of the smallest gap
     between true x values, so one reading cannot stand for two neighbours.
-    Categories: the same name, ignoring capitals and spaces, else the same order."""
+    Categories: the same name, ignoring capitals, spaces and accents, or a
+    name that shares whole words or begins alike. A category with no such
+    partner stays unmatched: pairing by order would score a table of the
+    wrong categories as correct."""
     if numeric_x(truth) and numeric_x(seen):
         tx = truth.iloc[:, 0].to_numpy(float)
         sx = seen.iloc[:, 0].to_numpy(float)
@@ -283,11 +334,31 @@ def match_rows(truth, seen):
             nearest = int(np.nanargmin(np.abs(sx - x))) if len(sx) else None
             matches.append(nearest if nearest is not None and abs(sx[nearest] - x) <= tolerance else None)
         return matches
-    t_names = [key_of(c) for c in truth.iloc[:, 0].astype(str)]
-    s_names = [key_of(c) for c in seen.iloc[:, 0].astype(str)]
-    if any(n in s_names for n in t_names):
-        return [s_names.index(n) if n in s_names else None for n in t_names]
-    return [i if i < len(seen) else None for i in range(len(truth))]
+    return _match_categories(truth.iloc[:, 0].astype(str).tolist(), seen.iloc[:, 0].astype(str).tolist())
+
+
+def _plain(name):
+    """A category name without accents, so 'Adélie' matches 'Adelie'."""
+    import unicodedata
+    return "".join(ch for ch in unicodedata.normalize("NFKD", str(name)) if not unicodedata.combining(ch))
+
+
+def _match_categories(t_names, s_names):
+    """For each true category, the index of the extracted row with that name, or None."""
+    t_names, s_names = [_plain(n) for n in t_names], [_plain(n) for n in s_names]
+    found, used = [None] * len(t_names), set()
+    for exact in (True, False):                 # every exact name first, then near names
+        for i, t in enumerate(t_names):
+            if found[i] is not None:
+                continue
+            for j, s in enumerate(s_names):
+                if j in used:
+                    continue
+                if (key_of(s) == key_of(t) and key_of(t)) if exact else near_name(s, t):
+                    found[i] = j
+                    used.add(j)
+                    break
+    return found
 
 
 def axis_ranges(truth):
@@ -396,6 +467,12 @@ def compare(image_path, seen_csv, truth_csv=None, quiet=False, xscale=None, ysca
         shown = table.drop(columns="matched to").astype(object)
         print(shown.where(table.drop(columns="matched to").notna(), "").to_string(index=False))
         x = table.iloc[0]
+        if not (numeric_x(truth) and numeric_x(seen)):
+            missing = [str(name) for name, i in zip(truth.iloc[:, 0], match_rows(truth, seen)) if i is None]
+            if missing:
+                print(f"No extracted row is named for {', '.join(missing)}: "
+                      f"{'that category is' if len(missing) == 1 else 'those categories are'} "
+                      "counted as not read, and rows with other names as extra. Rows are never paired by order.")
         if x["extra"] or x["duplicates"]:
             print(f"The model gave {x['extra']} point(s) that match no true point and {x['duplicates']} that repeat "
                   "an x value: a full-looking table can still contain points the chart does not have.")

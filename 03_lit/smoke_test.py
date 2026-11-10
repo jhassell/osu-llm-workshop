@@ -251,7 +251,44 @@ def dead_host_asked_once():
     return ok, (len(calls), second["note"])
 
 
-FAILURES = [("network down, saved answer -> cached, labeled with its date", outage_uses_cache),
+def checker_numbers():
+    """check_values.py reads a decimal written without its zero as that decimal
+    (regression: ".5" was once read as 5, so a wrong value passed), keeps signs,
+    ranges and units apart, and applies a conversion to the right magnitude."""
+    import check_values as cv
+    got = {t: cv.numbers(t) for t in (".5", "-.5", "0-.5", "a gain of .25 Mg", "10-20", "Mg C ha-1", "-14.86", "1,250", "Fig.5")}
+    want = {".5": [0.5], "-.5": [-0.5], "0-.5": [0.0, 0.5], "a gain of .25 Mg": [0.25], "10-20": [10.0, 20.0],
+            "Mg C ha-1": [1.0], "-14.86": [-14.86], "1,250": [1250.0], "Fig.5": [5.0]}
+    row = dict(source="corpus/papers/none.pdf", page="1", quote="", value=".5", unit="", conditions="",
+               value_std="-5", unit_std="x", conversion="v * -10", status="ok", note="")
+    conv = [p for p in cv.check_row(row) if p.startswith("conversion")]
+    return got == want and not conv, (got, conv)
+
+
+def checker_refuses_bad_tables():
+    """An empty table, an extra column and a column named twice are refused (exit 1);
+    a file outside results/ is checked without touching results/."""
+    import contextlib
+    import io
+    import check_values as cv
+    head = ",".join(cv.COLUMNS)
+    out = []
+    with tempfile.TemporaryDirectory() as tmp:
+        for name, text in (("empty.csv", head + "\n"), ("extra.csv", head + ",mood\nx,1,q,1,u,c,,,,ok,\n"),
+                           ("twice.csv", head + ",note\nx,1,q,1,u,c,,,,ok,,\n")):
+            path = Path(tmp) / name
+            path.write_text(text)
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                rc = cv.main([str(path)])
+            out.append((name, rc, buf.getvalue().strip().replace(str(path), name)[:90]))
+    said = [("no rows" in out[0][2]), ("does not have" in out[1][2]), ("named twice" in out[2][2])]
+    return all(rc == 1 for _, rc, _ in out) and all(said), out
+
+
+FAILURES = [("check_values reads .5 as 0.5, keeps signs and ranges", checker_numbers),
+            ("check_values refuses an empty table and unexpected columns", checker_refuses_bad_tables),
+            ("network down, saved answer -> cached, labeled with its date", outage_uses_cache),
             ("timeouts: the host is tried 3 times once, then skipped for a minute", dead_host_asked_once),
             ("network down, nothing saved -> unavailable, lists offline topics", outage_without_cache),
             ("HTTP 503 -> two retries, then the cache", retries_503)]
