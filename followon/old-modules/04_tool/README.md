@@ -30,7 +30,7 @@ So every trace can be read with three questions. What did the model ask for? Wha
 
 ## Predict first
 
-The model will be asked the same question about the table twice, with the same instructions, once with a search tool and once without. Will the evidence improve the answer, and how will you tell? Write it on your card.
+The model will be asked the same question about the table twice, with the same instructions, once with a search tool and once without. Will the evidence improve the answer, and how will you tell? Write it down.
 
 ## Do it
 
@@ -105,7 +105,7 @@ In your own `trace.json`, point your pair to the message where the model asked f
     python 04_tool/starter.py --no-tool "your question"
     ```
 
-    The tool searches whatever table Module 3 left in `03_table/`: the sample corpus, or your own documents if you ran `python 03_table/run_folder.py mine`. Ask a question that table could answer. For each reply, mark which claims you can find in a row of the table and which you cannot. If the reply without the tool names sources, can you find them in `corpus/`? A reply that says it cannot see the table is honest, and counts. Write one sentence on your card about what changed.
+    The tool searches whatever table Module 3 left in `03_table/`: the sample corpus, or your own documents if you ran `python 03_table/run_folder.py mine`. Ask a question that table could answer. For each reply, mark which claims you can find in a row of the table and which you cannot. If the reply without the tool names sources, can you find them in `corpus/`? A reply that says it cannot see the table is honest, and counts. Write one sentence about what changed.
 
 3. Core: ask a question the table cannot answer, one about something no column records. For example, ask about funding, or about a field none of the documents covers.
 

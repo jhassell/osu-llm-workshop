@@ -50,7 +50,7 @@ Only if the whole room is told to move together: click `05_repair/CIMARRON.md` a
 
    Lines starting with `-` were removed and lines starting with `+` were added. (If it ends with `:`, press the space bar for more and `q` to leave.) The check itself and `EXPECTED.md` should not appear in the diff: the agent must fix the script, not the check.
 
-4. Find the quiet fault. One of the changes fixed a line that ran without any error and gave wrong numbers. On your card: which line was it, and what did it do to the count of each species? If this were your script, what one check would you add?
+4. Find the quiet fault. One of the changes fixed a line that ran without any error and gave wrong numbers. Write down which line it was, and what it did to the count of each species. If this were your script, what one check would you add?
 
 ## Checkpoint
 

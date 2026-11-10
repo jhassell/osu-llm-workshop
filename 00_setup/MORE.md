@@ -16,7 +16,7 @@ To move back:
 bash 00_setup/switch_backend.sh openrouter
 ```
 
-The first move to each asks for the word on the card; after that, moving asks for nothing. `bash 00_setup/switch_backend.sh` alone says which one you are on. The labs use the new endpoint from their next run. OpenClaw is reconnected too, but a chat that is already open keeps the old endpoint until you close it (`/exit`) and type `openclaw chat`.
+The first move to each asks for the workshop word; after that, moving asks for nothing. `bash 00_setup/switch_backend.sh` alone says which one you are on. The labs use the new endpoint from their next run. OpenClaw is reconnected too, but a chat that is already open keeps the old endpoint until you close it (`/exit`) and type `openclaw chat`.
 
 On Cimarron the model's work, reading your prompt and the file contents the agent sends it and writing the reply, happens on OSU hardware in Stillwater instead of at a commercial provider. Nothing else moves: your files still sit in your GitHub Codespace.
 

@@ -27,7 +27,7 @@ The excerpt is real, and it backs the rise from 21 to 79 percent. Nothing in it 
 
 ## Predict first
 
-Here is the record (`records.py`) and one document. When the whole folder runs, which kind of error will show up first: a wrong value, a guessed value where the document says nothing, or an excerpt that does not support the claim? Circle one on your card.
+Here is the record (`records.py`) and one document. When the whole folder runs, which kind of error will show up first: a wrong value, a guessed value where the document says nothing, or an excerpt that does not support the claim? Write one down.
 
 ## Do it
 
@@ -115,7 +115,7 @@ One record on screen. Read its excerpt aloud to your pair and say whether it sup
    python 03_table/audit.py 3 7 12
    ```
 
-   For each row, open the file it names (row 3 is `corpus/doc_003.txt`) and check every value, your column included. Mark the row on your card as right, wrong value, guessed (a value where the document says nothing), or unsupported excerpt (the sentence is real but does not back the claim). If a row has more than one problem, write the first one you found. Compare with your pair and with your prediction.
+   For each row, open the file it names (row 3 is `corpus/doc_003.txt`) and check every value, your column included. Mark each row as right, wrong value, guessed (a value where the document says nothing), or unsupported excerpt (the sentence is real but does not back the claim). If a row has more than one problem, write the first one you found. Compare with your pair and with your prediction.
 
 4. Core: the evidence page. Turn the table into a web page with every row beside its document:
 

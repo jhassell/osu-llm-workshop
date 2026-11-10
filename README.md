@@ -41,14 +41,14 @@ One rule: whatever you upload is stored in your GitHub Codespace, and what the a
 ## On the morning
 
 1. Open your Codespace at <https://github.com/codespaces>.
-2. Setup starts by itself in the terminal. Type the word on your card and press Enter.
+2. Setup starts by itself in the terminal. Type the workshop word, shown at the front of the room, and press Enter.
 3. When it says `✅ OpenClaw is connected`, put the green note on the back of your laptop lid. Stop 1's page is already open, and so is the agent's chat.
 
 ## The day
 
 | Time | Stop | Folder |
 |---|---|---|
-| 8:30 | Setup: the word on your card | `00_setup/` |
+| 8:30 | Setup: the workshop word | `00_setup/` |
 | 9:00 | 1. An agent builds a website for your students | `00_website/` |
 | 9:35 | 2. Your data, analyzed and reproducible | `02_data/` |
 | 10:45 | Break | |
@@ -76,7 +76,7 @@ Behind? `bash catchup.sh s3` restores Stop 3's files so you can start there (`s2
 ## If something goes wrong
 
 - Only a line ending in `$`, and setup never started: type `bash setup.sh`.
-- "That word is not the workshop word": type it again from the card. Letter case does not matter.
+- "That word is not the workshop word": type it again, as shown at the front of the room. Letter case does not matter.
 - No terminal at all: the **☰** menu at the top left, **Terminal**, **New Terminal**.
 - The chat is gone and you see a `$` prompt: type `openclaw chat`.
 - The agent is slow, or shows 429 or a timeout: the whole room shares one model. Wait a minute, then type `Continue.`
@@ -87,7 +87,7 @@ Behind? `bash catchup.sh s3` restores Stop 3's files so you can start there (`s2
 
 ## After the day
 
-The word on your card stops working when the day ends. Everything you built keeps working with a key of your own: run `bash setup.sh --reset-key` and paste it. `followon/continue.md` says how to get a key and what to try next.
+The workshop word stops working when the day ends. Everything you built keeps working with a key of your own: run `bash setup.sh --reset-key` and paste it. `followon/continue.md` says how to get a key and what to try next.
 
 The day's third step is the same agent with its model on OSU's Cimarron cluster instead of at a commercial provider. Whether a Cimarron endpoint stays up after November 11 is the HPCC's decision: ask them, and ask about an account for your own work, at <https://hpcc.okstate.edu>.
 

@@ -59,7 +59,7 @@ Bringing papers is optional. Pick one:
 
 5. Read the answer. Click `results/answer.md`. Which rows support each part of the explanation? Was each idea tested against the rows, or only stated?
 
-6. At 12:10, the minute paper on your card. Then circle the Stop 6 recipe you will build after lunch (if unsure, the first).
+6. At 12:10, the minute paper. On a slip of paper or a sticky note, with no name, write the main point of the morning in one sentence, and the muddiest point. Hand it in as you leave for lunch. Then choose the Stop 6 recipe you will build after lunch (if unsure, the first), and tell your pair.
 
 ## Checkpoint
 

@@ -18,7 +18,7 @@ A chart is a measurement you can extract. A micrograph, a gel or a photo is not:
 
 ## Do it
 
-1. From memory first. In the second terminal, type the command that reruns this morning's analysis, without looking it up. Did it rebuild the report? If you cannot remember it, it is in step 4 of Stop 2's page (`02_data/README.md`): write it on your card. (No script from Stop 2? Run `python 02_data/datasets/penguins/reference/analysis.py` instead.)
+1. From memory first. In the second terminal, type the command that reruns this morning's analysis, without looking it up. Did it rebuild the report? If you cannot remember it, it is in step 4 of Stop 2's page (`02_data/README.md`): write it down. (No script from Stop 2? Run `python 02_data/datasets/penguins/reference/analysis.py` instead.)
 
 2. Read a chart. In the Explorer, open `04_see`, then `charts`, and click `penguin_bars.png` to look at it. Then, in the second terminal:
 

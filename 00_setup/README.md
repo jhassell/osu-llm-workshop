@@ -1,12 +1,12 @@
 # Setup
 
-From 8:30, with the welcome; Stop 1 starts at 9:00, or sooner if the room is ready. It connects your Codespace to the model with the word on your card, then takes you straight into Stop 1.
+From 8:30, with the welcome; Stop 1 starts at 9:00, or sooner if the room is ready. It connects your Codespace to the model with the workshop word, then takes you straight into Stop 1.
 
 ## Do it
 
 1. Open your Codespace. Setup starts by itself in the terminal at the bottom. If you see only a `$` prompt, type `bash setup.sh` and press Enter.
 
-2. At the key prompt, type the word on your card (letter case does not matter) and press Enter. You should see:
+2. At the key prompt, type the workshop word, shown at the front of the room (letter case does not matter), and press Enter. You should see:
 
        READY. Endpoint: https://openrouter.ai/api/v1
        Model: nvidia/nemotron-3-ultra-550b-a55b
@@ -20,7 +20,7 @@ Your own OpenRouter key (`sk-or-...`) or NVIDIA key (`nvapi-...`) works at the s
 
 ## Where the model runs
 
-The model does not run in your Codespace, which has no GPU. It runs on a server elsewhere, and your Codespace reaches it over the internet with the key that the word on your card stands for. The key is saved in `.env`, which is never committed.
+The model does not run in your Codespace, which has no GPU. It runs on a server elsewhere, and your Codespace reaches it over the internet with the key that the workshop word stands for. The key is saved in `.env`, which is never committed.
 
 ## Later, not this morning
 

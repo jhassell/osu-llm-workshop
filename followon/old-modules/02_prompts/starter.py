@@ -4,7 +4,7 @@
     python 02_prompts/starter.py --heldout   the six held-out ones, to test whether your best prompt generalizes
 
 The prompt is the plain string PROMPT below. That is the only thing to edit.
-Change one thing at a time, run, write the score on your card.
+Change one thing at a time, run, write the score down.
 """
 import sys
 from pathlib import Path

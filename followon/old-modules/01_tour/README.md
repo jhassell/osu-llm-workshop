@@ -38,7 +38,7 @@ Supported means faithful to this document, not proven true: the document itself 
 
 Open `corpus/doc_001.txt` from the file tree and read it: a short, invented study of whether free pizza brings students to office hours. It takes two minutes.
 
-The model will rewrite the main finding for a first-year student in three sentences. Write on your card one detail you expect it to keep and one limit or caveat you expect it to lose. Make it an idea, not a word: the model is told to avoid jargon, so it will drop some words anyway.
+The model will rewrite the main finding for a first-year student in three sentences. Write down one detail you expect it to keep and one limit or caveat you expect it to lose. Make it an idea, not a word: the model is told to avoid jargon, so it will drop some words anyway.
 
 ## Do it
 
@@ -50,7 +50,7 @@ The model will rewrite the main finding for a first-year student in three senten
 
    Every reply is also added to the end of `mine/results/module1.md`, with the document, the prompt and the model, so nothing scrolls away. To run only some of the prompts, give their numbers: `python 01_tour/starter.py 2` reruns the first-year rewrite alone, in a few seconds.
 
-2. Compare the rewrite (2) with your prediction. Next to Keep and Lose on your card, mark whether each came true.
+2. Compare the rewrite (2) with your prediction. Next to your Keep and Lose, mark whether each came true.
 
 3. Check one claim against the source. Pick a word or number from any reply, find it with `grep`, then read the line it prints.
 

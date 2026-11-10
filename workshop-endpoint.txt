@@ -9,7 +9,7 @@
 # openrouter). OSU_CONTEXT is the context window the NIM was started with
 # (NIM_MAX_MODEL_LEN); OpenClaw is told this number so it compacts in time.
 #
-# OSU_KEY_URL is where the word printed on the card is looked up: setup fetches
+# OSU_KEY_URL is where the workshop word is looked up: setup fetches
 # OSU_KEY_URL/<word in lower case> and, if the reply is an OpenRouter key, runs
 # the labs on OpenRouter with that key. The address holds nothing without the
 # word, and the key behind the word is cancelled at the end of the workshop.

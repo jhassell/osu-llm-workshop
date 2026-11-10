@@ -26,7 +26,7 @@ Two habits matter more than anything clever. First, test the function alone. If 
 
 ## Predict first
 
-On your card, before any code: what your function takes, what it returns, and the one test you will run on it before the agent sees it. Write down what that test should print. Then read your pair's card and ask one question about it.
+Write down, before any code: what your function takes, what it returns, and the one test you will run on it before the agent sees it. Write down what that test should print. Then read your pair's card and ask one question about it.
 
 ## Do it
 

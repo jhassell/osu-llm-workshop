@@ -4,7 +4,7 @@ Do this only if the instructor tells the whole room that Cimarron is up and to m
 
 ## Move there
 
-1. In the second terminal (the first move asks for the word on your card):
+1. In the second terminal (the first move asks for the workshop word):
 
    ```
    bash 00_setup/switch_backend.sh cimarron

@@ -19,7 +19,7 @@
 #   LLM_MODEL      optional; the model to use when the endpoint serves more than one
 #
 # The key decides the endpoint. Paste any of these at the prompt:
-#   the OSU workshop key   (from the card)        goes to the OSU workshop endpoint
+#   the OSU workshop key   (given on the day)     goes to the OSU workshop endpoint
 #   an OpenRouter key      (starts with sk-or-)   goes to OpenRouter, and you pick
 #                                                 a model from 00_setup/models.txt (Enter: Nemotron Ultra)
 #   an NVIDIA key          (starts with nvapi-)   goes to NVIDIA's hosted endpoint
@@ -29,7 +29,7 @@
 # Where each value comes from, first match wins:
 #   1. a Codespaces secret of the same name (nothing to type)
 #   2. the value saved by an earlier run, in .env (the key is skipped by --reset-key)
-#   3. the terminal asks you for the word or key from the card.
+#   3. the terminal asks you for the workshop word or a key.
 #      Press Enter without a key to finish the pre-work: the Codespace is ready
 #      and the endpoint check waits for the key.
 #
@@ -49,7 +49,7 @@
 #   WORKSHOP_SWITCHING=1 set by 00_setup/switch_backend.sh: reconnect OpenClaw, open nothing
 #
 # Adapted from jhassell/asee9 (CC BY 4.0): the run-once lock, the key
-# prompt (shown here, since the card carries a word) and the key check are the same design; the provider is different.
+# prompt (shown here, since what is typed is a word) and the key check are the same design; the provider is different.
 set -uo pipefail
 
 # The three endpoints a pasted key can belong to. The OSU one comes from
@@ -60,7 +60,7 @@ set -uo pipefail
 # anywhere, a workshop key is refused with a plain message, never sent.
 OSU_BASE_URL=""                                   # leave empty; set workshop-endpoint.txt instead
 OSU_MODEL=""
-OSU_KEY_URL=""                                    # where the card's word is looked up; also from workshop-endpoint.txt
+OSU_KEY_URL=""                                    # where the workshop word is looked up; also from workshop-endpoint.txt
 OSU_CONTEXT=""                                    # the OSU endpoint's context window, from workshop-endpoint.txt
 OSU_LOADED=0
 WORKSHOP_ENDPOINT_URL="https://raw.githubusercontent.com/jhassell/osu-llm-workshop/main/workshop-endpoint.txt"
@@ -427,7 +427,7 @@ load_osu_endpoint() {
   case "$OSU_KEY_URL" in https://*) OSU_KEY_URL="${OSU_KEY_URL%/}" ;; *) OSU_KEY_URL="" ;; esac
 }
 
-# exchange_word: the card may carry a word instead of a key. The word, in any
+# exchange_word: the workshop gives out a word instead of a key. The word, in any
 # letter case, is looked up at OSU_KEY_URL/<word in lower case>; when the reply
 # is an OpenRouter key, that key replaces the word and the labs run on
 # OpenRouter with the workshop model. A word nobody published is refused here,
@@ -456,12 +456,12 @@ exchange_word() {
     echo "paste your own OpenRouter key (sk-or-..., from openrouter.ai/keys) or NVIDIA key (nvapi-...)."
     return 1
   fi
-  echo "That word is not the workshop word. Check the spelling on the card (letter case does not matter),"
+  echo "That word is not the workshop word. Check the spelling (letter case does not matter),"
   echo "or paste your own OpenRouter key (sk-or-...) or NVIDIA key (nvapi-...)."
   return 1
 }
 
-# word_expired: the card's word was for the workshop day only, Wednesday,
+# word_expired: the workshop word was for the workshop day only, Wednesday,
 # November 11, 2026. From Thursday on (Oklahoma time, UTC-6 in November, which
 # needs no time zone files) setup does not look it up:
 # it says the word has ended and how to go on with a key of your own, and the
@@ -676,7 +676,7 @@ if [ -z "$KEY" ] && [ -z "${WORKSHOP_NO_PROMPT:-}" ] && { : </dev/tty; } 2>/dev/
       echo "Paste your key: your own OpenRouter key (sk-or-...) or NVIDIA key (nvapi-...)."
       echo "Then press Enter."
     else
-      echo "Paste your key: the workshop word or key from the card, or your own OpenRouter key"
+      echo "Paste your key: the workshop word, or your own OpenRouter key"
       echo "(sk-or-...) or NVIDIA key (nvapi-...). Then press Enter."
     fi
     echo "No key yet? Just press Enter: the Codespace is ready and the check waits for the key."

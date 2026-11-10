@@ -74,7 +74,7 @@ Something else in mind? Click `06_build/IDEAS.md` for examples by field. Your ow
 
 3. Get a first result by 3:15. Then make the comment at the top of your file true: the one command that runs your tool now. Your partner will have nothing else to go on.
 
-4. Swap at 3:15. Trade seats with your partner, so each of you sits at the other's laptop. Nothing is copied or sent: you run their tool where it lives, in their Codespace. Go by that comment alone, with no agent and no explaining: first on the recipe's unseen input, then on its bad input. On your card, circle what it did with each, and note where the comment left you stuck. Trade back and fix your comment.
+4. Swap at 3:15. Trade seats with your partner, so each of you sits at the other's laptop. Nothing is copied or sent: you run their tool where it lives, in their Codespace. Go by that comment alone, with no agent and no explaining: first on the recipe's unseen input, then on its bad input. For each, decide what it did: the right answer, a wrong answer, an honest `not stated` or error, or a crash. Note where the comment left you stuck. Trade back, tell your partner, and fix your comment.
 
 5. Keep it. Five things:
    - the code, saved;

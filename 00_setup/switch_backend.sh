@@ -6,7 +6,7 @@
 #   bash 00_setup/switch_backend.sh               say which one you are on now
 #   bash 00_setup/switch_backend.sh https://host/v1 [model]   any other endpoint
 #
-# The first move to an endpoint asks for the word on the card. After that each
+# The first move to an endpoint asks for the workshop word. After that each
 # endpoint's settings are kept in a file of their own (.env.cimarron,
 # .env.openrouter, never committed), so moving back and forth asks for nothing.
 # Cimarron's address comes from workshop-endpoint.txt, filled in by the
@@ -102,7 +102,7 @@ if [ -f "$SAVED" ] && [ -n "$(env_value "$SAVED" LLM_API_KEY)" ]; then
   M="$(env_value "$SAVED" LLM_MODEL)"; M="${M:-$T_MODEL}"
   [ -z "$M" ] || ARGS+=(--model "$M")
 else
-  echo "Type the word on the card when asked."
+  echo "Type the workshop word when asked."
   ARGS=(--reset-key "${ARGS[@]}")
   [ -z "$T_MODEL" ] || ARGS+=(--model "$T_MODEL")
 fi

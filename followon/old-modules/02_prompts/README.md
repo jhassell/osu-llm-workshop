@@ -35,7 +35,7 @@ Ten documents is a small test, and a prompt tuned on them can fit them and nothi
 
 ## Predict first
 
-Four changes will be made to a bad prompt: a role, constraints, an output format, two worked examples. Which one do you expect to help most? Write it on your card.
+Four changes will be made to a bad prompt: a role, constraints, an output format, two worked examples. Which one do you expect to help most? Write it down.
 
 ## Do it
 
@@ -56,7 +56,7 @@ Four changes will be made to a bad prompt: a role, constraints, an output format
      miss doc_002: expected review, got no label   reply: Meta-analysis
    ```
 
-   Write the score on your card as your starting point.
+   Write the score down as your starting point.
 
 2. Open `02_prompts/starter.py`. Near the top is `PROMPT`, a plain string between triple quotes. It is the only thing you edit today. The comment block below it gives one example line for each lever, plus a rule. Keep the line `{document}` in your prompt: that is where each document's text goes.
 
@@ -75,7 +75,7 @@ Four changes will be made to a bad prompt: a role, constraints, an output format
    What kind of study is this? Answer with one word.
    ```
 
-   Write the new score on your card next to the lever you changed.
+   Write the new score down next to the lever you changed.
 
 4. Open one miss. Pick a line that starts `miss`, open that document in `corpus/` from the file tree on the left, and read it. Ask why the model said what it said. There are three usual causes: the model misread the document; the label itself is arguable; or the model was right in its own words because the prompt never said which words to use.
 
@@ -91,9 +91,9 @@ Show your pair one change, its score, and one miss you opened, with your reason 
    python 02_prompts/starter.py
    ```
 
-   Write the score on your card. Did it move, and which documents changed?
+   Write the score down. Did it move, and which documents changed?
 
-2. Core. Decide whose fault a miss was. Take a miss from any run so far, read the document, then read the "Ambiguous labels" section of `corpus/README.md`. Write on your card which of the three it was, the model, the label, or the prompt's vocabulary, and one sentence why. A miss on an arguable document is the label's fault only if the reply is the defensible alternative the corpus README names.
+2. Core. Decide whose fault a miss was. Take a miss from any run so far, read the document, then read the "Ambiguous labels" section of `corpus/README.md`. Write down which of the three it was, the model, the label, or the prompt's vocabulary, and one sentence why. A miss on an arguable document is the label's fault only if the reply is the defensible alternative the corpus README names.
 
 3. Core. Test on documents you did not tune on. With your best prompt in place, run:
 
@@ -123,7 +123,7 @@ Show your pair one change, its score, and one miss you opened, with your reason 
 
 ## What you have now
 
-A prompt that labels a study's method, a score for each version of it on your card, and the habit that matters more than any one prompt: change one thing, measure, open the failures. In Module 3 the same job becomes one column of a table. Look at the description of `method` in `records.py`: it is a constraint lever, the list of allowed labels, written once so every row of the table uses the same six words.
+A prompt that labels a study's method, a score for each version of it, written down, and the habit that matters more than any one prompt: change one thing, measure, open the failures. In Module 3 the same job becomes one column of a table. Look at the description of `method` in `records.py`: it is a constraint lever, the list of allowed labels, written once so every row of the table uses the same six words.
 
 ## If something goes wrong
 

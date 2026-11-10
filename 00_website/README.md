@@ -17,7 +17,7 @@ The `site/` folder is public. Anyone with its address can open it while your Cod
 
 ## Before you start
 
-On your card, write three things a beginner must get right about your topic. Circle the one you would most hate to see wrong.
+Write down three things a beginner must get right about your topic, on paper or in a note. Mark the one you would most hate to see wrong.
 
 Pick a narrow topic and a group of students: not "thermodynamics" but "reading a phase diagram, for second-year chemistry majors". The example below uses buffer pH; use yours.
 
@@ -33,12 +33,12 @@ Pick a narrow topic and a group of students: not "thermodynamics" but "reading a
 
    Watch the boxes. Which files does it write? Does any box fetch a web page? If none does, everything on the pages came from the model's memory. A build takes a few minutes this morning, since the whole room shares one model. Do not type again until it answers.
 
-3. Open the site. The agent's last lines give two addresses. Cmd-click (Ctrl-click on Windows) the live one. The permanent one shows a 404 until it is published, usually a minute or two (see The permanent address, below, if it stays that way). Click through every page and compare it with your card:
+3. Open the site. The agent's last lines give two addresses. Cmd-click (Ctrl-click on Windows) the live one. The permanent one shows a 404 until it is published, usually a minute or two (see The permanent address, below, if it stays that way). Click through every page and compare it with your three things:
 
-   - Did it teach your three things, and the one you circled?
+   - Did it teach your three things, and the one you marked?
    - Is any number, unit, formula or step wrong?
 
-   Write on your card the one thing it got wrong or made up. If you find nothing wrong, write the claim you checked hardest and how you know it is right.
+   Write down the one thing it got wrong or made up. If you find nothing wrong, write the claim you checked hardest and how you know it is right.
 
 4. Ask where the numbers came from:
 
@@ -62,7 +62,7 @@ Your address shows the agent's pages. Show your pair the one thing it got wrong 
 
 ## Extensions
 
-1. Find the passage that covers the thing you circled and read it to your pair. Right, right but incomplete, or wrong?
+1. Find the passage that covers the thing you marked and read it to your pair. Right, right but incomplete, or wrong?
 
 2. Ask for sources, then open two of them yourself. Does each page exist, and does it say what the site claims?
 

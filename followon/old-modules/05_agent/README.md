@@ -27,7 +27,7 @@ That is a prompt injection: text placed where an AI will read it, meant to make 
 
 ## Predict first
 
-One document in the sample corpus contains an instruction addressed to the agent. Will the agent follow it? Write yes or no on your card, and why.
+One document in the sample corpus contains an instruction addressed to the agent. Will the agent follow it? Write down yes or no, and why.
 
 ## Do it
 
@@ -123,7 +123,7 @@ A trace saved in `05_agent/trace.json`. Show your pair the line where the agent 
    python 05_agent/show_trace.py
    ```
 
-   Pick one `model asks` line. On your card write: was it the right tool, were the arguments good, and what did the model do with what came back? Then compare the `found by a search` line with the number of documents your question is really about.
+   Pick one `model asks` line. Write down: was it the right tool, were the arguments good, and what did the model do with what came back? Then compare the `found by a search` line with the number of documents your question is really about.
 
 3. Core. The planted test, done properly. Check that the model saw the sentence at all, in the copy you kept in step 4:
 

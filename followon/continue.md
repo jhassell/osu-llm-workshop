@@ -1,6 +1,6 @@
 # Thursday morning: keeping this working
 
-The workshop key stops working at the end of the day. From Thursday, typing the card word at setup's key prompt prints a message saying so, with what to do instead, and the prompt asks again. Everything you built keeps working the moment you point it at another endpoint, because the only two things the code knows are in .env:
+The workshop key stops working at the end of the day. From Thursday, typing the workshop word at setup's key prompt prints a message saying so, with what to do instead, and the prompt asks again. Everything you built keeps working the moment you point it at another endpoint, because the only two things the code knows are in .env:
 
     LLM_BASE_URL=...
     LLM_API_KEY=...
