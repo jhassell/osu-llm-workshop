@@ -12,11 +12,12 @@ About 75 minutes, from 11:00. You type in the OpenClaw chat and run one command 
 
 ## Why
 
-A model asked for a number or a reference from memory writes something that looks right, and some of it does not exist. So here the model never has the last word on a fact. Three small programs do: `pages.py` prints a paper's text page by page, `check_values.py` checks that every quote is really on its page and contains its number, and `lit.py` searches for papers and checks each DOI against the publishers' registry. What is left for the agent is judgment: which values can be compared, why they differ, and when to stop.
+A model asked for a number or a reference from memory writes something that looks right, and some of it does not exist. So here the model never has the last word on a fact. Three small programs do: `pages.py` prints a paper's text page by page, `check_values.py` checks that every quote is really on its page and contains its number, and `lit.py` searches for papers and checks each one's DOI (a paper's permanent identifier) against the publishers' registry. What is left for the agent is judgment: which values can be compared, why they differ, and when to stop.
 
 What the check's words mean:
 
 - PASS: the quote is on that page and contains the number. Whether the sentence means what the row says is for you to judge.
+- FAIL: the quote is not on that page, or the number is not in the quote. The agent should reread and fix the row.
 - FLAGGED: the row failed a check and the agent says why it cannot be fixed.
 - verified: the DOI exists and its title and first author match.
 

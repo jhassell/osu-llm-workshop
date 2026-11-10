@@ -50,9 +50,10 @@ python 06_build/page/make_page.py --title "Air handler"
 A script that lists papers on your topic that it has not shown you before, each checked against the publishers' registry.
 
 ```
-python 06_build/digest/digest.py "your topic in a few words"
+python 06_build/digest/digest.py
 ```
 
+- As it comes, it searches for cover crops and soil carbon. Your own topic: `python 06_build/digest/digest.py "your topic in a few words"`.
 - To keep your topic, put it in `QUERY` near the top of `06_build/digest/digest.py`. Each run writes a new `results/digest-<date>.md`.
 - Bad input: `python 06_build/digest/digest.py --records 06_build/digest/fixtures/no-match.json` (it must say nothing matches).
 - Unseen input at 3:15: your partner's topic.

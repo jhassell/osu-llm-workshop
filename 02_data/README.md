@@ -34,11 +34,7 @@ Open a second terminal now with the + at the top right of the terminal panel. Th
 
    It prints the row count, the repeated rows, and the outdoor temperature each day. Does anything look wrong that the findings do not mention?
 
-3. Correct it. If the findings already cover what you saw, skip this step. Otherwise tell the agent what you know, with your reason, in the chat:
-
-   ```
-   Sep 30 and Oct 1 are in Celsius: Chicago is never 12 F in late September, and it changes at midnight. Verify, convert, and update findings.md.
-   ```
+3. Correct it. If the findings already cover what you saw, skip this step. Otherwise tell the agent in one line, in the chat: what you saw, what you think it is, and your reason. The reason matters: it gives the agent something to check, so it tests your idea and does not argue. The dictionary says where the building is and what units to expect. Stuck? One answer is at the very bottom of this page.
 
 4. Build the script. Click `02_data/reproduce.md` to read it. Then, in the chat:
 
@@ -70,3 +66,11 @@ Show your pair one problem the agent found, with its evidence, and run `python r
 - A number in the report appears in no output: ask `Which line of output does each number come from?`
 - 429 or a timeout: the room shares one model. Wait a minute, then type `Continue.`
 - The chat gets slow: type `/new`, then `Read results/findings.md and results/analysis.py, then continue.`
+
+## A hint for step 3
+
+Only if you are stuck. In what `check.py` printed, look at the outdoor temperature on September 30 and October 1. The dictionary says the building has Chicago weather, and that temperatures are in degrees F. One line that works:
+
+```
+Sep 30 and Oct 1 are in Celsius: Chicago is never 12 F in late September, and it changes at midnight. Verify, convert, and update findings.md.
+```

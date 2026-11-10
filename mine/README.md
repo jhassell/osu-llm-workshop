@@ -2,7 +2,7 @@
 
 Your own material for the day goes here. Every stop works on a shipped public example if this folder is empty, so bringing anything is optional. What is worth bringing:
 
-- One small CSV from your work, for Stop 2 (a few thousand rows is plenty), with a line about what each column means and its units. If it lives in Excel, save a copy as CSV on your laptop first.
+- One small CSV from your work, for Stop 6 or as an extension in Stop 2 (a few thousand rows is plenty), with a line about what each column means and its units. If it lives in Excel, save a copy as CSV on your laptop first.
 - Two or three short research papers as PDFs, for Stop 3: ones you can select text in, not scans.
 - One chart from a paper you are reading, as a PNG or JPEG, for Stop 4. A screenshot is fine; an iPhone photo needs exporting as JPEG first.
 

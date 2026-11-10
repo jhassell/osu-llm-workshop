@@ -33,7 +33,7 @@ Pick a narrow topic and a group of students: not "thermodynamics" but "reading a
 
    Watch the boxes. Which files does it write? Does any box fetch a web page? If none does, everything on the pages came from the model's memory. A build takes a few minutes this morning, since the whole room shares one model. Do not type again until it answers.
 
-3. Open the site. Its last lines give two addresses. Cmd-click (Ctrl-click on Windows) the live one. The permanent one shows a 404 until it is published, usually a minute or two (see The permanent address, below, if it stays that way). Click through every page and compare it with your card:
+3. Open the site. The agent's last lines give two addresses. Cmd-click (Ctrl-click on Windows) the live one. The permanent one shows a 404 until it is published, usually a minute or two (see The permanent address, below, if it stays that way). Click through every page and compare it with your card:
 
    - Did it teach your three things, and the one you circled?
    - Is any number, unit, formula or step wrong?
@@ -60,17 +60,17 @@ Pick a narrow topic and a group of students: not "thermodynamics" but "reading a
 
 Your address shows the agent's pages. Show your pair the one thing it got wrong and the rule you gave it, or the claim you checked and how you checked it.
 
-## Exercises
+## Extensions
 
-1. Core. Find the passage that covers the thing you circled and read it to your pair. Right, right but incomplete, or wrong?
+1. Find the passage that covers the thing you circled and read it to your pair. Right, right but incomplete, or wrong?
 
-2. Stretch. Ask for sources, then open two of them yourself. Does each page exist, and does it say what the site claims?
+2. Ask for sources, then open two of them yourself. Does each page exist, and does it say what the site claims?
 
    ```
    New rule: every fact cites a public source.
    ```
 
-3. Stretch. Ask for a quiz, then ask `Which quiz answers did you verify?` and work one question yourself.
+3. Ask for a quiz, then ask `Which quiz answers did you verify?` and work one question yourself.
 
    ```
    Add a five-question quiz with answers.

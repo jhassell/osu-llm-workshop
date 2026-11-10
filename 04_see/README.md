@@ -18,13 +18,7 @@ A chart is a measurement you can extract. A micrograph, a gel or a photo is not:
 
 ## Do it
 
-1. From memory first. Rerun this morning's analysis without looking it up:
-
-   ```
-   python results/analysis.py
-   ```
-
-   Could not remember the command? Write it on your card. (No script from Stop 2? Run `python 02_data/datasets/penguins/reference/analysis.py` instead.)
+1. From memory first. In the second terminal, type the command that reruns this morning's analysis, without looking it up. Did it rebuild the report? If you cannot remember it, it is in step 4 of Stop 2's page (`02_data/README.md`): write it on your card. (No script from Stop 2? Run `python 02_data/datasets/penguins/reference/analysis.py` instead.)
 
 2. Read a chart. In the Explorer, open `04_see`, then `charts`, and click `penguin_bars.png` to look at it. Then, in the second terminal:
 
@@ -40,7 +34,12 @@ A chart is a measurement you can extract. A micrograph, a gel or a photo is not:
    python 04_see/compare.py 04_see/charts/penguin_bars.png results/seen/penguin_bars.csv
    ```
 
-   It prints an error table: one row per series, with the average and largest error, and the error as a percent of the data's range. Click `results/seen/penguin_bars-compare.png`: the original, the replot, and both together. Is about one percent good enough for what you would use these numbers for?
+   It prints an error table. How to read it:
+
+   - The first row is the x axis. `matched`, on every row, says how many of the chart's points the model read (3/3 is all of them). `extra` counts points the model gave that the chart does not have.
+   - Then one row for each set of bars or points, and one for each set of error bars. `mean_err` and `max_err` are the average and largest error, in the chart's own units. `pct_range` is the average error as a percent of the data's range.
+
+   Click `results/seen/penguin_bars-compare.png`: the original, the replot, and both together. Is about one percent good enough for what you would use these numbers for?
 
 4. Now the hard one, the same two commands on a chart with hundreds of overlapping points:
 
