@@ -106,7 +106,7 @@ My recipe (circled on the Stop 3 card):
 
 What I will change in the starter:
 
-The transfer test, at 3:15: swap tools with your partner and run theirs from its header comment alone, without the agent and without their help. Circle what it did.
+The transfer test, at 3:15: trade seats with your partner and run their tool, on their laptop, from its header comment alone, without the agent and without their help. Circle what it did.
 
 The unseen input:             right answer / wrong answer / honest "not stated" or error / crash
 

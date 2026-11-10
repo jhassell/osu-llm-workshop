@@ -24,7 +24,7 @@ python 06_build/table/build_table.py corpus/papers
 
 - Your columns are in `06_build/table/fields.json`: a name and one sentence each. The table is `results/build/table.csv`.
 - Bad input: `python 06_build/table/build_table.py 06_build/table/bad --out results/build-bad`
-- Unseen input at 3:15: `python 06_build/table/build_table.py 06_build/table/interviews 06_build/table/fields-interviews.json` (three invented interviews), or a folder of your partner's documents.
+- Unseen input at 3:15: `python 06_build/table/build_table.py 06_build/table/interviews 06_build/table/fields-interviews.json` (three invented interviews).
 
 ### 2. Your Stop 2 analysis as a web page
 
@@ -56,7 +56,7 @@ python 06_build/digest/digest.py
 - As it comes, it searches for cover crops and soil carbon. Your own topic: `python 06_build/digest/digest.py "your topic in a few words"`.
 - To keep your topic, put it in `QUERY` near the top of `06_build/digest/digest.py`. Each run writes a new `results/digest-<date>.md`.
 - Bad input: `python 06_build/digest/digest.py --records 06_build/digest/fixtures/no-match.json` (it must say nothing matches).
-- Unseen input at 3:15: your partner's topic.
+- Unseen input at 3:15: your partner's topic. They tell you; you type it.
 
 Something else in mind? Click `06_build/IDEAS.md` for examples by field. Your own idea is fine if a helper agrees it fits in an hour.
 
@@ -74,7 +74,7 @@ Something else in mind? Click `06_build/IDEAS.md` for examples by field. Your ow
 
 3. Get a first result by 3:15. Then make the comment at the top of your file true: the one command that runs your tool now. Your partner will have nothing else to go on.
 
-4. Swap at 3:15. Run your partner's tool from that comment alone, with no agent and no explaining: first on the recipe's unseen input, then on its bad input. On your card, circle what it did with each, and note where the comment left you stuck. Swap back and fix your comment.
+4. Swap at 3:15. Trade seats with your partner, so each of you sits at the other's laptop. Nothing is copied or sent: you run their tool where it lives, in their Codespace. Go by that comment alone, with no agent and no explaining: first on the recipe's unseen input, then on its bad input. On your card, circle what it did with each, and note where the comment left you stuck. Trade back and fix your comment.
 
 5. Keep it. Five things:
    - the code, saved;
@@ -94,7 +94,7 @@ Something else in mind? Click `06_build/IDEAS.md` for examples by field. Your ow
 
    `git push` keeps the code on GitHub. `bash export.sh` packs `results/` into a zip: right-click it in the Explorer and Download.
 
-6. Show and tell, at 4:00. Show your pair your tool on an input of theirs, or on the unseen input, and watch theirs. Then volunteers nominate what they saw in their partner's work.
+6. Show and tell, at 4:00. On your own laptop, show your pair your tool running: on the unseen input, or on something they pick, such as a topic or a column they would want. Then watch theirs. Then volunteers nominate what they saw in their partner's work.
 
 ## Checkpoint
 

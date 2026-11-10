@@ -51,7 +51,7 @@ Bringing papers is optional. Pick one:
 
 3. Watch the loop. It takes several minutes. `pages.py` is the agent reading a paper. `check_values.py` prints PASS, FAIL or FLAGGED for every row: count the failures, then watch what it does about them. `lit.py` is a search: what did it search for, and why?
 
-4. Check one row yourself. Click `results/values.csv` and pick a row that passed. Click that paper's text in `results/papers/`, press Cmd-F (Ctrl-F) and type a few words of the quote. Is it on the page the row says? Does the sentence say what the row says? Then run the check yourself, in the second terminal:
+4. Check one row yourself. Click `results/values.csv` and pick a row that passed. Click that paper's text in `results/papers/`, press Cmd-F (Ctrl-F) and type a few words of the quote. Is it on the page the row says? Does the sentence say what the row says? Hard to read in the editor? Right-click `results/values.csv` in the Explorer, Download, and open it in Excel. Then run the check yourself, in the second terminal:
 
    ```
    python 03_lit/check_values.py
