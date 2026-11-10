@@ -30,11 +30,13 @@ Checkpoint, from the build: the one thing the agent got wrong or invented, and t
 
 ## Stop 2, your data, analyzed and reproducible
 
-One problem the agent found, and its evidence:
+One finding, and its evidence (the code, what it printed, the rows):
 
 What my check (python 02_data/check.py) showed that the findings did not:
 
-What I told the agent, and what it did:
+What I told the agent (what I saw, what I think it is, why), and whether it tested my idea:
+
+On my own data, the one number I would always check myself:
 
 Checkpoint: python results/analysis.py rebuilds the report.
 

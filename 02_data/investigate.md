@@ -2,18 +2,11 @@
 
 ## For you: what this exercise is about
 
-You are about to hand a real data file to an AI agent. It is two weeks of readings, one every five minutes, from the air handler that heats, cools and ventilates one floor of a building. Several things in the file are wrong, on purpose, the way real exported data often is: repeated rows, readings in the wrong unit, equipment that stopped doing what it was told.
+You are about to hand a real data file to an AI agent: two weeks of readings, one every five minutes, from the air handler that cools and ventilates one floor of a building. Several things in the file are wrong, on purpose, the way real exported data often is.
 
-Most people would ask an AI to "analyze this file". Here the agent first investigates: it chooses its own checks, writes and runs Python for each one, reads what comes back, and decides what to look at next. It writes down every problem it finds, with the evidence, before any analysis happens.
+Most people would ask an AI to "analyze this file". Here the agent investigates first. It chooses its own checks, writes and runs Python for each one, reads what comes back, and decides what to look at next. It writes down every problem it finds, with the evidence, and then it stops, before any analysis.
 
-What it shows: an agent does real work in your folder, not just talk. It also shows the limit: it will miss things, and you, the person who knows the subject, catch them.
-
-The whole stop, in four steps:
-
-1. Investigate: the agent checks the data and writes `results/findings.md`. This file is that request.
-2. Check: you run a short check of your own, `python 02_data/check.py`.
-3. Correct: you tell the agent what it missed, with your reason.
-4. Build: the agent writes one script that rebuilds the analysis, and you run it yourself.
+What this shows: an agent does real work in your folder, not just talk. It also shows the limit: it will miss things, and you, the person who knows the subject, catch them. That is step 2 and step 3.
 
 To start, type in the chat: `Read 02_data/investigate.md and do what it says.`
 
